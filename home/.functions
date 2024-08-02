@@ -1,0 +1,190 @@
+#  ███████╗██╗   ██╗███╗   ██╗ ██████╗████████╗██╗ ██████╗ ███╗   ██╗███████╗
+#  ██╔════╝██║   ██║████╗  ██║██╔════╝╚══██╔══╝██║██╔═══██╗████╗  ██║██╔════╝
+#  █████╗  ██║   ██║██╔██╗ ██║██║        ██║   ██║██║   ██║██╔██╗ ██║███████╗
+#  ██╔══╝  ██║   ██║██║╚██╗██║██║        ██║   ██║██║   ██║██║╚██╗██║╚════██║
+#  ██║     ╚██████╔╝██║ ╚████║╚██████╗   ██║   ██║╚██████╔╝██║ ╚████║███████║
+#  ╚═╝      ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝
+#                                                                            
+
+RESETC="\033[0m\e[0m"
+RED_COLOR="\033[0;31m\033[1m"
+GRAY_COLOR="\033[0;37m\033[1m"
+BLUE_COLOR="\033[0;34m\033[1m"
+GREEN_COLOR="\033[0;32m\033[1m"
+YELLOW_COLOR="\033[0;33m\033[1m"
+PURPLE_COLOR="\033[0;35m\033[1m"
+TURQUOISE_COLOR="\033[0;36m\033[1m"
+ORANGE_COLOR="\033[38;5;208m\033[1m" 
+
+function message() {
+    local signal
+    local color
+    case "$1" in
+        "-title")
+            color="$GRAY_COLOR"
+            signal="[$]"
+            ;;
+        "-subtitle")
+            color="$PURPLE_COLOR"
+            signal="[*]"
+            ;;
+        "-error")
+            color="$RED_COLOR"
+            signal="[-]"
+            ;;
+        "-warning")
+            color="$YELLOW_COLOR"
+            signal="[&]"
+            ;;
+        "-success")
+            color="$GREEN_COLOR"
+            signal="[+]"
+            ;;
+        "-cancel")
+            color="$BLUE_COLOR"
+            signal="[!]"
+            ;;
+        "-approval")
+            color="$ORANGE_COLOR"
+            signal="[?]"
+            ;;
+        *)
+            color="$RESETC"
+            signal=""
+            ;;
+    esac
+    shift
+    echo -e "\n${color}${signal} $*${RESETC}"
+}
+
+function man() {
+    local normal='\e[0m'
+    local bold_red='\e[1;31m'
+    local highlight='\e[1;44;33m'
+    local bold_green='\e[1;32m'
+
+    env \
+    LESS_TERMCAP_mb="$bold_red" \
+    LESS_TERMCAP_md="$bold_red" \
+    LESS_TERMCAP_me="$normal" \
+    LESS_TERMCAP_se="$normal" \
+    LESS_TERMCAP_so="$highlight" \
+    LESS_TERMCAP_ue="$normal" \
+    LESS_TERMCAP_us="$bold_green" \
+    man "$@"
+}
+
+function extract_files() {
+    if [ -f "$1" ]; then
+        case "$1" in
+            *.tar.bz2) tar xvjf "$1" ;;
+            *.tar.gz) tar xvzf "$1" ;;
+            *.bz2) bunzip2 "$1" ;;
+            *.rar) unrar x "$1" ;;
+            *.gz) gunzip "$1" ;;
+            *.tar) tar xvf "$1" ;;
+            *.tbz2) tar xvjf "$1" ;;
+            *.tgz) tar xvzf "$1" ;;
+            *.zip) unzip "$1" ;;
+            *.Z) uncompress "$1" ;;
+            *.7z) 7z x "$1" ;;
+            *) echo "Don't know how to extract '$1'..." ;;
+        esac
+    else
+        echo "'$1' is not a valid file!"
+    fi
+}
+
+function cmkdir() {
+    if [ -z "$1" ]; then
+        message -warning "Usage: cmk <directory-name>"
+        return 1
+    fi
+    
+    mkdir "$1"
+    cd "$1"
+}
+
+function rmk() {
+    scrub -p dod $1
+    shred -zun 10 -v $1
+}
+
+function extractPorts() {
+    if [ -z "$1" ]; then
+        message -warning "Usage: extractPorts <filename>"
+        return 1
+    fi
+    
+    if [ ! -f "$1" ]; then
+        message -error "File $1 not found."
+        return 1
+    fi
+    
+    if ! grep -qE '^[^#].*/open/' "$1"; then
+        message -error "Format Invalid: Use -oG <file>, in nmap for a correct format."
+        return 1
+    fi
+    
+    ports="$(cat $1 | grep -oP '\d{1,5}/open' | awk '{print $1}' FS='/' | xargs | tr ' ' ',')"
+    ip_address="$(cat $1 | grep -oP '\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}' | sort -u | head -n 1)"
+    echo -e "\n${GREEN_COLOR}[*] Extracting information...${RESETC}" > extractPorts.tmp
+    echo -e "\t${TURQUOISE_COLOR}[*] IP Address: $ip_address${RESETC}" >> extractPorts.tmp
+    echo -e "\t${TURQUOISE_COLOR}[*] Open ports: $ports${RESETC}\n" >> extractPorts.tmp
+    echo $ports | tr -d '\n' | xclip -selection clipboard
+    echo -e "${GREEN_COLOR}[*] Ports copied to clipboard${RESETC}\n" >> extractPorts.tmp
+    cat extractPorts.tmp
+    rm extractPorts.tmp
+}
+
+function open_file() {
+    local file=$1
+    if [ -z "$EDITOR" ]; then
+        message -warning "La variable EDITOR no está definida."
+    else
+        case "$EDITOR" in
+            code|vim|nano)
+                $EDITOR "$file"
+            ;;
+            *)
+                message -error "Editor no soportado: $EDITOR."
+            ;;
+        esac
+    fi
+}
+
+function create_venv() {
+    local dir_name=$(basename "$(pwd)")
+    local env_name=$(echo "$dir_name" | tr '[:upper:]' '[:lower:]' | iconv -f utf8 -t ascii//TRANSLIT)
+    env_name=".$env_name-env"
+
+    python3 -m venv "$env_name"
+    if [ $? -ne 0 ]; then
+        message -error "Failed to create virtual environment."
+        return 1
+    fi
+
+    source "$env_name/bin/activate"
+    if [ $? -ne 0 ]; then
+        message -error "Failed to activate virtual environment."
+        return 1
+    fi
+
+    message -success "Virtual environment '$env_name' created and activated."
+}
+
+function get_venv_name() {
+    local dir_name=$(basename "$(pwd)")
+    echo -e ".$(echo "$dir_name" | tr '[:upper:]' '[:lower:]' | iconv -f utf8 -t ascii//TRANSLIT)-env"
+}
+
+
+function settarget(){
+	if [ $# -eq 1 ]; then
+	    echo $1 > ~/.config/polybar/htb/htb_target
+	elif [ $# -gt 2 ]; then
+	    echo "settarget [IP] [NAME] | settarget [IP]"
+	else
+	    echo $1 $2 > ~/.config/polybar/htb/htb_target
+	fi
+}
