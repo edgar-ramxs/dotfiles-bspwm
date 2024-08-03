@@ -118,6 +118,7 @@ function reboot_system() {
 
 function updating_packages() {
     message -title "Operating system package updates ($DISTRO)"
+    sleep 1
     message -subtitle "Updating packages..."
     sudo apt update -y >/dev/null 2>&1
     check_execution $? "Failed to updating packages."
@@ -138,16 +139,18 @@ function updating_packages() {
 
 function install_packages() {
     message -title "Installing necessary packages for the environment."
+    sleep 0.5
     sudo apt install -y "$@" >/dev/null 2>&1
     check_execution $? "Failed to install some packages."
-    sleep 1.5
+    sleep 1
 }
 
 function install_dependencies() {
     message -title "Installing necessary dependencies for $1."
-    sleep 1.5
+    sleep 0.5
     sudo apt install -y "${@:2}"
     check_execution $? "Failed to install some dependencies for $1!"
+    sleep 1
 }
 
 function install_fonts() {
@@ -190,6 +193,7 @@ function install_fonts() {
 
 function install_zsh() {
     message -title "ZSH Installation"
+    sleep 0.5
     
     message -subtitle "Installation of libraries and plugins..."
     sudo apt install -y zsh zsh-syntax-highlighting zsh-autosuggestions >/dev/null 2>&1
@@ -220,6 +224,14 @@ function install_zsh() {
     sleep 1
 }
 
+function install_pywal() {
+    message -title "Pywal Installation"
+    sleep 0.5
+    sudo pip3 install pywal >/dev/null 2>&1
+    check_execution $? "Failed Pywal Installation"
+    sleep 1
+}
+
 #  ███████╗███████╗████████╗████████╗██╗███╗   ██╗ ██████╗ ███████╗
 #  ██╔════╝██╔════╝╚══██╔══╝╚══██╔══╝██║████╗  ██║██╔════╝ ██╔════╝
 #  ███████╗█████╗     ██║      ██║   ██║██╔██╗ ██║██║  ███╗███████╗
@@ -232,11 +244,13 @@ function setter_configs() {
     local DIR_SOURCE="$DIR/config"
     local DIR_DEST="$HOME/.config"
     message -title "Settings of the .config directory"
+    sleep 0.5
     if [ ! -d "$DIR_DEST" ]; then
         mkdir -p "$DIR_DEST"
         message -subtitle "Target directory $DIR_DEST was created."
     fi
     cp -r "$DIR_SOURCE"/* "$DIR_DEST"
+    sleep 0.5
     message -success "Configurations successfully copied to $DIR_DEST"
 }
 
@@ -244,12 +258,14 @@ function setter_homefiles() {
     local DIR_SOURCE="$DIR/home"
     local DIR_DEST="$HOME"
     message -title "Setting the home files"
+    sleep 0.5
     shopt -s dotglob
     if [ ! -d "$DIR_DEST" ]; then
         mkdir -p "$DIR_DEST"
         message -subtitle "Target directory $DIR_DEST was created."
     fi
     cp -r "$DIR_SOURCE"/* "$DIR_DEST"
+    sleep 0.5
     message -success "Configurations successfully copied to $DIR_DEST"
     shopt -u dotglob
 }
@@ -258,11 +274,13 @@ function setter_binaries() {
     local DIR_SOURCE="$DIR/bin"
     local DIR_DEST="$HOME/.local/bin"
     message -title "Settings of the personal bin directory"
+    sleep 0.5
     if [ ! -d "$DIR_DEST" ]; then
         mkdir -p "$DIR_DEST"
         message -subtitle "Target directory $DIR_DEST was created."
     fi
     cp -r "$DIR_SOURCE"/* "$DIR_DEST"
+    sleep 0.5
     message -success "Configurations successfully copied to $DIR_DEST"
 }
 
@@ -270,11 +288,13 @@ function setter_icons() {
     local DIR_SOURCE="$DIR/icons"
     local DIR_DEST="/usr/share/icons"
     message -title "Settings of the .config directory"
+    sleep 0.5
     if [ ! -d "$DIR_DEST" ]; then
         mkdir -p "$DIR_DEST"
         message -subtitle "Target directory $DIR_DEST was created."
     fi
     cp -r "$DIR_SOURCE"/* "$DIR_DEST"
+    sleep 0.5
     message -success "Configurations successfully copied to $DIR_DEST"
 }
 
@@ -282,22 +302,24 @@ function setter_wallpapers() {
     local DIR_SOURCE="$DIR/wallpapers"
     local DIR_DEST="$HOME/.wallpapers"
     message -title "Settings of the .config directory"
+    sleep 0.5
     if [ ! -d "$DIR_DEST" ]; then
         mkdir -p "$DIR_DEST"
         message -subtitle "Target directory $DIR_DEST was created."
     fi
     cp -r "$DIR_SOURCE"/* "$DIR_DEST"
+    sleep 0.5
     message -success "Configurations successfully copied to $DIR_DEST"
 }
 
 function setter_symbolic_links() {
     message -title "Symbolic link of root..."
+    sleep 0.5
     sudo ln -sfv /home/$USER/.zshrc /root/.zshrc
     sudo ln -sfv /home/$USER/.profile /root/.profile
     sudo ln -sfv /home/$USER/.p10k.zsh /root/.p10k.zsh
     sleep 1
 }
-
 
 #  ███╗   ███╗ █████╗ ██╗███╗   ██╗
 #  ████╗ ████║██╔══██╗██║████╗  ██║
@@ -309,7 +331,7 @@ function setter_symbolic_links() {
 
 function main() {
     # Verificación del usuario root
-    if [ "$UID" -ne 0 ]; then
+    if [ "$UID" -eq 0 ]; then
         message -error "You should not run the script as the root user!"
         exit 1
     else
@@ -321,29 +343,34 @@ function main() {
             locate xclip lsd cmake make gcc build-essential fastfetch neofetch net-tools 
 
         # Paquetes del entorno
-        install_packages bspwm picom polybar rofi kitty cava btop betterlockscreen imagemagick ranger firefox-esr \
+        install_packages bspwm picom polybar rofi kitty cava btop imagemagick ranger firefox-esr \
             flameshot lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings nitrogen pavucontrol pulseaudio \
             synaptic policykit-1-gnome papirus-icon-theme brightnessctl bluetooth font-manager network-manager \
-            xdg-user-dirs xfce4-power-manager
+            xdg-user-dirs xfce4-power-manager python3-pip
+
+        # Creacion de directorios
+        xdg-user-dirs-update
 
         # Herramientas de Ciberseguridad
-        install_packages burpsuite crackmapexec evil-winrm gobuster whatweb john nmap rlwrap smbmap sshpass \
-            wafw00f wfuzz wireless-tools wireshark
+        # install_packages burpsuite crackmapexec evil-winrm gobuster whatweb john nmap rlwrap smbmap sshpass \
+        #    wafw00f wfuzz wireless-tools wireshark
     
-
         # Instalacion de fuentes de Nerd Fonts
         install_fonts
 
         # Instalacion de ZSH (con plugins)
         install_zsh
+
+        # Instalacion de Pywal
+        install_pywal
         
-        setter_icons
+        # Seteadores de configuraciones
+        # setter_icons
         setter_binary
         setter_configs
         setter_homefiles
         setter_wallpapers
         setter_symbolic_links
-
         sleep 1
     fi
 

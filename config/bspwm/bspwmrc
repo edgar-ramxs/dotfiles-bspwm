@@ -4,6 +4,7 @@ pgrep -x sxhkd > /dev/null || sxhkd &
 
 # Autostart
 $HOME/.config/bspwm/scripts/autostart.sh &
+sleep 2
 
 # Colores
 . "${HOME}/.cache/wal/colors.sh"
