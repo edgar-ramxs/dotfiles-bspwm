@@ -205,29 +205,29 @@ function install_zsh() {
     sleep 1
 
     if [ ! -d /usr/share/zsh-sudo ]; then
-        message -error "El directorio '$dir' no existe."
+        message -error "El directorio '/usr/share/zsh-sudo' no existe."
         message -subtitle "Installing ZSH plugins..."
         sudo mkdir -p /usr/share/zsh-sudo
         sudo chown $USER:$USER /usr/share/zsh-sudo/
         sudo wget -q -O /usr/share/zsh-sudo/zsh-sudo.zsh https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/plugins/sudo/sudo.plugin.zsh
-        check_execution $? "Failed plugin download"
+        check_execution $? "Failed plugin download."
     fi
 
     message -subtitle "Installing Powerlevel10k for user $USER..."
     git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/.powerlevel10k >/dev/null 2>&1
-    check_execution $? "Failed powerlevel10k download"
+    check_execution $? "Failed powerlevel10k download."
     sleep 1
 
     message -subtitle "Installing Powerlevel10k for root..."
     sudo git clone --depth=1 https://github.com/romkatv/powerlevel10k.git /root/.powerlevel10k >/dev/null 2>&1
-    check_execution $? "Failed powerlevel10k download"
+    check_execution $? "Failed powerlevel10k download."
     sleep 1
 }
 
 function install_pywal() {
     message -title "Pywal Installation"
     sleep 0.5
-    sudo pip3 install pywal >/dev/null 2>&1
+    sudo pip3 install pywal --break-system-packages >/dev/null 2>&1
     check_execution $? "Failed Pywal Installation"
     sleep 1
 }
@@ -249,7 +249,7 @@ function setter_configs() {
         mkdir -p "$DIR_DEST"
         message -subtitle "Target directory $DIR_DEST was created."
     fi
-    cp -r "$DIR_SOURCE"/* "$DIR_DEST"
+    cp -rf "$DIR_SOURCE"/* "$DIR_DEST"
     sleep 0.5
     message -success "Configurations successfully copied to $DIR_DEST"
 }
@@ -264,7 +264,7 @@ function setter_homefiles() {
         mkdir -p "$DIR_DEST"
         message -subtitle "Target directory $DIR_DEST was created."
     fi
-    cp -r "$DIR_SOURCE"/* "$DIR_DEST"
+    cp -rf "$DIR_SOURCE"/* "$DIR_DEST"
     sleep 0.5
     message -success "Configurations successfully copied to $DIR_DEST"
     shopt -u dotglob
@@ -279,7 +279,7 @@ function setter_binaries() {
         mkdir -p "$DIR_DEST"
         message -subtitle "Target directory $DIR_DEST was created."
     fi
-    cp -r "$DIR_SOURCE"/* "$DIR_DEST"
+    cp -rf "$DIR_SOURCE"/* "$DIR_DEST"
     sleep 0.5
     message -success "Configurations successfully copied to $DIR_DEST"
 }
@@ -293,7 +293,7 @@ function setter_icons() {
         mkdir -p "$DIR_DEST"
         message -subtitle "Target directory $DIR_DEST was created."
     fi
-    cp -r "$DIR_SOURCE"/* "$DIR_DEST"
+    cp -rf "$DIR_SOURCE"/* "$DIR_DEST"
     sleep 0.5
     message -success "Configurations successfully copied to $DIR_DEST"
 }
@@ -307,7 +307,7 @@ function setter_wallpapers() {
         mkdir -p "$DIR_DEST"
         message -subtitle "Target directory $DIR_DEST was created."
     fi
-    cp -r "$DIR_SOURCE"/* "$DIR_DEST"
+    cp -rf "$DIR_SOURCE"/* "$DIR_DEST"
     sleep 0.5
     message -success "Configurations successfully copied to $DIR_DEST"
 }
@@ -350,10 +350,6 @@ function main() {
 
         # Creacion de directorios
         xdg-user-dirs-update
-
-        # Herramientas de Ciberseguridad
-        # install_packages burpsuite crackmapexec evil-winrm gobuster whatweb john nmap rlwrap smbmap sshpass \
-        #    wafw00f wfuzz wireless-tools wireshark
     
         # Instalacion de fuentes de Nerd Fonts
         install_fonts
@@ -366,11 +362,12 @@ function main() {
         
         # Seteadores de configuraciones
         # setter_icons
-        setter_binary
         setter_configs
+        setter_binaries
         setter_homefiles
         setter_wallpapers
         setter_symbolic_links
+
         sleep 1
     fi
 
