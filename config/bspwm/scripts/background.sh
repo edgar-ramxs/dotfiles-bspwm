@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 # Ruta al archivo de configuración de Nitrogen
 CONFIG_FILE="$HOME/.config/nitrogen/bg-saved.cfg"

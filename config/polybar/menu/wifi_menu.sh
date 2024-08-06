@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 theme="~/.config/rofi/menu_wifi.rasi"
 

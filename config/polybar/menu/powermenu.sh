@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 host=$(hostname)
 uptime=$(uptime -p | sed -e 's/up //g')

@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 
 #  ██╗   ██╗ █████╗ ██████╗ ██╗ █████╗ ██████╗ ██╗     ███████╗███████╗
@@ -156,10 +156,8 @@ function install_dependencies() {
 function install_fonts() {
     local DIR_DOWNLOADS="$DIR/fonts"
     local DIR_FONTS="/usr/share/fonts"
-
     message -title "Installing and downloading fonts."
     font_names=("FiraCode" "CascadiaCode" "Iosevka" "Hack")
-
     for font_name in "${font_names[@]}"; do
         curl -L "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/${font_name}.tar.xz" -o "$DIR_DOWNLOADS/${font_name}.tar.xz" >/dev/null 2>&1
         sleep 1.5
@@ -185,7 +183,6 @@ function install_fonts() {
             continue
         fi
     done
-
     message -warning "Nerd Fonts installation complete!. Reloading fonts..."
     fc-cache -fv >/dev/null 2>&1
     sleep 1
@@ -194,16 +191,13 @@ function install_fonts() {
 function install_zsh() {
     message -title "ZSH Installation"
     sleep 0.5
-    
     message -subtitle "Installation of libraries and plugins..."
     sudo apt install -y zsh zsh-syntax-highlighting zsh-autosuggestions >/dev/null 2>&1
     sleep 1
-
     message -subtitle "Setting ZSH as default..."
     sudo chsh -s $(which zsh) $USER
     sudo chsh -s $(which zsh) root
     sleep 1
-
     if [ ! -d /usr/share/zsh-sudo ]; then
         message -error "El directorio '/usr/share/zsh-sudo' no existe."
         message -subtitle "Installing ZSH plugins..."
@@ -212,15 +206,13 @@ function install_zsh() {
         sudo wget -q -O /usr/share/zsh-sudo/zsh-sudo.zsh https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/plugins/sudo/sudo.plugin.zsh
         check_execution $? "Failed plugin download."
     fi
-
     message -subtitle "Installing Powerlevel10k for user $USER..."
     git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/.powerlevel10k >/dev/null 2>&1
-    check_execution $? "Failed powerlevel10k download."
+    check_execution $? "Failed powerlevel10k download for user."
     sleep 1
-
     message -subtitle "Installing Powerlevel10k for root..."
     sudo git clone --depth=1 https://github.com/romkatv/powerlevel10k.git /root/.powerlevel10k >/dev/null 2>&1
-    check_execution $? "Failed powerlevel10k download."
+    check_execution $? "Failed powerlevel10k download for root."
     sleep 1
 }
 
@@ -231,6 +223,22 @@ function install_pywal() {
     check_execution $? "Failed Pywal Installation"
     sleep 1
 }
+
+function install_brave() {
+    sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
+    echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main" | sudo tee /etc/apt/sources.list.d/brave-browser-release.list
+    sudo apt update
+    sudo apt install brave-browser  
+}
+
+function install_flatpak() {
+    # Instalar Flatpak
+    sudo apt update
+    sudo apt install -y flatpak
+    sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+
+}
+
 
 #  ███████╗███████╗████████╗████████╗██╗███╗   ██╗ ██████╗ ███████╗
 #  ██╔════╝██╔════╝╚══██╔══╝╚══██╔══╝██║████╗  ██║██╔════╝ ██╔════╝
@@ -321,6 +329,24 @@ function setter_symbolic_links() {
     sleep 1
 }
 
+function setter_permissions(){
+    message -title "Setting execution permissions to dotfiles..."
+    sleep 0.5
+    sudo chmod +x "$HOME/.config/bspwm/bspwmrc"
+    sudo chmod +x "$HOME/.config/bspwm/scripts/background.sh"
+    sudo chmod +x "$HOME/.config/polybar/launch.sh"
+    sudo chmod +x "$HOME/.config/polybar/htb/network_status.sh"
+    sudo chmod +x "$HOME/.config/polybar/htb/set_target.sh"
+    sudo chmod +x "$HOME/.config/polybar/htb/vpn_status.sh"
+    sudo chmod +x "$HOME/.config/polybar/menu/bluetooth.sh"
+    sudo chmod +x "$HOME/.config/polybar/menu/networks.sh"
+    sudo chmod +x "$HOME/.config/polybar/menu/powermenu.sh"
+    sudo chmod +x "$HOME/.config/polybar/menu/rofi-wifi-menu.sh"
+    sudo chmod +x "$HOME/.config/polybar/menu/weather_browser.sh"
+    sudo chmod +x "$HOME/.config/polybar/menu/weather.sh"
+    sudo chmod +x "$HOME/.config/polybar/menu/wifi_menu.sh"
+}
+
 #  ███╗   ███╗ █████╗ ██╗███╗   ██╗
 #  ████╗ ████║██╔══██╗██║████╗  ██║
 #  ██╔████╔██║███████║██║██╔██╗ ██║
@@ -338,15 +364,16 @@ function main() {
         # Actualizacion de paquetes y repositorios del sistema
         updating_packages
 
-        # Instalar herramientas de consola o utilidades de terminal
-        install_packages vim git wget curl zip unzip tar rar unrar p7zip-full jq bat \
-            locate xclip lsd cmake make gcc build-essential fastfetch neofetch net-tools 
-
         # Paquetes del entorno
-        install_packages bspwm picom polybar rofi kitty cava btop imagemagick ranger firefox-esr \
-            flameshot lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings nitrogen pavucontrol pulseaudio \
-            synaptic policykit-1-gnome papirus-icon-theme brightnessctl bluetooth font-manager network-manager \
-            xdg-user-dirs xfce4-power-manager python3-pip
+        install_packages xorg xserver-xorg xutils xinit xinput bspwm \
+        sxhkd picom polybar rofi suckless-tools wget curl zip unzip \
+        tar rar unrar p7zip-full jq bat locate xclip lsd cmake make \
+        gcc build-essential fastfetch neofetch net-tools kitty cava \
+        btop imagemagick ranger firefox-esr flameshot pavucontrol \
+        pulseaudio nitrogen synaptic policykit-1-gnome brightnessctl \
+        lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings  \
+        papirus-icon-theme bluetooth font-manager network-manager \
+        xdg-user-dirs xfce4-power-manager python3 python3-pip
 
         # Creacion de directorios
         xdg-user-dirs-update
@@ -360,41 +387,21 @@ function main() {
         # Instalacion de Pywal
         install_pywal
         
-        # Seteadores de configuraciones
+        # Configuraciones
         # setter_icons
         setter_configs
         setter_binaries
         setter_homefiles
         setter_wallpapers
+        setter_permissions
         setter_symbolic_links
-
+        
         sleep 1
     fi
 
     reboot_system
     exit 0
 }
-
-
-# bspwm neofetch fastfetch sxhkd firejail lightdm font-manager policykit-1-gnome
-# sudo apt install bspwm sxhkd picom polybar nitrogen cava btop rofi font-manager synaptic policykit-1-gnome ranger lightdm-gtk-greeter lightdm-gtk-greeter-settings 
-# mkdir {fastfetch,bspwm,sxhkd,picom,polybar,nitrogen,cava,btop,rofi,ranger,wallpapers}
-# xmodmap -pke | grep bracket
-# fc-list | code
-# sudo apt install xserver-xorg-video-intel
-# sudo apt install papirus-icon-theme
-# betterlockscreen
-# sudo apt install curl
-# sudo apt install python2
-# sudo pip3 install pywal 
-# cava
-# nmtui
-# nm-applet
-# nm-connection-editor
-# blueman-manager
-# xfce4-power-manager
-# xfce4-power-manager-settings
-
 
 #  ███████╗██╗  ██╗███████╗ ██████╗██╗   ██╗████████╗██╗ ██████╗ ███╗   ██╗
 #  ██╔════╝╚██╗██╔╝██╔════╝██╔════╝██║   ██║╚══██╔══╝██║██╔═══██╗████╗  ██║

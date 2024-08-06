@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 # URL de búsqueda en Google
 SEARCH_URL="https://www.google.com/search?q=clima"

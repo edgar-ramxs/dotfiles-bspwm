@@ -2,11 +2,50 @@
 
 pgrep -x sxhkd > /dev/null || sxhkd &
 
-# Autostart
-$HOME/.config/bspwm/scripts/autostart.sh &
+#   █████╗ ██╗   ██╗████████╗ ██████╗ ███████╗████████╗ █████╗ ██████╗ ████████╗
+#  ██╔══██╗██║   ██║╚══██╔══╝██╔═══██╗██╔════╝╚══██╔══╝██╔══██╗██╔══██╗╚══██╔══╝
+#  ███████║██║   ██║   ██║   ██║   ██║███████╗   ██║   ███████║██████╔╝   ██║   
+#  ██╔══██║██║   ██║   ██║   ██║   ██║╚════██║   ██║   ██╔══██║██╔══██╗   ██║   
+#  ██║  ██║╚██████╔╝   ██║   ╚██████╔╝███████║   ██║   ██║  ██║██║  ██║   ██║   
+#  ╚═╝  ╚═╝ ╚═════╝    ╚═╝    ╚═════╝ ╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   
+#                                                                               
+
+# Configurar la distribucion del teclado a Español Latinoamericano
+setxkbmap -layout latam &
+
+# Reajustar fondo de pantalla
+nitrogen --restore &
+
+# Ejecutar compositor de ventanas
+picom &
+
+# Ejecutar barras de tareas
+$HOME/.config/polybar/launch.sh &
+
+# Reajustar paleta de colores de Pywal
+$HOME/.config/bspwm/scripts/background.sh &
+
+# Habilitar autenticador para rofi
+/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &
+
+# Bloquear cursor en zonas del polybar 
+xsetroot -cursor_name left_ptr &
+
+# Habilitar gestor de bateria de xfce
+xfce4-power-manager &
 
 # Colores
 . "${HOME}/.cache/wal/colors.sh"
+
+
+#  ██████╗ ███████╗██████╗ ██╗    ██╗███╗   ███╗██████╗  ██████╗
+#  ██╔══██╗██╔════╝██╔══██╗██║    ██║████╗ ████║██╔══██╗██╔════╝
+#  ██████╔╝███████╗██████╔╝██║ █╗ ██║██╔████╔██║██████╔╝██║     
+#  ██╔══██╗╚════██║██╔═══╝ ██║███╗██║██║╚██╔╝██║██╔══██╗██║     
+#  ██████╔╝███████║██║     ╚███╔███╔╝██║ ╚═╝ ██║██║  ██║╚██████╗
+#  ╚═════╝ ╚══════╝╚═╝      ╚══╝╚══╝ ╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝
+#                                                               
+
 
 bspc monitor -d I II III IV V VI VII VIII IX X
 
