@@ -402,10 +402,10 @@ function main() {
         install_pywal
         
         # Configuraciones
-        setter_configs
         setter_binaries
+        setter_configs
         setter_homefiles
-        setter_wallpapers
+        setter_resources
         setter_permissions
         setter_symbolic_links
         
