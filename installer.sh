@@ -148,7 +148,7 @@ function install_packages() {
 function install_dependencies() {
     message -title "Installing necessary dependencies for $1."
     sleep 0.5
-    sudo apt install -y "${@:2}"
+    sudo apt install -y "${@:2}" >/dev/null 2>&1
     check_execution $? "Failed to install some dependencies for $1!"
     sleep 1
 }
@@ -332,19 +332,19 @@ function setter_symbolic_links() {
 function setter_permissions(){
     message -title "Setting execution permissions to dotfiles..."
     sleep 0.5
-    sudo chmod +x "$HOME/.config/bspwm/bspwmrc"
-    sudo chmod +x "$HOME/.config/bspwm/scripts/background.sh"
-    sudo chmod +x "$HOME/.config/polybar/launch.sh"
-    sudo chmod +x "$HOME/.config/polybar/htb/network_status.sh"
-    sudo chmod +x "$HOME/.config/polybar/htb/set_target.sh"
-    sudo chmod +x "$HOME/.config/polybar/htb/vpn_status.sh"
-    sudo chmod +x "$HOME/.config/polybar/menu/bluetooth.sh"
-    sudo chmod +x "$HOME/.config/polybar/menu/networks.sh"
-    sudo chmod +x "$HOME/.config/polybar/menu/powermenu.sh"
-    sudo chmod +x "$HOME/.config/polybar/menu/rofi-wifi-menu.sh"
-    sudo chmod +x "$HOME/.config/polybar/menu/weather_browser.sh"
-    sudo chmod +x "$HOME/.config/polybar/menu/weather.sh"
-    sudo chmod +x "$HOME/.config/polybar/menu/wifi_menu.sh"
+    chmod +x "$HOME/.config/bspwm/bspwmrc"
+    chmod +x "$HOME/.config/bspwm/scripts/background.sh"
+    chmod +x "$HOME/.config/polybar/launch.sh"
+    chmod +x "$HOME/.config/polybar/htb/network_status.sh"
+    chmod +x "$HOME/.config/polybar/htb/set_target.sh"
+    chmod +x "$HOME/.config/polybar/htb/vpn_status.sh"
+    chmod +x "$HOME/.config/polybar/menu/bluetooth.sh"
+    chmod +x "$HOME/.config/polybar/menu/networks.sh"
+    chmod +x "$HOME/.config/polybar/menu/powermenu.sh"
+    chmod +x "$HOME/.config/polybar/menu/rofi-wifi-menu.sh"
+    chmod +x "$HOME/.config/polybar/menu/weather_browser.sh"
+    chmod +x "$HOME/.config/polybar/menu/weather.sh"
+    chmod +x "$HOME/.config/polybar/menu/wifi_menu.sh"
 }
 
 #  ███╗   ███╗ █████╗ ██╗███╗   ██╗
@@ -367,17 +367,18 @@ function main() {
         # Entorno
         install_dependencies "ENTORNO" xorg xserver-xorg xutils xinit xinput \
         bspwm sxhkd picom polybar rofi pulseaudio pavucontrol firefox-esr kitty \
-        nitrogen papirus-icon-theme policykit-1-gnome flameshot ranger
+        nitrogen papirus-icon-theme policykit-1-gnome flameshot ranger 
 
         # HERRAMIENTAS
         install_dependencies "HERRAMIENTAS" wget curl zip unzip tar rar unrar \
         p7zip-full jq bat locate xclip lsd cmake make gcc build-essential \
-        python3 python3-pip xdg-user-dirs imagemagick btop cava
+        python3 python3-pip xdg-user-dirs imagemagick btop cava tree neofetch \
+        fastfetch
 
-        # # PROGRAMAS
-        # install_dependencies "PROGRAMAS" synaptic font-manager network-manager \
-        # xfce4-power-manager brightnessctl bluetooth lightdm lightdm-gtk-greeter \
-        # lightdm-gtk-greeter-settings
+        # PROGRAMAS
+        install_dependencies "PROGRAMAS" synaptic font-manager network-manager \
+        xfce4-power-manager brightnessctl bluetooth lightdm lightdm-gtk-greeter \
+        lightdm-gtk-greeter-settings
 
         # Creacion de directorios
         xdg-user-dirs-update
@@ -392,13 +393,12 @@ function main() {
         install_pywal
         
         # Configuraciones
-        # setter_icons
-        # setter_configs
-        # setter_binaries
-        # setter_homefiles
-        # setter_wallpapers
-        # setter_permissions
-        # setter_symbolic_links
+        setter_configs
+        setter_binaries
+        setter_homefiles
+        setter_wallpapers
+        setter_permissions
+        setter_symbolic_links
         
         sleep 1
     fi

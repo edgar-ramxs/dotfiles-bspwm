@@ -17,7 +17,7 @@ setxkbmap -layout latam &
 nitrogen --restore &
 
 # Ejecutar compositor de ventanas
-picom &
+picom --config $HOME/.config/picom/picom.conf --no-vsync &
 
 # Ejecutar barras de tareas
 $HOME/.config/polybar/launch.sh &
