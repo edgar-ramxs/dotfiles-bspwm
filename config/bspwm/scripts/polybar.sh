@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Terminate already running bar instances
 killall -q polybar
@@ -10,7 +10,7 @@ polybar logo -c ~/.config/polybar/config.ini &
 # polybar fecha -c ~/.config/polybar/config.ini &
 # polybar redes -c ~/.config/polybar/config.ini &
 # polybar wifi -c ~/.config/polybar/config.ini &
-polybar escritorios -c ~/.config/polybar/config.ini &
+# polybar escritorios -c ~/.config/polybar/config.ini &
 # polybar temperatura -c ~/.config/polybar/config.ini &
 # polybar bluetooth -c ~/.config/polybar/config.ini &
 # polybar bateria -c ~/.config/polybar/config.ini &

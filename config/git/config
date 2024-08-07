@@ -8,6 +8,6 @@
     	editor = code
     	autocrlf = input
 [web]
-		browser = google-chrome
+		browser = firefox-esr
 [credential]
 		helper = store

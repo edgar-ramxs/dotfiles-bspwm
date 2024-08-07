@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Obtener el estado de "Powered" del Bluetooth
 bluetooth_status=$(bluetoothctl show | grep "Powered:" | awk '{print $2}')
@@ -17,7 +17,3 @@ else
     # Bluetooth está apagado
     echo "󰂲" 
 fi
-
-# bluetooth apagado: 󰂲
-# bluetooth encendido: 
-# bluetooth conectado: 󰂰

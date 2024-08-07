@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 
 #  ██╗   ██╗ █████╗ ██████╗ ██╗ █████╗ ██████╗ ██╗     ███████╗███████╗
@@ -332,19 +332,23 @@ function setter_symbolic_links() {
 function setter_permissions(){
     message -title "Setting execution permissions to dotfiles..."
     sleep 0.5
+    # BSPWM
     chmod +x "$HOME/.config/bspwm/bspwmrc"
-    chmod +x "$HOME/.config/bspwm/scripts/background.sh"
-    chmod +x "$HOME/.config/polybar/launch.sh"
+    chmod +x "$HOME/.config/bspwm/scripts/bspwm_resize"
+    chmod +x "$HOME/.config/bspwm/scripts/nitrogen.sh"
+    chmod +x "$HOME/.config/bspwm/scripts/polybar.sh"
+    # POLYBAR
     chmod +x "$HOME/.config/polybar/htb/network_status.sh"
     chmod +x "$HOME/.config/polybar/htb/set_target.sh"
     chmod +x "$HOME/.config/polybar/htb/vpn_status.sh"
     chmod +x "$HOME/.config/polybar/menu/bluetooth.sh"
     chmod +x "$HOME/.config/polybar/menu/networks.sh"
     chmod +x "$HOME/.config/polybar/menu/powermenu.sh"
-    chmod +x "$HOME/.config/polybar/menu/rofi-wifi-menu.sh"
     chmod +x "$HOME/.config/polybar/menu/weather_browser.sh"
     chmod +x "$HOME/.config/polybar/menu/weather.sh"
-    chmod +x "$HOME/.config/polybar/menu/wifi_menu.sh"
+    chmod +x "$HOME/.config/polybar/menu/wifi.sh"
+    # BIN
+    chmod +x "$HOME/.local/bin/whichSystem.py"
 }
 
 #  ███╗   ███╗ █████╗ ██╗███╗   ██╗
@@ -367,13 +371,14 @@ function main() {
         # Entorno
         install_dependencies "ENTORNO" xorg xserver-xorg xutils xinit xinput \
         bspwm sxhkd picom polybar rofi pulseaudio pavucontrol firefox-esr kitty \
-        nitrogen papirus-icon-theme policykit-1-gnome flameshot ranger 
+        nitrogen papirus-icon-theme policykit-1-gnome flameshot ranger thunar \
+        lxappearance xserver-xorg-video-qxl x11-xserver-utils
 
         # HERRAMIENTAS
         install_dependencies "HERRAMIENTAS" wget curl zip unzip tar rar unrar \
         p7zip-full jq bat locate xclip lsd cmake make gcc build-essential \
         python3 python3-pip xdg-user-dirs imagemagick btop cava tree neofetch \
-        fastfetch
+        fastfetch net-tools
 
         # PROGRAMAS
         install_dependencies "PROGRAMAS" synaptic font-manager network-manager \

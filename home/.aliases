@@ -24,7 +24,7 @@ alias icat='kitty +kitten icat'
 alias load-fonts='fc-cache -v -f'
 
 alias cleaning='sudo get autoclean && sudo apt autoremove'
-alias updating='sudo apt update && sudo apt upgrade'
+alias updating='sudo apt update -y && sudo apt upgrade -y'
 
 alias per-mx='chmod a+x'
 alias per-000='chmod 000'

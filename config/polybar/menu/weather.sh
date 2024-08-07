@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-API_KEY=""
+source ~/.variables
 
 # Obtén la ubicación geográfica de tu IP
 LOCATION=$(curl -s https://ipinfo.io/loc)
@@ -10,7 +10,7 @@ LAT=$(echo $LOCATION | cut -d',' -f1)
 LON=$(echo $LOCATION | cut -d',' -f2)
 
 # Llama a la API de OpenWeather
-response=$(curl -s "https://api.openweathermap.org/data/2.5/weather?lat=${LAT}&lon=${LON}&appid=${API_KEY}&units=metric")
+response=$(curl -s "https://api.openweathermap.org/data/2.5/weather?lat=${LAT}&lon=${LON}&appid=${WEATHER_KEY}&units=metric")
 
 # Extrae la temperatura de la respuesta JSON
 temperature=$(echo $response | jq '.main.temp' | cut -d'.' -f1)

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Definir variables
 IP_VPN=$(~/.config/polybar/htb/vpn_status.sh)
