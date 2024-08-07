@@ -364,16 +364,20 @@ function main() {
         # Actualizacion de paquetes y repositorios del sistema
         updating_packages
 
-        # Paquetes del entorno
-        install_packages xorg xserver-xorg xutils xinit xinput bspwm \
-        sxhkd picom polybar rofi suckless-tools wget curl zip unzip \
-        tar rar unrar p7zip-full jq bat locate xclip lsd cmake make \
-        gcc build-essential fastfetch neofetch net-tools kitty cava \
-        btop imagemagick ranger firefox-esr flameshot pavucontrol \
-        pulseaudio nitrogen synaptic policykit-1-gnome brightnessctl \
-        lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings  \
-        papirus-icon-theme bluetooth font-manager network-manager \
-        xdg-user-dirs xfce4-power-manager python3 python3-pip
+        # Entorno
+        install_dependencies "ENTORNO" xorg xserver-xorg xutils xinit xinput \
+        bspwm sxhkd picom polybar rofi pulseaudio pavucontrol firefox-esr kitty \
+        nitrogen papirus-icon-theme policykit-1-gnome flameshot ranger
+
+        # HERRAMIENTAS
+        install_dependencies "HERRAMIENTAS" wget curl zip unzip tar rar unrar \
+        p7zip-full jq bat locate xclip lsd cmake make gcc build-essential \
+        python3 python3-pip xdg-user-dirs imagemagick btop cava
+
+        # # PROGRAMAS
+        # install_dependencies "PROGRAMAS" synaptic font-manager network-manager \
+        # xfce4-power-manager brightnessctl bluetooth lightdm lightdm-gtk-greeter \
+        # lightdm-gtk-greeter-settings
 
         # Creacion de directorios
         xdg-user-dirs-update
@@ -389,12 +393,12 @@ function main() {
         
         # Configuraciones
         # setter_icons
-        setter_configs
-        setter_binaries
-        setter_homefiles
-        setter_wallpapers
-        setter_permissions
-        setter_symbolic_links
+        # setter_configs
+        # setter_binaries
+        # setter_homefiles
+        # setter_wallpapers
+        # setter_permissions
+        # setter_symbolic_links
         
         sleep 1
     fi
