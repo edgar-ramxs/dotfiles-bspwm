@@ -293,7 +293,8 @@ function setter_homefiles() {
 }
 
 function setter_resources() {
-    local DIR_WALLS_SOU="$HOME/dotfiles-visual-resources/wallpapers/1366x768"
+    local RESOLUTION="1366x768"
+    local DIR_WALLS_SOU="$HOME/dotfiles-visual-resources/wallpapers/$RESOLUTION"
     local DIR_ICONS_SOU="$HOME/dotfiles-visual-resources/icons"
 
     local DIR_WALLS_DES="$HOME/.wallpapers"
@@ -376,7 +377,7 @@ function main() {
         install_dependencies "ENTORNO" xorg xserver-xorg xutils xinit xinput \
         bspwm sxhkd picom polybar rofi pulseaudio pavucontrol firefox-esr kitty \
         nitrogen papirus-icon-theme policykit-1-gnome flameshot ranger thunar \
-        lxappearance xserver-xorg-video-qxl x11-xserver-utils
+        lxappearance x11-xserver-utils
 
         # HERRAMIENTAS
         install_dependencies "HERRAMIENTAS" wget curl zip unzip tar rar unrar \
