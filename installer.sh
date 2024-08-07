@@ -248,6 +248,20 @@ function install_flatpak() {
 #  ╚══════╝╚══════╝   ╚═╝      ╚═╝   ╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚══════╝
 #                                                                  
 
+function setter_binaries() {
+    local DIR_SOURCE="$DIR/bin"
+    local DIR_DEST="$HOME/.local/bin"
+    message -title "Settings of the personal bin directory"
+    sleep 0.5
+    if [ ! -d "$DIR_DEST" ]; then
+        mkdir -p "$DIR_DEST"
+        message -subtitle "Target directory $DIR_DEST was created."
+    fi
+    cp -rf "$DIR_SOURCE"/* "$DIR_DEST"
+    sleep 0.5
+    message -success "Configurations successfully copied to $DIR_DEST"
+}
+
 function setter_configs() {
     local DIR_SOURCE="$DIR/config"
     local DIR_DEST="$HOME/.config"
@@ -278,46 +292,36 @@ function setter_homefiles() {
     shopt -u dotglob
 }
 
-function setter_binaries() {
-    local DIR_SOURCE="$DIR/bin"
-    local DIR_DEST="$HOME/.local/bin"
-    message -title "Settings of the personal bin directory"
-    sleep 0.5
-    if [ ! -d "$DIR_DEST" ]; then
-        mkdir -p "$DIR_DEST"
-        message -subtitle "Target directory $DIR_DEST was created."
-    fi
-    cp -rf "$DIR_SOURCE"/* "$DIR_DEST"
-    sleep 0.5
-    message -success "Configurations successfully copied to $DIR_DEST"
-}
+function setter_resources() {
+    local DIR_WALLS_SOU="$HOME/dotfiles-visual-resources/wallpapers/1366x768"
+    local DIR_ICONS_SOU="$HOME/dotfiles-visual-resources/icons"
 
-function setter_icons() {
-    local DIR_SOURCE="$DIR/icons"
-    local DIR_DEST="/usr/share/icons"
-    message -title "Settings of the .config directory"
-    sleep 0.5
-    if [ ! -d "$DIR_DEST" ]; then
-        mkdir -p "$DIR_DEST"
-        message -subtitle "Target directory $DIR_DEST was created."
-    fi
-    cp -rf "$DIR_SOURCE"/* "$DIR_DEST"
-    sleep 0.5
-    message -success "Configurations successfully copied to $DIR_DEST"
-}
+    local DIR_WALLS_DES="$HOME/.wallpapers"
+    local DIR_ICONS_DES="/usr/share/icons"
 
-function setter_wallpapers() {
-    local DIR_SOURCE="$DIR/wallpapers"
-    local DIR_DEST="$HOME/.wallpapers"
-    message -title "Settings of the .config directory"
-    sleep 0.5
-    if [ ! -d "$DIR_DEST" ]; then
-        mkdir -p "$DIR_DEST"
-        message -subtitle "Target directory $DIR_DEST was created."
+    message -title "Installing Resources"
+    git clone https://github.com/edgar-ramxs/dotfiles-visual-resources.git ~/dotfiles-visual-resources >/dev/null 2>&1
+    check_execution $? "Failed Resources download for user."
+    sleep 1.0
+
+    if [ ! -d "$DIR_WALLS_DES" ]; then
+        mkdir -p "$DIR_WALLS_DES"
+        message -subtitle "Target directory $DIR_WALLS_DES was created."
     fi
-    cp -rf "$DIR_SOURCE"/* "$DIR_DEST"
     sleep 0.5
-    message -success "Configurations successfully copied to $DIR_DEST"
+    if [ ! -d "$DIR_ICONS_DES" ]; then
+        mkdir -p "$DIR_ICONS_DES"
+        message -subtitle "Target directory $DIR_ICONS_DES was created."
+    fi
+    sleep 0.5
+
+    message -subtitle "Copying resources.."
+    cp -rf "$DIR_WALLS_SOU"/* "$DIR_WALLS_DES"
+    message -success "Resources successfully copied to $DIR_WALLS_DES"
+    sleep 1.0
+    cp -rf "$DIR_ICONS_SOU"/* "$DIR_ICONS_DES"
+    message -success "Resources successfully copied to $DIR_ICONS_DES"
+    sleep 1.0
 }
 
 function setter_symbolic_links() {
