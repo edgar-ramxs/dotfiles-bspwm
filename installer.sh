@@ -89,10 +89,10 @@ function ctrl_c() {
 function check_execution() {
     if [ $1 != 0 ] && [ $1 != 130 ]; then
         message -error "Error: $2"
-        exit 1
+        sleep 1
     else
-        message -success "Done."
-        sleep 1.5
+        message -success "Successful: $3"
+        sleep 1
     fi
 }
 
@@ -119,14 +119,60 @@ function reboot_system() {
 function updating_packages() {
     message -title "Operating system package updates ($DISTRO)"
     sleep 1
+
     message -subtitle "Updating packages..."
     sudo apt update -y >/dev/null 2>&1
-    check_execution $? "Failed to updating packages."
+    check_execution $? "Failed to updating packages" "Update packages"
     sleep 1
+
     message -subtitle "Upgrading packages..."
     sudo apt upgrade -y >/dev/null 2>&1
-    check_execution $? "Failed to Upgrading packages."
+    check_execution $? "Failed to Upgrading packages" "Upgrade packages"
     sleep 1
+}
+
+function detect_distro() {
+    if [ -f /etc/os-release ]; then
+        . /etc/os-release
+        echo $ID
+    else
+        echo "unknown"
+    fi
+}
+
+function install_packages() {
+    local distro=$(detect_distro)
+    local packages_files="$DIR/packages/$distro.txt"
+   
+    if [ ! -f "$packages_files" ]; then
+        message -error "File $packages_files does not exist"
+        exit 1
+    fi
+
+    case "$distro" in
+        debian|ubuntu|kali)
+            while IFS= read -r package; do
+                sudo apt install -y "$package" >/dev/null 2>&1
+                check_execution $? "Failed installing $package" "Complete installation of $package"
+            done < "$packages_files"
+            ;;
+        arch|manjaro)
+            while IFS= read -r package; do
+                sudo pacman -S --noconfirm "$package" >/dev/null 2>&1
+                check_execution $? "Failed installing $package" "Complete installation of $package"
+            done < "$packages_files"
+            ;;
+        fedora)
+            while IFS= read -r package; do
+                sudo dnf install -y "$package" >/dev/null 2>&1
+                check_execution $? "Failed installing $package" "Complete installation of $package"
+            done < "$packages_files"
+            ;;
+        *)
+            message -cancel "Unsupported distribution: $distro"
+            exit 1
+            ;;
+    esac
 }
 
 #  ██╗███╗   ██╗███████╗████████╗ █████╗ ██╗     ██╗     ███████╗██████╗ ███████╗
@@ -136,14 +182,6 @@ function updating_packages() {
 #  ██║██║ ╚████║███████║   ██║   ██║  ██║███████╗███████╗███████╗██║  ██║███████║
 #  ╚═╝╚═╝  ╚═══╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝╚═╝  ╚═╝╚══════╝
 #                                                                                
-
-function install_packages() {
-    message -title "Installing necessary packages for the environment."
-    sleep 0.5
-    sudo apt install -y "$@" >/dev/null 2>&1
-    check_execution $? "Failed to install some packages."
-    sleep 1
-}
 
 function install_dependencies() {
     message -title "Installing necessary dependencies for $1."
@@ -156,11 +194,14 @@ function install_dependencies() {
 function install_fonts() {
     local DIR_DOWNLOADS="$DIR/fonts"
     local DIR_FONTS="/usr/share/fonts"
+    
     message -title "Installing and downloading fonts."
     font_names=("FiraCode" "CascadiaCode" "Iosevka" "Hack")
+    sleep 0.5
+    
     for font_name in "${font_names[@]}"; do
         curl -L "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/${font_name}.tar.xz" -o "$DIR_DOWNLOADS/${font_name}.tar.xz" >/dev/null 2>&1
-        sleep 1.5
+        sleep 1
         if [ -f "$DIR_DOWNLOADS/${font_name}.tar.xz" ]; then
             if tar -tf "$DIR_DOWNLOADS/${font_name}.tar.xz" &>/dev/null; then
                 if [ -d "$DIR_FONTS/${font_name}" ]; then
@@ -183,6 +224,7 @@ function install_fonts() {
             continue
         fi
     done
+
     message -warning "Nerd Fonts installation complete!. Reloading fonts..."
     fc-cache -fv >/dev/null 2>&1
     sleep 1
@@ -191,36 +233,41 @@ function install_fonts() {
 function install_zsh() {
     message -title "ZSH Installation"
     sleep 0.5
+
     message -subtitle "Installation of libraries and plugins..."
     sudo apt install -y zsh zsh-syntax-highlighting zsh-autosuggestions >/dev/null 2>&1
     sleep 1
+
     message -subtitle "Setting ZSH as default..."
     sudo chsh -s $(which zsh) $USER
     sudo chsh -s $(which zsh) root
     sleep 1
+
     if [ ! -d /usr/share/zsh-sudo ]; then
         message -error "El directorio '/usr/share/zsh-sudo' no existe."
         message -subtitle "Installing ZSH plugins..."
         sudo mkdir -p /usr/share/zsh-sudo
         sudo chown $USER:$USER /usr/share/zsh-sudo/
         sudo wget -q -O /usr/share/zsh-sudo/zsh-sudo.zsh https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/plugins/sudo/sudo.plugin.zsh
-        check_execution $? "Failed plugin download."
+        check_execution $? "Failed plugin download" "Plugin download successful"
     fi
+
     message -subtitle "Installing Powerlevel10k for user $USER..."
     git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/.powerlevel10k >/dev/null 2>&1
-    check_execution $? "Failed powerlevel10k download for user."
+    check_execution $? "Failed powerlevel10k download for $USER" "Completed download of powerlevel10k for the $USER"
     sleep 1
+
     message -subtitle "Installing Powerlevel10k for root..."
     sudo git clone --depth=1 https://github.com/romkatv/powerlevel10k.git /root/.powerlevel10k >/dev/null 2>&1
-    check_execution $? "Failed powerlevel10k download for root."
+    check_execution $? "Failed powerlevel10k download for root" "Completed download of powerlevel10k for the root"
     sleep 1
 }
 
 function install_pywal() {
     message -title "Pywal Installation"
-    sleep 0.5
+    sleep 1
     sudo pip3 install pywal --break-system-packages >/dev/null 2>&1
-    check_execution $? "Failed Pywal Installation"
+    check_execution $? "Failed Pywal Installation" "Complete Pywal installation"
     sleep 1
 }
 
@@ -232,11 +279,9 @@ function install_brave() {
 }
 
 function install_flatpak() {
-    # Instalar Flatpak
     sudo apt update
     sudo apt install -y flatpak
     sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-
 }
 
 
@@ -296,33 +341,35 @@ function setter_resources() {
     local RESOLUTION="1366x768"
     local DIR_WALLS_SOU="$HOME/dotfiles-visual-resources/wallpapers/$RESOLUTION"
     local DIR_ICONS_SOU="$HOME/dotfiles-visual-resources/icons"
-
     local DIR_WALLS_DES="$HOME/.wallpapers"
     local DIR_ICONS_DES="/usr/share/icons"
 
     message -title "Installing Resources"
     git clone https://github.com/edgar-ramxs/dotfiles-visual-resources.git ~/dotfiles-visual-resources >/dev/null 2>&1
-    check_execution $? "Failed Resources download for user."
-    sleep 1.0
+    check_execution $? "Failed Resources download for $USER" "Complete download of $USER resources"
+    sleep 0.5
 
     if [ ! -d "$DIR_WALLS_DES" ]; then
         mkdir -p "$DIR_WALLS_DES"
         message -subtitle "Target directory $DIR_WALLS_DES was created."
+        sleep 0.5
     fi
-    sleep 0.5
+    
     if [ ! -d "$DIR_ICONS_DES" ]; then
         mkdir -p "$DIR_ICONS_DES"
         message -subtitle "Target directory $DIR_ICONS_DES was created."
+        sleep 0.5
     fi
-    sleep 0.5
-
+    
     message -subtitle "Copying resources.."
+
     cp -rf "$DIR_WALLS_SOU"/* "$DIR_WALLS_DES"
     message -success "Resources successfully copied to $DIR_WALLS_DES"
-    sleep 1.0
+    sleep 1
+
     cp -rf "$DIR_ICONS_SOU"/* "$DIR_ICONS_DES"
     message -success "Resources successfully copied to $DIR_ICONS_DES"
-    sleep 1.0
+    sleep 1
 }
 
 function setter_symbolic_links() {
@@ -331,7 +378,7 @@ function setter_symbolic_links() {
     sudo ln -sfv /home/$USER/.zshrc /root/.zshrc
     sudo ln -sfv /home/$USER/.profile /root/.profile
     sudo ln -sfv /home/$USER/.p10k.zsh /root/.p10k.zsh
-    sleep 1
+    sleep 0.5
 }
 
 function setter_permissions(){
@@ -373,22 +420,8 @@ function main() {
         # Actualizacion de paquetes y repositorios del sistema
         updating_packages
 
-        # Entorno
-        install_dependencies "ENTORNO" xorg xserver-xorg xutils xinit xinput \
-        bspwm sxhkd picom polybar rofi pulseaudio pavucontrol firefox-esr kitty \
-        nitrogen papirus-icon-theme policykit-1-gnome flameshot ranger thunar \
-        lxappearance x11-xserver-utils
-
-        # HERRAMIENTAS
-        install_dependencies "HERRAMIENTAS" wget curl zip unzip tar rar unrar \
-        p7zip-full jq bat locate xclip lsd cmake make gcc build-essential \
-        python3 python3-pip xdg-user-dirs imagemagick btop cava tree neofetch \
-        fastfetch net-tools
-
-        # PROGRAMAS
-        install_dependencies "PROGRAMAS" synaptic font-manager network-manager \
-        xfce4-power-manager brightnessctl bluetooth lightdm lightdm-gtk-greeter \
-        lightdm-gtk-greeter-settings
+        # Instalacion de paquetes
+        install_packages
 
         # Creacion de directorios
         xdg-user-dirs-update
