@@ -121,12 +121,12 @@ function updating_packages() {
     sleep 1
 
     message -subtitle "Updating packages..."
-    sudo apt update -y >/dev/null 2>&1
+    sudo apt update -y
     check_execution $? "Failed to updating packages" "Update packages"
     sleep 1
 
     message -subtitle "Upgrading packages..."
-    sudo apt upgrade -y >/dev/null 2>&1
+    sudo apt upgrade -y
     check_execution $? "Failed to Upgrading packages" "Upgrade packages"
     sleep 1
 }
@@ -142,7 +142,7 @@ function detect_distro() {
 
 function install_packages() {
     local distro=$(detect_distro)
-    local packages_files="$DIR/packages/$distro.txt"
+    local packages_files=$1
    
     if [ ! -f "$packages_files" ]; then
         message -error "File $packages_files does not exist"
@@ -421,7 +421,7 @@ function main() {
         updating_packages
 
         # Instalacion de paquetes
-        install_packages
+        install_packages "$DIR/packages/debian_based.txt"
 
         # Creacion de directorios
         xdg-user-dirs-update

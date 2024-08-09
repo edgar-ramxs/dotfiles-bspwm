@@ -14,7 +14,7 @@ pgrep -x sxhkd > /dev/null || sxhkd &
 setxkbmap -layout latam &
 
 # Reajustar las dimesiones de la pantalla
-xrandr --output Virtual1 --mode 1920x1080 --rate 75.00 &
+# xrandr --output Virtual1 --mode 1920x1080 --rate 75.00 &
 
 # Reajustar fondo de pantalla
 nitrogen --restore &
