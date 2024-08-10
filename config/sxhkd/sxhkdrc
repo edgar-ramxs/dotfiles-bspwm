@@ -83,9 +83,9 @@ super + r
 super + t
 	kitty
 
-# Abre Google Chrome
+# Abre Browser
 super + y
-	google-chrome
+	firefox-esr
 
 # Abre el gestor de archivos Thunar
 super + u

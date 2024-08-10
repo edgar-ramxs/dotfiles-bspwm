@@ -279,8 +279,8 @@ function install_brave() {
 }
 
 function install_flatpak() {
-    sudo apt update
     sudo apt install -y flatpak
+    sudo apt install -y gnome-software-plugin-flatpak
     sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 }
 
@@ -349,27 +349,25 @@ function setter_resources() {
     check_execution $? "Failed Resources download for $USER" "Complete download of $USER resources"
     sleep 0.5
 
+    message -subtitle "Copying resources.."
+
     if [ ! -d "$DIR_WALLS_DES" ]; then
         mkdir -p "$DIR_WALLS_DES"
         message -subtitle "Target directory $DIR_WALLS_DES was created."
         sleep 0.5
     fi
-    
-    if [ ! -d "$DIR_ICONS_DES" ]; then
-        mkdir -p "$DIR_ICONS_DES"
-        message -subtitle "Target directory $DIR_ICONS_DES was created."
-        sleep 0.5
-    fi
-    
-    message -subtitle "Copying resources.."
-
     cp -rf "$DIR_WALLS_SOU"/* "$DIR_WALLS_DES"
     message -success "Resources successfully copied to $DIR_WALLS_DES"
     sleep 1
 
-    cp -rf "$DIR_ICONS_SOU"/* "$DIR_ICONS_DES"
-    message -success "Resources successfully copied to $DIR_ICONS_DES"
-    sleep 1
+    # if [ ! -d "$DIR_ICONS_DES" ]; then
+    #     mkdir -p "$DIR_ICONS_DES"
+    #     message -subtitle "Target directory $DIR_ICONS_DES was created."
+    #     sleep 0.5
+    # fi
+    # cp -rf "$DIR_ICONS_SOU"/* "$DIR_ICONS_DES"
+    # message -success "Resources successfully copied to $DIR_ICONS_DES"
+    # sleep 1
 }
 
 function setter_symbolic_links() {

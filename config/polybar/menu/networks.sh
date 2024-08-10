@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 # Definir variables
-IP_VPN=$(~/.config/polybar/htb/vpn_status.sh)
-IP_VICTIMA=$(~/.config/polybar/htb/set_target.sh)
-IP_RED_LOCAL=$(~/.config/polybar/htb/network_status.sh)
+IP_VPN=$(~/.config/polybar/htb/status_vpn.sh)
+IP_VICTIMA=$(~/.config/polybar/htb/status_target.sh)
+IP_RED_LOCAL=$(~/.config/polybar/htb/status_network.sh)
 
 dir="$HOME/.config/rofi"
 theme='menu_networks'
