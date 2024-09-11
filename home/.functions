@@ -178,7 +178,6 @@ function get_venv_name() {
     echo -e ".$(echo "$dir_name" | tr '[:upper:]' '[:lower:]' | iconv -f utf8 -t ascii//TRANSLIT)-env"
 }
 
-
 function settarget(){
 	if [ $# -eq 1 ]; then
 	    echo $1 > ~/.config/polybar/htb/htb_target

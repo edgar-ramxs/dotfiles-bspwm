@@ -29,6 +29,7 @@ jq
 bat
 locate
 lsd
+vim
 tree
 synaptic
 bspwm
