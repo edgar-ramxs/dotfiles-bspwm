@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-# -*- coding: utf-8 -*-
 
 import re
 import sys
@@ -15,7 +14,6 @@ GREEN_COLOR = "\033[0;32m\033[1m"
 YELLOW_COLOR = "\033[0;33m\033[1m"
 PURPLE_COLOR = "\033[0;35m\033[1m"
 ORANGE_COLOR = "\033[38;5;208m\033[1m"
-
 
 def is_valid_ipv4_address(address: str) -> bool: 
     try: 
@@ -73,7 +71,6 @@ if __name__ == '__main__':
     if is_valid_ipv4_address(IP) or is_valid_ipv6_address(IP):
         ttl = get_ttl(IP)
         os_name = get_os(ttl)
-
         if os_name != "Not Found":
             print(f"{PURPLE_COLOR}[+] OS:\t\t{os_name}{RESETC}")
             print(f"{PURPLE_COLOR}[+] IP:\t\t{IP}{RESETC}")
@@ -82,6 +79,7 @@ if __name__ == '__main__':
             print(f"{PURPLE_COLOR}[+] OS:\t\tUnidentified{RESETC}")
             print(f"{PURPLE_COLOR}[+] IP:\t\t{IP}{RESETC}")
             print(f"{PURPLE_COLOR}[+] TTL:\t{ttl}{RESETC}")
+        sys.exit(0)
     else:
         print(f"{RED_COLOR}[!] Ip {IP} address is invalid {RESETC}")
         sys.exit(1)

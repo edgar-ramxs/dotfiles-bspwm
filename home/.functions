@@ -4,57 +4,61 @@
 #  ██╔══╝  ██║   ██║██║╚██╗██║██║        ██║   ██║██║   ██║██║╚██╗██║╚════██║
 #  ██║     ╚██████╔╝██║ ╚████║╚██████╗   ██║   ██║╚██████╔╝██║ ╚████║███████║
 #  ╚═╝      ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝
-#                                                                            
-
-RESETC="\033[0m\e[0m"
-RED_COLOR="\033[0;31m\033[1m"
-GRAY_COLOR="\033[0;37m\033[1m"
-BLUE_COLOR="\033[0;34m\033[1m"
-GREEN_COLOR="\033[0;32m\033[1m"
-YELLOW_COLOR="\033[0;33m\033[1m"
-PURPLE_COLOR="\033[0;35m\033[1m"
-TURQUOISE_COLOR="\033[0;36m\033[1m"
-ORANGE_COLOR="\033[38;5;208m\033[1m" 
 
 function message() {
-    local signal
-    local color
+    local signal color
+    local RESETC="\033[0m\e[0m"
+
     case "$1" in
         "-title")
-            color="$GRAY_COLOR"
+            color="\033[0;37m\033[1m"
             signal="[$]"
+            shift
+            echo -e "\n${color}${signal} $*${RESETC}"
             ;;
         "-subtitle")
-            color="$PURPLE_COLOR"
+            color="\033[0;35m\033[1m"
             signal="[*]"
-            ;;
-        "-error")
-            color="$RED_COLOR"
-            signal="[-]"
-            ;;
-        "-warning")
-            color="$YELLOW_COLOR"
-            signal="[&]"
-            ;;
-        "-success")
-            color="$GREEN_COLOR"
-            signal="[+]"
-            ;;
-        "-cancel")
-            color="$BLUE_COLOR"
-            signal="[!]"
+            shift
+            echo -e "\n${color}${signal} $*${RESETC}"
             ;;
         "-approval")
-            color="$ORANGE_COLOR"
+            color="\033[38;5;208m\033[1m"
             signal="[?]"
+            shift
+            echo -e "\n${color}${signal} $*${RESETC}"
+            ;;
+        "-success")
+            color="\033[0;32m\033[1m"
+            signal="[+]"
+            shift
+            echo -e "\t${color}${signal} $*${RESETC}"
+            ;;
+        "-warning")
+            color="\033[0;33m\033[1m"
+            signal="[&]"
+            shift
+            echo -e "\t${color}${signal} $*${RESETC}"
+            ;;
+        "-error")
+            color="\033[0;31m\033[1m"
+            signal="[-]"
+            shift
+            echo -e "\t${color}${signal} $*${RESETC}"
+            ;;
+        "-cancel")
+            color="\033[0;34m\033[1m"
+            signal="[!]"
+            shift
+            echo -e "\n${color}${signal} $*${RESETC}\n"
             ;;
         *)
             color="$RESETC"
             signal=""
+            shift
+            echo -e "${color}${signal} $*${RESETC}"
             ;;
     esac
-    shift
-    echo -e "\n${color}${signal} $*${RESETC}"
 }
 
 function man() {

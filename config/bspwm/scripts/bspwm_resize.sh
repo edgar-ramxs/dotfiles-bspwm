@@ -1,4 +1,4 @@
-#usr/bin/env dash
+#!/usr/bin/env dash
 
 if bspc query -N -n focused.floating > /dev/null; then
 	step=20

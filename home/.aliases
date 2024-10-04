@@ -4,9 +4,7 @@
 #  ██╔══██║██║     ██║██╔══██║╚════██║██╔══╝  ╚════██║
 #  ██║  ██║███████╗██║██║  ██║███████║███████╗███████║
 #  ╚═╝  ╚═╝╚══════╝╚═╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝
-#                                                     
 
-alias l='lsd --group-dirs=first'
 alias ls='lsd --group-dirs=first'
 alias la='lsd -a --group-dirs=first'
 alias ll='lsd -lh --group-dirs=first'
@@ -21,21 +19,10 @@ alias icat='kitty +kitten icat'
 
 alias load-fonts='fc-cache -v -f'
 
-alias cleaning='sudo get autoclean && sudo apt autoremove'
-alias updating='sudo apt update -y && sudo apt upgrade -y'
-
 alias per-mx='chmod a+x'
 alias per-000='chmod 000'
 alias per-644='chmod 644'
 alias per-755='chmod 755'
 
-alias edit='open_file'
-alias vimrc='edit ~/.vimrc'
-alias zshrc='edit ~/.zshrc'
-alias bashrc='edit ~/.bashrc'
-alias profile='edit ~/.profile'
-alias gitconfig='edit ~/.gitconfig'
-
 alias stop-venv='deactivate'
 alias start-venv='source $(get_venv_name)/bin/activate'
-

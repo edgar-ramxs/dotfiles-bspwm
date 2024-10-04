@@ -99,3 +99,6 @@ micro
 betterlockscreen
 cmatrix
 lolcat
+zsh
+zsh-syntax-highlighting
+zsh-autosuggestions

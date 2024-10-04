@@ -11,23 +11,6 @@ USER=$(whoami)
 DISTRO=$(lsb_release -is)
 DIR_REPO="$HOME/dotfiles-bspwm"
 
-#   ██████╗ ██████╗ ██╗      ██████╗ ██████╗ ███████╗
-#  ██╔════╝██╔═══██╗██║     ██╔═══██╗██╔══██╗██╔════╝
-#  ██║     ██║   ██║██║     ██║   ██║██████╔╝███████╗
-#  ██║     ██║   ██║██║     ██║   ██║██╔══██╗╚════██║
-#  ╚██████╗╚██████╔╝███████╗╚██████╔╝██║  ██║███████║
-#   ╚═════╝ ╚═════╝ ╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝
-
-RESETC="\033[0m\e[0m"
-RED_COLOR="\033[0;31m\033[1m"
-GRAY_COLOR="\033[0;37m\033[1m"
-BLUE_COLOR="\033[0;34m\033[1m"
-GREEN_COLOR="\033[0;32m\033[1m"
-YELLOW_COLOR="\033[0;33m\033[1m"
-PURPLE_COLOR="\033[0;35m\033[1m"
-ORANGE_COLOR="\033[38;5;208m\033[1m" 
-TURQUOISE_COLOR="\033[0;36m\033[1m"
-
 #  ███████╗██╗   ██╗███╗   ██╗ ██████╗████████╗██╗ ██████╗ ███╗   ██╗███████╗
 #  ██╔════╝██║   ██║████╗  ██║██╔════╝╚══██╔══╝██║██╔═══██╗████╗  ██║██╔════╝
 #  █████╗  ██║   ██║██╔██╗ ██║██║        ██║   ██║██║   ██║██╔██╗ ██║███████╗
@@ -36,44 +19,59 @@ TURQUOISE_COLOR="\033[0;36m\033[1m"
 #  ╚═╝      ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝
 
 function message() {
-    local signal
-    local color
+    local signal color
+    local RESETC="\033[0m\e[0m"
+
     case "$1" in
         "-title")
-            color="$GRAY_COLOR"
+            color="\033[0;37m\033[1m"
             signal="[$]"
+            shift
+            echo -e "\n${color}${signal} $*${RESETC}"
             ;;
         "-subtitle")
-            color="$PURPLE_COLOR"
+            color="\033[0;35m\033[1m"
             signal="[*]"
-            ;;
-        "-error")
-            color="$RED_COLOR"
-            signal="[-]"
-            ;;
-        "-warning")
-            color="$YELLOW_COLOR"
-            signal="[&]"
-            ;;
-        "-success")
-            color="$GREEN_COLOR"
-            signal="[+]"
-            ;;
-        "-cancel")
-            color="$BLUE_COLOR"
-            signal="[!]"
+            shift
+            echo -e "\n${color}${signal} $*${RESETC}"
             ;;
         "-approval")
-            color="$ORANGE_COLOR"
+            color="\033[38;5;208m\033[1m"
             signal="[?]"
+            shift
+            echo -e "\n${color}${signal} $*${RESETC}"
+            ;;
+        "-success")
+            color="\033[0;32m\033[1m"
+            signal="[+]"
+            shift
+            echo -e "\t${color}${signal} $*${RESETC}"
+            ;;
+        "-warning")
+            color="\033[0;33m\033[1m"
+            signal="[&]"
+            shift
+            echo -e "\t${color}${signal} $*${RESETC}"
+            ;;
+        "-error")
+            color="\033[0;31m\033[1m"
+            signal="[-]"
+            shift
+            echo -e "\t${color}${signal} $*${RESETC}"
+            ;;
+        "-cancel")
+            color="\033[0;34m\033[1m"
+            signal="[!]"
+            shift
+            echo -e "\n${color}${signal} $*${RESETC}\n"
             ;;
         *)
             color="$RESETC"
             signal=""
+            shift
+            echo -e "${color}${signal} $*${RESETC}"
             ;;
     esac
-    shift
-    echo -e "\n${color}${signal} $*${RESETC}"
 }
 
 trap ctrl_c INT
@@ -112,21 +110,6 @@ function reboot_system() {
     done
 }
 
-function updating_packages() {
-    message -title "Operating system package updates ($DISTRO)"
-    sleep 1
-
-    message -subtitle "Updating packages..."
-    sudo apt update -y
-    check_execution $? "Failed to updating packages" "Update packages"
-    sleep 1
-
-    message -subtitle "Upgrading packages..."
-    sudo apt upgrade -y
-    check_execution $? "Failed to Upgrading packages" "Upgrade packages"
-    sleep 1
-}
-
 function detect_distro() {
     if [ -f /etc/os-release ]; then
         . /etc/os-release
@@ -134,6 +117,38 @@ function detect_distro() {
     else
         echo "unknown"
     fi
+}
+
+function updating_packages() {
+    local DISTRO=$(detect_distro)
+    message -title "Operating system package updates ($DISTRO)"
+    sleep 1
+
+    message -subtitle "Updating packages..."
+    case "$DISTRO" in
+        "debian"|"ubuntu"|"kali")
+            sudo apt update -y >/dev/null 2>&1
+            check_execution $? "Failed to update packages" "Update packages"
+            sleep 0.5
+            sudo apt upgrade -y >/dev/null 2>&1
+            check_execution $? "Failed to upgrade packages" "Upgrade packages"
+            sleep 0.5
+            ;;
+        "arch"|"manjaro")
+            sudo pacman -Syu --noconfirm
+            check_execution $? "Failed to update and upgrade packages" "Update packages"
+            sleep 0.5
+            ;;
+        "fedora")
+            sudo dnf upgrade --refresh -y
+            check_execution $? "Failed to update and upgrade packages" "Update packages"
+            sleep 0.5
+            ;;
+        *)
+            message -error "Package manager not supported for this distribution: $DISTRO"
+            ;;
+    esac
+    sleep 1
 }
 
 function install_packages() {
@@ -169,6 +184,82 @@ function install_packages() {
             exit 1
             ;;
     esac
+}
+
+function install_fonts() {
+    DIR_DOWNLOADS="$DIR_REPO/fonts"
+    DIR_FONTS="/usr/share/fonts"
+
+    message -title "Installing and downloading fonts."
+    font_names=("FiraCode" "CascadiaCode" "Iosevka" "Hack")
+    sleep 0.5
+
+    for font_name in "${font_names[@]}"; do
+
+        curl -L "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/${font_name}.tar.xz" -o "$DIR_DOWNLOADS/${font_name}.tar.xz" >/dev/null 2>&1
+        sleep 0.5
+
+        if [ -f "$DIR_DOWNLOADS/${font_name}.tar.xz" ]; then
+            if tar -tf "$DIR_DOWNLOADS/${font_name}.tar.xz" &>/dev/null; then
+                if [ -d "$DIR_FONTS/${font_name}" ]; then
+                    message -subtitle "The ${font_name} font folder already exists. Replacing..."
+                    sudo rm -rf "$DIR_FONTS/${font_name}"
+                fi
+
+                sudo mkdir -p "$DIR_FONTS/${font_name}"
+                sudo tar -xf "$DIR_DOWNLOADS/${font_name}.tar.xz" -C "$DIR_FONTS/${font_name}" --wildcards "*.ttf" >/dev/null 2>&1
+                
+                message -success "${font_name} downloaded and installed."
+                sleep 0.5
+                
+                rm "$DIR_DOWNLOADS/${font_name}.tar.xz"
+                sleep 0.5
+            else
+                message -cancel "Error: ${font_name} is not a valid tar archive."
+                rm "$DIR_DOWNLOADS/${font_name}.tar.xz"
+                continue
+            fi
+        else
+            message -error "Error: ${font_name} could not be downloaded."
+            continue
+        fi
+    done
+
+    message -warning "Nerd Fonts installation complete! Reloading fonts..."
+    sudo fc-cache -fv >/dev/null 2>&1
+    sleep 1
+}
+
+function install_zsh() {
+    message -title "ZSH Installation"
+    sleep 0.5
+
+    message -subtitle "Setting ZSH as default..."
+    sudo chsh -s $(which zsh) $USER
+    sudo chsh -s $(which zsh) root
+    sleep 0.5
+
+    if [ ! -d /usr/share/zsh-sudo ]; then
+        message -error "El directorio '/usr/share/zsh-sudo' no existe."
+        sleep 0.5
+        
+        message -subtitle "Installing ZSH plugins..."
+        sudo mkdir -p /usr/share/zsh-sudo
+        sudo chown $USER:$USER /usr/share/zsh-sudo/
+        sudo wget -q -O /usr/share/zsh-sudo/zsh-sudo.zsh https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/plugins/sudo/sudo.plugin.zsh
+        check_execution $? "Failed plugin download" "Plugin download successful"
+        sleep 0.5
+    fi
+
+    message -subtitle "Installing Powerlevel10k for user $USER..."
+    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/.powerlevel10k >/dev/null 2>&1
+    check_execution $? "Failed powerlevel10k download for $USER" "Completed download of powerlevel10k for the $USER"
+    sleep 0.5
+
+    message -subtitle "Installing Powerlevel10k for root..."
+    sudo git clone --depth=1 https://github.com/romkatv/powerlevel10k.git /root/.powerlevel10k >/dev/null 2>&1
+    check_execution $? "Failed powerlevel10k download for root" "Completed download of powerlevel10k for the root"
+    sleep 0.5
 }
 
 #  ███████╗███████╗████████╗████████╗██╗███╗   ██╗ ██████╗ ███████╗

@@ -6,7 +6,6 @@
 #  ██╔══██║██║   ██║   ██║   ██║   ██║╚════██║   ██║   ██╔══██║██╔══██╗   ██║   
 #  ██║  ██║╚██████╔╝   ██║   ╚██████╔╝███████║   ██║   ██║  ██║██║  ██║   ██║   
 #  ╚═╝  ╚═╝ ╚═════╝    ╚═╝    ╚═════╝ ╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   
-#                                                                               
 
 # Configurar la distribucion del teclado a Español Latinoamericano
 setxkbmap -layout latam &
@@ -21,10 +20,10 @@ nitrogen --restore &
 picom --config $HOME/.config/picom/picom.conf &
 
 # Ejecutar barras de tareas
-$HOME/.config/bspwm/scripts/polybar.sh &
+$HOME/.config/bspwm/scripts/bspwm_polybar.sh &
 
 # Reajustar paleta de colores de Pywal
-$HOME/.config/bspwm/scripts/nitrogen.sh &
+$HOME/.config/bspwm/scripts/bspwm_nitrogen.sh &
 
 # Habilitar autenticador para rofi
 /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &
