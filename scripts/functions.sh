@@ -1,16 +1,5 @@
 #!/usr/bin/env bash
 
-#  ██╗   ██╗ █████╗ ██████╗ ██╗ █████╗ ██████╗ ██╗     ███████╗███████╗
-#  ██║   ██║██╔══██╗██╔══██╗██║██╔══██╗██╔══██╗██║     ██╔════╝██╔════╝
-#  ██║   ██║███████║██████╔╝██║███████║██████╔╝██║     █████╗  ███████╗
-#  ╚██╗ ██╔╝██╔══██║██╔══██╗██║██╔══██║██╔══██╗██║     ██╔══╝  ╚════██║
-#   ╚████╔╝ ██║  ██║██║  ██║██║██║  ██║██████╔╝███████╗███████╗███████║
-#    ╚═══╝  ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═╝╚═════╝ ╚══════╝╚══════╝╚══════╝
-
-USER=$(whoami)
-DISTRO=$(lsb_release -is)
-DIR_REPO="$HOME/dotfiles-bspwm"
-
 #  ███████╗██╗   ██╗███╗   ██╗ ██████╗████████╗██╗ ██████╗ ███╗   ██╗███████╗
 #  ██╔════╝██║   ██║████╗  ██║██╔════╝╚══██╔══╝██║██╔═══██╗████╗  ██║██╔════╝
 #  █████╗  ██║   ██║██╔██╗ ██║██║        ██║   ██║██║   ██║██╔██╗ ██║███████╗
@@ -90,26 +79,6 @@ function check_execution() {
     fi
 }
 
-function reboot_system() {
-    while true; do
-        message -warning "It's necessary to restart the system."
-        message -approval "Do you want to restart the system now? (y|n)"
-        read -r
-        REPLY=${REPLY:-"y"}
-        if [[ $REPLY =~ ^[Yy]$ ]]; then
-            message -success "Restarting the system..."
-            sleep 1
-            sudo reboot
-        elif [[ $REPLY =~ ^[Nn]$ ]]; then
-            message -warning "Remember to restart the system as the environment will fail to reload all the configurations."
-            exit 0
-        else
-            message -error "Invalid response, please try again."
-            sleep 1
-        fi
-    done
-}
-
 function detect_distro() {
     if [ -f /etc/os-release ]; then
         . /etc/os-release
@@ -120,71 +89,79 @@ function detect_distro() {
 }
 
 function updating_packages() {
-    local DISTRO=$(detect_distro)
+    local NAME_DISTRO=$(detect_distro)
     message -title "Operating system package updates ($DISTRO)"
     sleep 1
 
     message -subtitle "Updating packages..."
-    case "$DISTRO" in
-        "debian"|"ubuntu"|"kali")
+    case "$NAME_DISTRO" in
+        "debian"|"kali"|"ubuntu")
+            # Update
             sudo apt update -y >/dev/null 2>&1
             check_execution $? "Failed to update packages" "Update packages"
             sleep 0.5
+
+            # Upgrade
             sudo apt upgrade -y >/dev/null 2>&1
             check_execution $? "Failed to upgrade packages" "Upgrade packages"
             sleep 0.5
             ;;
-        "arch"|"manjaro")
-            sudo pacman -Syu --noconfirm
-            check_execution $? "Failed to update and upgrade packages" "Update packages"
-            sleep 0.5
-            ;;
-        "fedora")
-            sudo dnf upgrade --refresh -y
-            check_execution $? "Failed to update and upgrade packages" "Update packages"
-            sleep 0.5
-            ;;
         *)
             message -error "Package manager not supported for this distribution: $DISTRO"
+            sleep 0.5
             ;;
     esac
     sleep 1
 }
 
-function install_packages() {
-    local distro=$(detect_distro)
-    local packages_files=$1
-   
-    if [ ! -f "$packages_files" ]; then
-        message -error "File $packages_files does not exist"
-        exit 1
-    fi
 
-    case "$distro" in
-        debian|ubuntu|kali)
-            while IFS= read -r package; do
-                sudo apt install -y "$package" >/dev/null 2>&1
-                check_execution $? "Failed installing $package" "Complete installation of $package"
-            done < "$packages_files"
-            ;;
-        arch|manjaro)
-            while IFS= read -r package; do
-                sudo pacman -S --noconfirm "$package" >/dev/null 2>&1
-                check_execution $? "Failed installing $package" "Complete installation of $package"
-            done < "$packages_files"
-            ;;
-        fedora)
-            while IFS= read -r package; do
-                sudo dnf install -y "$package" >/dev/null 2>&1
-                check_execution $? "Failed installing $package" "Complete installation of $package"
-            done < "$packages_files"
+function install_packages() {
+    local NAME_DISTRO=$(detect_distro)
+    message -title "Installation of packages for $NAME_DISTRO distribution"
+    sleep 0.5
+
+    case "$NAME_DISTRO" in
+        "debian"|"kali"|"ubuntu")
+            local PACKAGES="$DIR/packages/debian.txt"
+
+            if [[ -f "$PACKAGES" ]]; then
+                message -subtitle "File detection completed. Loading packages..."
+
+                while IFS= read -r package || [[ -n "$package" ]]; do
+                    if [[ ! -z "$package" && "$package" != \#* ]]; then
+                        if apt-cache show "$package" &> /dev/null; then
+                            message -success "(available) $package"
+                            # sudo apt install -y "$package" >/dev/null 2>&1
+                            # check_execution $? "(not installed) $package" "(installed) $package"
+                        else
+                            message -error "(not available) $package"
+                        fi
+                    fi
+                done < "$PACKAGES"
+
+            else
+                message -cancel "There is no file related to your distribution."
+                sleep 0.5
+                exit 1
+            fi
             ;;
         *)
-            message -cancel "Unsupported distribution: $distro"
+            message -cancel "The package manager is not supported for this distribution: $NAME_DISTRO"
+            sleep 0.5
             exit 1
             ;;
     esac
 }
+
+
+
+
+
+
+
+
+
+
 
 function install_fonts() {
     DIR_DOWNLOADS="$DIR_REPO/fonts"
