@@ -114,7 +114,6 @@ function updating_packages() {
     sleep 1
 }
 
-
 function install_packages() {
     local NAME_DISTRO=$(detect_distro)
     message -title "Installation of packages for $NAME_DISTRO distribution"
@@ -153,25 +152,15 @@ function install_packages() {
     esac
 }
 
-
-
-
-
-
-
-
-
-
-
 function install_fonts() {
-    DIR_DOWNLOADS="$DIR_REPO/fonts"
+    DIR_DOWNLOADS="$DIR/fonts"
     DIR_FONTS="/usr/share/fonts"
+    FONTS=("FiraCode" "CascadiaCode" "Iosevka" "Hack")
 
     message -title "Installing and downloading fonts."
-    font_names=("FiraCode" "CascadiaCode" "Iosevka" "Hack")
     sleep 0.5
 
-    for font_name in "${font_names[@]}"; do
+    for font_name in "${FONTS[@]}"; do
 
         curl -L "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/${font_name}.tar.xz" -o "$DIR_DOWNLOADS/${font_name}.tar.xz" >/dev/null 2>&1
         sleep 0.5
@@ -246,81 +235,91 @@ function install_zsh() {
 #  ███████║███████╗   ██║      ██║   ██║██║ ╚████║╚██████╔╝███████║
 #  ╚══════╝╚══════╝   ╚═╝      ╚═╝   ╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚══════╝
 
-function setter_binaries() {
-    local DIR_SOURCE="$DIR/bin"
-    local DIR_DEST="$HOME/.local/bin"
-    message -title "Settings of the personal bin directory"
+function copy_configs() {
+    local DIR_SOURCE="$1"
+    local DIR_DEST="$2"
+    local TITLE="$3"
+    
+    message -subtitle "$TITLE"
     sleep 0.5
+
     if [ ! -d "$DIR_DEST" ]; then
         mkdir -p "$DIR_DEST"
-        message -subtitle "Target directory $DIR_DEST was created."
+        message -warning "Target directory $DIR_DEST was created."
     fi
+
     cp -rf "$DIR_SOURCE"/* "$DIR_DEST"
-    sleep 0.5
     message -success "Configurations successfully copied to $DIR_DEST"
+}
+
+function setter_binaries() {
+    message -title "Installing Binaries"
+    copy_configs "$DIR/bin" "$HOME/.local/bin" "Settings of the personal bin directory"
 }
 
 function setter_configs() {
-    local DIR_SOURCE="$DIR/config"
-    local DIR_DEST="$HOME/.config"
-    message -title "Settings of the .config directory"
-    sleep 0.5
-    if [ ! -d "$DIR_DEST" ]; then
-        mkdir -p "$DIR_DEST"
-        message -subtitle "Target directory $DIR_DEST was created."
-    fi
-    cp -rf "$DIR_SOURCE"/* "$DIR_DEST"
-    sleep 0.5
-    message -success "Configurations successfully copied to $DIR_DEST"
+    message -title "Installing Configs"
+    copy_configs "$DIR/config" "$HOME/.config" "Settings of the .config directory"
 }
 
 function setter_homefiles() {
-    local DIR_SOURCE="$DIR/home"
-    local DIR_DEST="$HOME"
-    message -title "Setting the home files"
+    local current_shell=$(basename "$SHELL")
+
+    message -title "Installing Home files"
     sleep 0.5
+    
     shopt -s dotglob
-    if [ ! -d "$DIR_DEST" ]; then
-        mkdir -p "$DIR_DEST"
-        message -subtitle "Target directory $DIR_DEST was created."
-    fi
-    cp -rf "$DIR_SOURCE"/* "$DIR_DEST"
-    sleep 0.5
-    message -success "Configurations successfully copied to $DIR_DEST"
+
+    cp -rf "$DIR/home/.profile" "$HOME"
+    cp -rf "$DIR/home/.aliases" "$HOME"
+    cp -rf "$DIR/home/.functions" "$HOME"
+    
+    case "$current_shell" in
+        bash)
+            copy_configs "$DIR/home/bash" "$HOME" "Copying Bash configuration"
+            ;;
+        zsh)
+            copy_configs "$DIR/home/zsh" "$HOME" "Copying Zsh configuration"
+            ;;
+        *)
+            message -subtitle "Unknown shell: $current_shell. Skipping shell-specific files."
+            ;;
+    esac
+    
     shopt -u dotglob
+
+    message -success "Installed Home files"
+    sleep 1
 }
 
-function setter_resources() {
-    local RESOLUTION="1366x768"
-    local DIR_WALLS_SOU="$HOME/dotfiles-visual-resources/wallpapers/$RESOLUTION"
-    local DIR_ICONS_SOU="$HOME/dotfiles-visual-resources/icons"
-    local DIR_WALLS_DES="$HOME/.wallpapers"
-    local DIR_ICONS_DES="/usr/share/icons"
+function setter_visual_resources() {
+    local DIR_RESOURCES="$DIR/resources"
+    local RESOLUTION=$(xrandr | grep '*' | awk '{print $1}')
 
     message -title "Installing Resources"
-    git clone https://github.com/edgar-ramxs/dotfiles-visual-resources.git ~/dotfiles-visual-resources >/dev/null 2>&1
+
+    if [ -d "$DIR_RESOURCES" ]; then
+        rm -rf "$DIR_RESOURCES"
+    fi
+    
+    git clone https://github.com/edgar-ramxs/dotfiles-resources.git $DIR/resources >/dev/null 2>&1
     check_execution $? "Failed Resources download for $USER" "Complete download of $USER resources"
     sleep 0.5
 
-    message -subtitle "Copying resources.."
+    # ICONS
+    copy_configs "$DIR_RESOURCES/icons" "/usr/share/icons" "Copying icons to the system"
 
-    if [ ! -d "$DIR_WALLS_DES" ]; then
-        mkdir -p "$DIR_WALLS_DES"
-        message -subtitle "Target directory $DIR_WALLS_DES was created."
-        sleep 0.5
-    fi
-    cp -rf "$DIR_WALLS_SOU"/* "$DIR_WALLS_DES"
-    message -success "Resources successfully copied to $DIR_WALLS_DES"
+    # THEMES
+    copy_configs "$DIR_RESOURCES/themes" "/usr/share/themes" "Copying themes into the system"
+
+    # GRUB
+    copy_configs "$DIR_RESOURCES/grub" "/boot/grub/themes" "Copying grub themes to the system"
+    
+    # WALLPAPERS
+    copy_configs "$DIR_RESOURCES/wallpapers/$RESOLUTION" "$HOME/.wallpapers" "Copying wallpapers to $USER's profile"
+
     sleep 1
-
-    # if [ ! -d "$DIR_ICONS_DES" ]; then
-    #     mkdir -p "$DIR_ICONS_DES"
-    #     message -subtitle "Target directory $DIR_ICONS_DES was created."
-    #     sleep 0.5
-    # fi
-    # cp -rf "$DIR_ICONS_SOU"/* "$DIR_ICONS_DES"
-    # message -success "Resources successfully copied to $DIR_ICONS_DES"
-    # sleep 1
+    rm -rf "$DIR_RESOURCES"
 }
 
 function setter_symbolic_links() {

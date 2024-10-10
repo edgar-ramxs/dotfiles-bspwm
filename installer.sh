@@ -24,8 +24,10 @@ if [ "$UID" -eq 0 ]; then
     exit 1
 fi
 
-
-install_packages
+# updating_packages
+# install_packages
+# install_fonts
+# install_zsh
 
 #  ███╗   ███╗ █████╗ ██╗███╗   ██╗
 #  ████╗ ████║██╔══██╗██║████╗  ██║
@@ -34,32 +36,15 @@ install_packages
 #  ██║ ╚═╝ ██║██║  ██║██║██║ ╚████║
 #  ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝
 
-# # Actualizacion de paquetes y repositorios del sistema
-# updating_packages
-
-# # Instalacion de paquetes
-# install_packages "$DIR_REPO/packages/debian.txt"
-
-# # Creacion de directorios
 # xdg-user-dirs-update
-
-# # Instalacion de fuentes de Nerd Fonts
-# install_fonts
-
-# # Instalacion de ZSH (con plugins)
-# install_zsh
-
-# # Instalacion de Pywal
-# install_pywal
-
-# # Configuraciones
+setter_visual_resources
 # setter_binaries
 # setter_configs
 # setter_homefiles
-# setter_resources
-# setter_permissions
+# setter_visual_resources
 # setter_symbolic_links
-# sleep 1
+# setter_permissions
 
+# sleep 1
 # reboot_system
 # exit 0
