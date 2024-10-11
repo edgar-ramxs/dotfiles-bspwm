@@ -19,8 +19,8 @@ nitrogen --restore &
 sleep 0.5
 
 # Run window composer
-picom --config $HOME/.config/picom/picom.conf --no-vsync &
-sleep 0.5
+# picom --config $HOME/.config/picom/picom.conf --no-vsync &
+# sleep 0.5
 
 # Execute taskbars
 $HOME/.config/bspwm/scripts/bspwm_polybar.sh &
