@@ -136,9 +136,9 @@ function install_packages() {
                 while IFS= read -r package || [[ -n "$package" ]]; do
                     if [[ ! -z "$package" && "$package" != \#* ]]; then
                         if apt-cache show "$package" &> /dev/null; then
-                            message -success "(available) $package"
-                            # sudo apt install -y "$package" >/dev/null 2>&1
-                            # check_execution $? "(not installed) $package" "(installed) $package"
+                            # message -success "(available) $package"
+                            sudo apt install -y "$package" >/dev/null 2>&1
+                            check_execution $? "(not installed) $package" "(installed) $package"
                         else
                             message -error "(not available) $package"
                         fi

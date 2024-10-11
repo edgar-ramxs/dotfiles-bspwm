@@ -24,10 +24,10 @@ if [ "$UID" -eq 0 ]; then
     exit 1
 fi
 
-# updating_packages
-# install_packages
-# install_fonts
-# install_zsh
+updating_packages
+install_packages
+install_fonts
+install_zsh
 
 #  ███╗   ███╗ █████╗ ██╗███╗   ██╗
 #  ████╗ ████║██╔══██╗██║████╗  ██║
@@ -36,7 +36,7 @@ fi
 #  ██║ ╚═╝ ██║██║  ██║██║██║ ╚████║
 #  ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝
 
-# xdg-user-dirs-update
+xdg-user-dirs-update
 
 # setter_binaries
 # setter_configs
