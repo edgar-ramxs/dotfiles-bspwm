@@ -16,6 +16,11 @@ xbacklight
 xbindkeys
 xvkbd
 xdotool
+xbindkeys
+xclip
+xdotool
+xss-lock
+xvkbd
 
 #  ██████╗ ███████╗██╗   ██╗███████╗██╗      ██████╗ ██████╗ ███╗   ███╗███████╗███╗   ██╗████████╗
 #  ██╔══██╗██╔════╝██║   ██║██╔════╝██║     ██╔═══██╗██╔══██╗████╗ ████║██╔════╝████╗  ██║╚══██╔══╝
@@ -29,6 +34,14 @@ make
 gcc
 python3
 python3-pip
+nodejs
+npm
+libnotify-dev
+libx11-dev
+libx11-xcb-dev
+libxcb-res0-dev
+libxft-dev
+libxinerama-dev
 
 #   ██████╗ ██████╗ ███╗   ███╗███╗   ███╗ █████╗ ███╗   ██╗██████╗     ██╗     ██╗███╗   ██╗███████╗
 #  ██╔════╝██╔═══██╗████╗ ████║████╗ ████║██╔══██╗████╗  ██║██╔══██╗    ██║     ██║████╗  ██║██╔════╝
@@ -49,8 +62,17 @@ bat
 locate
 lsd
 vim
+scrub
 tree
-synaptic
+btop
+htop
+git
+cava
+lolcat
+neofetch
+fastfetch
+cbonsai
+cmatrix
 
 #  ███████╗███╗   ██╗██╗   ██╗██╗██████╗  ██████╗ ███╗   ██╗███╗   ███╗███████╗███╗   ██╗████████╗
 #  ██╔════╝████╗  ██║██║   ██║██║██╔══██╗██╔═══██╗████╗  ██║████╗ ████║██╔════╝████╗  ██║╚══██╔══╝
@@ -63,13 +85,15 @@ dunst
 bspwm
 sxhkd
 picom
+thunar
+ranger
 polybar
-nitrogen
+neovim
 libnotify-bin
-policykit-1-gnome
 zsh
 zsh-syntax-highlighting
 zsh-autosuggestions
+wmname
 
 #  ██████╗ ██╗███████╗██████╗ ██╗      █████╗ ██╗   ██╗    ███╗   ███╗ █████╗ ███╗   ██╗ █████╗  ██████╗ ███████╗██████╗ 
 #  ██╔══██╗██║██╔════╝██╔══██╗██║     ██╔══██╗╚██╗ ██╔╝    ████╗ ████║██╔══██╗████╗  ██║██╔══██╗██╔════╝ ██╔════╝██╔══██╗
@@ -80,6 +104,7 @@ zsh-autosuggestions
 lightdm
 lightdm-gtk-greeter
 lightdm-gtk-greeter-settings
+policykit-1-gnome
 
 #   █████╗ ██╗   ██╗██████╗ ██╗ ██████╗     ███╗   ███╗ █████╗ ███╗   ██╗ █████╗  ██████╗ ███████╗██████╗ 
 #  ██╔══██╗██║   ██║██╔══██╗██║██╔═══██╗    ████╗ ████║██╔══██╗████╗  ██║██╔══██╗██╔════╝ ██╔════╝██╔══██╗
@@ -89,10 +114,13 @@ lightdm-gtk-greeter-settings
 #  ╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚═╝ ╚═════╝     ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝
 pulseaudio
 pulseaudio-utils
+pulseaudio-module-bluetooth
 alsa-utils
 pavucontrol
 volumeicon-alsa
-cava
+pamixer
+pipewire
+wireplumber
 
 #  ███╗   ██╗███████╗████████╗██╗    ██╗ ██████╗ ██████╗ ██╗  ██╗    ███╗   ███╗ █████╗ ███╗   ██╗ █████╗  ██████╗ ███████╗██████╗ 
 #  ████╗  ██║██╔════╝╚══██╔══╝██║    ██║██╔═══██╗██╔══██╗██║ ██╔╝    ████╗ ████║██╔══██╗████╗  ██║██╔══██╗██╔════╝ ██╔════╝██╔══██╗
@@ -108,6 +136,8 @@ bluetooth
 bluez
 blueman
 blueman-manager
+avahi-daemon
+openssh-client
 
 #   █████╗ ██████╗ ██████╗ ███████╗ █████╗ ██████╗  █████╗ ███╗   ██╗ ██████╗███████╗
 #  ██╔══██╗██╔══██╗██╔══██╗██╔════╝██╔══██╗██╔══██╗██╔══██╗████╗  ██║██╔════╝██╔════╝
@@ -115,10 +145,22 @@ blueman-manager
 #  ██╔══██║██╔═══╝ ██╔═══╝ ██╔══╝  ██╔══██║██╔══██╗██╔══██║██║╚██╗██║██║     ██╔══╝  
 #  ██║  ██║██║     ██║     ███████╗██║  ██║██║  ██║██║  ██║██║ ╚████║╚██████╗███████╗
 #  ╚═╝  ╚═╝╚═╝     ╚═╝     ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝╚══════╝
+feh
+nitrogen
+arandr
 lxappearance
-fonts-firacode
-fonts-ubuntu
 papirus-icon-theme
+gtk2-engines-murrine
+fonts-ubuntu
+fonts-firacode
+fonts-cantarell
+fonts-font-awesome
+fonts-noto
+fonts-noto-cjk
+fonts-noto-color-emoji
+fonts-noto-extra
+fonts-recommended
+fonts-terminus
 
 #  ███████╗██╗   ██╗███████╗████████╗███████╗███╗   ███╗    ██╗   ██╗████████╗██╗██╗     ██╗████████╗██╗███████╗███████╗
 #  ██╔════╝╚██╗ ██╔╝██╔════╝╚══██╔══╝██╔════╝████╗ ████║    ██║   ██║╚══██╔══╝██║██║     ██║╚══██╔══╝██║██╔════╝██╔════╝
@@ -126,31 +168,20 @@ papirus-icon-theme
 #  ╚════██║  ╚██╔╝  ╚════██║   ██║   ██╔══╝  ██║╚██╔╝██║    ██║   ██║   ██║   ██║██║     ██║   ██║   ██║██╔══╝  ╚════██║
 #  ███████║   ██║   ███████║   ██║   ███████╗██║ ╚═╝ ██║    ╚██████╔╝   ██║   ██║███████╗██║   ██║   ██║███████╗███████║
 #  ╚══════╝   ╚═╝   ╚══════╝   ╚═╝   ╚══════╝╚═╝     ╚═╝     ╚═════╝    ╚═╝   ╚═╝╚══════╝╚═╝   ╚═╝   ╚═╝╚══════╝╚══════╝
-dialog
 acpi
 acpid
 xfce4-power-manager
 brightnessctl
-scrub
-htop
-neofetch
-fastfetch
-btop
 tty-clock
-evolution
 xdg-user-dirs
-font-manager
-geany
 micro
 betterlockscreen
-cmatrix
-lolcat
 mtools
 dosfstools
 gvfs-backends
-thunar
 pcmanfm
-ranger
+udisks2
+synaptic
 
 #  ███╗   ███╗██╗   ██╗██╗  ████████╗██╗███╗   ███╗███████╗██████╗ ██╗ █████╗ 
 #  ████╗ ████║██║   ██║██║  ╚══██╔══╝██║████╗ ████║██╔════╝██╔══██╗██║██╔══██╗
@@ -159,8 +190,13 @@ ranger
 #  ██║ ╚═╝ ██║╚██████╔╝███████╗██║   ██║██║ ╚═╝ ██║███████╗██████╔╝██║██║  ██║
 #  ╚═╝     ╚═╝ ╚═════╝ ╚══════╝╚═╝   ╚═╝╚═╝     ╚═╝╚══════╝╚═════╝ ╚═╝╚═╝  ╚═╝
 imagemagick
-flameshot
 scrot
+mpv
+maim
+cmus
+zathura
+zathura-pdf-poppler
+mangohud
 
 #   █████╗ ██████╗ ██████╗ ██╗     ██╗ ██████╗ █████╗ ████████╗██╗ ██████╗ ███╗   ██╗███████╗
 #  ██╔══██╗██╔══██╗██╔══██╗██║     ██║██╔════╝██╔══██╗╚══██╔══╝██║██╔═══██╗████╗  ██║██╔════╝
@@ -168,5 +204,11 @@ scrot
 #  ██╔══██║██╔═══╝ ██╔═══╝ ██║     ██║██║     ██╔══██║   ██║   ██║██║   ██║██║╚██╗██║╚════██║
 #  ██║  ██║██║     ██║     ███████╗██║╚██████╗██║  ██║   ██║   ██║╚██████╔╝██║ ╚████║███████║
 #  ╚═╝  ╚═╝╚═╝     ╚═╝     ╚══════╝╚═╝ ╚═════╝╚═╝  ╚═╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝
-firefox-esr
+geany
 kitty
+evolution
+flameshot
+obs-studio
+firefox-esr
+font-manager
+telegram-desktop

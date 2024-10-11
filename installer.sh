@@ -37,7 +37,7 @@ fi
 #  ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝
 
 # xdg-user-dirs-update
-setter_visual_resources
+
 # setter_binaries
 # setter_configs
 # setter_homefiles
