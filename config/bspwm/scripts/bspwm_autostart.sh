@@ -7,29 +7,35 @@
 #  ██║  ██║╚██████╔╝   ██║   ╚██████╔╝███████║   ██║   ██║  ██║██║  ██║   ██║   
 #  ╚═╝  ╚═╝ ╚═════╝    ╚═╝    ╚═════╝ ╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   
 
-# Configurar la distribucion del teclado a Español Latinoamericano
+# Set the keyboard layout to Latin American Spanish
 setxkbmap -layout latam &
 
-# Reajustar las dimesiones de la pantalla
-# xrandr --output Virtual1 --mode 1920x1080 --rate 75.00 &
+# Resetting screen dimensions
+xrandr --output Virtual1 --mode 1920x1080 --rate 75.00 &
+sleep 0.5
 
-# Reajustar fondo de pantalla
+# Reset wallpaper
 nitrogen --restore &
+sleep 0.5
 
-# Ejecutar compositor de ventanas
-picom --config $HOME/.config/picom/picom.conf &
+# Run window composer
+picom &
+sleep 0.5
 
-# Ejecutar barras de tareas
+# Execute taskbars
 $HOME/.config/bspwm/scripts/bspwm_polybar.sh &
+sleep 0.5
 
-# Reajustar paleta de colores de Pywal
-$HOME/.config/bspwm/scripts/bspwm_nitrogen.sh &
+# Reset Pywal color palette
+$HOME/.config/bspwm/scripts/bspwm_pywal.sh &
+sleep 0.5
 
-# Habilitar autenticador para rofi
+# Enable authenticator for rofi
 /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &
 
-# Bloquear cursor en zonas del polybar 
+# Block cursor in polybar zones
 xsetroot -cursor_name left_ptr &
 
-# Habilitar gestor de bateria de xfce
+# Enable xfce battery manager
 xfce4-power-manager &
+sleep 0.5

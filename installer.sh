@@ -28,6 +28,7 @@ updating_packages
 install_packages
 install_fonts
 install_zsh
+install_pywal
 
 #  ███╗   ███╗ █████╗ ██╗███╗   ██╗
 #  ████╗ ████║██╔══██╗██║████╗  ██║
@@ -38,13 +39,12 @@ install_zsh
 
 xdg-user-dirs-update
 
-# setter_binaries
-# setter_configs
-# setter_homefiles
+setter_binaries
+setter_configs
+setter_homefiles
 # setter_visual_resources
 # setter_symbolic_links
 # setter_permissions
 
-# sleep 1
-# reboot_system
-# exit 0
+sleep 1
+reboot_system

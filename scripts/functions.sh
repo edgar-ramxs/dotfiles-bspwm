@@ -88,6 +88,26 @@ function detect_distro() {
     fi
 }
 
+function reboot_system() {
+    message -title "Reboot: It's necessary to restart the system."
+    while true; do
+        message -approval "Do you want to restart the system now? (y|n)"
+        read -r
+        REPLY=${REPLY:-"y"}
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            message -success "Restarting the system..."
+            sleep 1
+            sudo reboot
+        elif [[ $REPLY =~ ^[Nn]$ ]]; then
+            message -warning "Remember to restart the system as the environment will fail to reload all the configurations."
+            exit 0
+        else
+            message -error "Invalid response, please try again."
+            sleep 1
+        fi
+    done
+}
+
 function updating_packages() {
     local NAME_DISTRO=$(detect_distro)
     message -title "Operating system package updates ($DISTRO)"
@@ -232,6 +252,15 @@ function install_zsh() {
     message -subtitle "Installing Powerlevel10k for root..."
     sudo git clone --depth=1 https://github.com/romkatv/powerlevel10k.git /root/.powerlevel10k >/dev/null 2>&1
     check_execution $? "Failed powerlevel10k download for root" "Completed download of powerlevel10k for the root"
+    sleep 0.5
+}
+
+function install_pywal() {
+    message -title "Pywal Installation"
+    sleep 0.5
+
+    sudo pip install pywal --break-system-packages >/dev/null 2>&1
+    check_execution $? "Failed Pywal Installation." "Complete Pywal installation."
     sleep 0.5
 }
 
