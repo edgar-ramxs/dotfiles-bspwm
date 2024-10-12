@@ -259,7 +259,11 @@ function install_pywal() {
     message -title "Pywal Installation"
     sleep 0.5
 
-    sudo pip install pywal --break-system-packages >/dev/null 2>&1
+    sudo pip3 install setuptools --break-system-packages >/dev/null 2>&1
+    check_execution $? "Failed Setuptools Installation." "Complete Setuptools installation."
+    sleep 0.5
+
+    sudo pip3 install pywal --break-system-packages >/dev/null 2>&1
     check_execution $? "Failed Pywal Installation." "Complete Pywal installation."
     sleep 0.5
 }
