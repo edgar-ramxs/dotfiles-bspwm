@@ -365,9 +365,21 @@ function setter_visual_resources() {
 function setter_symbolic_links() {
     message -title "Symbolic link of root..."
     sleep 0.5
-    sudo ln -sfv /home/$USER/.zshrc /root/.zshrc
+
+    # HOME FILES
     sudo ln -sfv /home/$USER/.profile /root/.profile
+    sudo ln -sfv /home/$USER/.aliases /root/.aliases
+    sudo ln -sfv /home/$USER/.exports /root/.exports
+    sudo ln -sfv /home/$USER/.functions /root/.functions
+
+    # ZSH
+    sudo ln -sfv /home/$USER/.zshrc /root/.zshrc
     sudo ln -sfv /home/$USER/.p10k.zsh /root/.p10k.zsh
+
+    # BASH
+    sudo ln -sfv /home/$USER/.bashrc /root/.bashrc
+    sudo ln -sfv /home/$USER/.bash_logout /root/.bash_logout
+
     sleep 0.5
 }
 
@@ -393,4 +405,24 @@ function setter_permissions(){
     chmod +x "$HOME/.local/bin/whichSystem.py"
 }
 
+# ███████╗███████╗██████╗ ██╗   ██╗██╗ ██████╗███████╗███████╗
+# ██╔════╝██╔════╝██╔══██╗██║   ██║██║██╔════╝██╔════╝██╔════╝
+# ███████╗█████╗  ██████╔╝██║   ██║██║██║     █████╗  ███████╗
+# ╚════██║██╔══╝  ██╔══██╗╚██╗ ██╔╝██║██║     ██╔══╝  ╚════██║
+# ███████║███████╗██║  ██║ ╚████╔╝ ██║╚██████╗███████╗███████║
+# ╚══════╝╚══════╝╚═╝  ╚═╝  ╚═══╝  ╚═╝ ╚═════╝╚══════╝╚══════╝
 
+function enable_services() {
+
+    sudo systemctl enable dbus
+    sudo systemctl start dbus
+
+    sudo systemctl enable lightdm
+
+    sudo systemctl enable bluetooth
+    sudo systemctl start bluetooth
+
+    sudo systemctl enable NetworkManager
+    sudo systemctl start NetworkManager
+
+}

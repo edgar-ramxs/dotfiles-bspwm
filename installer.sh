@@ -46,5 +46,7 @@ setter_homefiles
 # setter_symbolic_links
 # setter_permissions
 
+enable_services
+
 sleep 1
 reboot_system

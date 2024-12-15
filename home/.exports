@@ -1,0 +1,31 @@
+#  ███████╗██╗  ██╗██████╗  ██████╗ ██████╗ ████████╗███████╗
+#  ██╔════╝╚██╗██╔╝██╔══██╗██╔═══██╗██╔══██╗╚══██╔══╝██╔════╝
+#  █████╗   ╚███╔╝ ██████╔╝██║   ██║██████╔╝   ██║   ███████╗
+#  ██╔══╝   ██╔██╗ ██╔═══╝ ██║   ██║██╔══██╗   ██║   ╚════██║
+#  ███████╗██╔╝ ██╗██║     ╚██████╔╝██║  ██║   ██║   ███████║
+#  ╚══════╝╚═╝  ╚═╝╚═╝      ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚══════╝
+
+# ################## EDITOR & VISUAL SETTINGS ####################
+export EDITOR='vim'
+export ALTERNATE_EDITOR='vim'
+
+# ################## BROWSER SETTINGS ####################
+export BROWSER='firefox'
+
+# ################## HISTORY SETTINGS ####################
+export HISTORY_IGNORE="(ls|cd|pwd|exit|sudo reboot|history|cd -|cd ..)"
+export HISTCONTROL=$HISTCONTROL${HISTCONTROL+,}ignoredups
+export HISTCONTROL=ignoreboth
+export HISTIGNORE='&:clear:ls:cd:[bf]g:exit:[ t\]*'
+export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
+
+# ################## SYSTEM SETTINGS ####################
+export _JAVA_AWT_WM_NONREPARENTING=1
+export MOZ_USE_OMTC=1
+export SUDO_PROMPT="Deploying root access for %u. Password pls: "
+
+# ################## CONDITIONAL PATH ADDITIONS ####################
+if [ -d "$HOME/.local/bin" ]; then
+  export PATH="$HOME/.local/bin:$PATH"
+fi
+

@@ -51,6 +51,8 @@
 # Lilex
 # MartianMono
 # Meslo
+# Monaspace
+# Monofur
 # Monoid
 # Mononoki
 # MPlus

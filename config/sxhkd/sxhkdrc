@@ -5,15 +5,15 @@
 #   ╚████╔╝ ╚██████╔╝███████╗╚██████╔╝██║ ╚═╝ ██║███████╗
 #    ╚═══╝   ╚═════╝ ╚══════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝
 
-# Ajusta el volumen del audio hacia abajo en un 5%
+# Adjusts the audio volume down by 5%.
 XF86AudioLowerVolume
 	pactl set-sink-volume 0 -5% 
 
-# Ajusta el volumen del audio hacia arriba en un 5%
+# Adjusts the audio volume upward by 5%.
 XF86AudioRaiseVolume
 	pactl set-sink-volume 0 +5% 
 
-# Alterna el estado de silencio del audio
+# Toggles audio mute status
 XF86AudioMute
 	pactl set-sink-mute 0 toggle
 
@@ -24,162 +24,192 @@ XF86AudioMute
 #  ██████╔╝██║  ██║██║╚██████╔╝██║  ██║   ██║   ██║ ╚████║███████╗███████║███████║
 #  ╚═════╝ ╚═╝  ╚═╝╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═══╝╚══════╝╚══════╝╚══════╝
 
-# Reduce el brillo de la pantalla en un 5%
+# Reduce screen brightness by 5%.
 XF86MonBrightnessDown
 	brightnessctl set 5%-
 
-# Aumenta el brillo de la pantalla en un 5%
+# Increases the brightness of the screen by 5%.
 XF86MonBrightnessUp
 	brightnessctl set +5%
 
-#  ███████╗██╗  ██╗ ██████╗ ██████╗ ████████╗ ██████╗██╗   ██╗████████╗███████╗
-#  ██╔════╝██║  ██║██╔═══██╗██╔══██╗╚══██╔══╝██╔════╝██║   ██║╚══██╔══╝██╔════╝
-#  ███████╗███████║██║   ██║██████╔╝   ██║   ██║     ██║   ██║   ██║   ███████╗
-#  ╚════██║██╔══██║██║   ██║██╔══██╗   ██║   ██║     ██║   ██║   ██║   ╚════██║
-#  ███████║██║  ██║╚██████╔╝██║  ██║   ██║   ╚██████╗╚██████╔╝   ██║   ███████║
-#  ╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝    ╚═════╝ ╚═════╝    ╚═╝   ╚══════╝
+#  ███████╗███╗   ██╗    ██╗  ██╗ ██████╗ ████████╗██╗  ██╗███████╗██╗   ██╗███████╗
+#  ██╔════╝████╗  ██║    ██║  ██║██╔═══██╗╚══██╔══╝██║ ██╔╝██╔════╝╚██╗ ██╔╝██╔════╝
+#  █████╗  ██╔██╗ ██║    ███████║██║   ██║   ██║   █████╔╝ █████╗   ╚████╔╝ ███████╗
+#  ██╔══╝  ██║╚██╗██║    ██╔══██║██║   ██║   ██║   ██╔═██╗ ██╔══╝    ╚██╔╝  ╚════██║
+#  ██║     ██║ ╚████║    ██║  ██║╚██████╔╝   ██║   ██║  ██╗███████╗   ██║   ███████║
+#  ╚═╝     ╚═╝  ╚═══╝    ╚═╝  ╚═╝ ╚═════╝    ╚═╝   ╚═╝  ╚═╝╚══════╝   ╚═╝   ╚══════╝
 
-# Recarga la configuración de sxhkd (Super Key Handler Daemon)
+
+
+#  ██╗███╗   ██╗██████╗ ███████╗██████╗ ███████╗███╗   ██╗██████╗ ███████╗███╗   ██╗████████╗    ██╗  ██╗ ██████╗ ████████╗██╗  ██╗███████╗██╗   ██╗███████╗
+#  ██║████╗  ██║██╔══██╗██╔════╝██╔══██╗██╔════╝████╗  ██║██╔══██╗██╔════╝████╗  ██║╚══██╔══╝    ██║  ██║██╔═══██╗╚══██╔══╝██║ ██╔╝██╔════╝╚██╗ ██╔╝██╔════╝
+#  ██║██╔██╗ ██║██║  ██║█████╗  ██████╔╝█████╗  ██╔██╗ ██║██║  ██║█████╗  ██╔██╗ ██║   ██║       ███████║██║   ██║   ██║   █████╔╝ █████╗   ╚████╔╝ ███████╗
+#  ██║██║╚██╗██║██║  ██║██╔══╝  ██╔═══╝ ██╔══╝  ██║╚██╗██║██║  ██║██╔══╝  ██║╚██╗██║   ██║       ██╔══██║██║   ██║   ██║   ██╔═██╗ ██╔══╝    ╚██╔╝  ╚════██║
+#  ██║██║ ╚████║██████╔╝███████╗██║     ███████╗██║ ╚████║██████╔╝███████╗██║ ╚████║   ██║       ██║  ██║╚██████╔╝   ██║   ██║  ██╗███████╗   ██║   ███████║
+#  ╚═╝╚═╝  ╚═══╝╚═════╝ ╚══════╝╚═╝     ╚══════╝╚═╝  ╚═══╝╚═════╝ ╚══════╝╚═╝  ╚═══╝   ╚═╝       ╚═╝  ╚═╝ ╚═════╝    ╚═╝   ╚═╝  ╚═╝╚══════╝   ╚═╝   ╚══════╝
+
+# Reload sxhkd (Super Key Handler Daemon) configuration
 super + Escape
 	pkill -USR1 -x sxhkd
 
-# Abre el lanzador de programas rofi con el tema especificado
+#  Open session menu (rofi)
+super + shift + Escape
+	~/.config/polybar/menu/powermenu.sh
+
+# Opens the rofi program launcher with the specified theme
 super + Return
 	rofi -show drun -theme "~/.config/rofi/menu_launcher.rasi"
 
-# Cierra el nodo (ventana) actual
-super + BackSpace
-	bspc node -c
-
-# Captura una captura de pantalla usando flameshot
+# Capture a screenshot using flameshot
 super + Insert
 	flameshot gui
 
-# Enfoca el nodo en la dirección especificada
-super + {Left,Down,Up,Right}
-	bspc node -f {west,south,north,east}
+# Open network connections menu (rofi)
+super + q
+	~/.config/polybar/menu/networks.sh
 
-# Enfoca o envía al escritorio especificado
-super + {1-9,0}
-	bspc desktop -f '^{1-9,10}'
-
-# Abre menu con conexiones de wifi (rofi)
+# Open menu with wifi connections (rofi)
 super + w
 	~/.config/polybar/menu/wifi_menu.sh
 
-# Abre menu de conexiones de redes (rofi)
+# Open the Thunar file manager
 super + e
-	~/.config/polybar/menu/networks.sh
+	thunar
 
-# Abre Visual Studio Code
+# Open Visual Studio Code
 super + r
 	code 
 
-# Abre un terminal kitty
+# Open a kitty terminal
 super + t
 	kitty
 
-# Abre Browser
+# Open Firefox browser
 super + y
 	firefox-esr
 
-# Abre el gestor de archivos Thunar
+# Open nitrogen to manage wallpapers
 super + u
-	thunar
-
-# Abre nitrogen para gestionar fondos de pantalla
-super + i
 	nitrogen
 
-# Abre un terminal st y ejecuta btop para monitorizar el rendimiento del sistema
-super + o
-	st -e btop &
+#  ██████╗ ███████╗██████╗ ██╗    ██╗███╗   ███╗    ██╗  ██╗ ██████╗ ████████╗██╗  ██╗███████╗██╗   ██╗███████╗
+#  ██╔══██╗██╔════╝██╔══██╗██║    ██║████╗ ████║    ██║  ██║██╔═══██╗╚══██╔══╝██║ ██╔╝██╔════╝╚██╗ ██╔╝██╔════╝
+#  ██████╔╝███████╗██████╔╝██║ █╗ ██║██╔████╔██║    ███████║██║   ██║   ██║   █████╔╝ █████╗   ╚████╔╝ ███████╗
+#  ██╔══██╗╚════██║██╔═══╝ ██║███╗██║██║╚██╔╝██║    ██╔══██║██║   ██║   ██║   ██╔═██╗ ██╔══╝    ╚██╔╝  ╚════██║
+#  ██████╔╝███████║██║     ╚███╔███╔╝██║ ╚═╝ ██║    ██║  ██║╚██████╔╝   ██║   ██║  ██╗███████╗   ██║   ███████║
+#  ╚═════╝ ╚══════╝╚═╝      ╚══╝╚══╝ ╚═╝     ╚═╝    ╚═╝  ╚═╝ ╚═════╝    ╚═╝   ╚═╝  ╚═╝╚══════╝   ╚═╝   ╚══════╝
 
-# Alterna entre el diseño de ventanas en mosaico y el diseño monocle
-super + z
+# quit/restart bspwm
+super + {ctrl +,alt + }Escape
+	bspc {wm -r,quit}
+
+# Closes the current node (window) // Kills the current node (window)
+super + {_,shift + }BackSpace
+	bspc node -{c,k}
+
+# alternate between the tiled and monocle layout
+super + m
 	bspc desktop -l next
 
-# Enfoca el siguiente nodo en el escritorio actual
-super + x
-	bspc node -f next.local
+# send the newest marked node to the newest preselected node
+super + n
+	bspc node newest.marked.local -n newest.!automatic.local
 
-# Reinicia bspwm
-super + ctrl + Escape
-	bspc wm -r
+# swap the current node and the biggest window
+super + b
+	bspc node -s biggest.window
 
-# Preselecciona la dirección para mover el nodo
-super + ctrl + {Left,Down,Up,Right}
-	bspc node -p {west,south,north,east}
+#  ███████╗████████╗ █████╗ ████████╗███████╗    ██╗███████╗██╗      █████╗  ██████╗ ███████╗
+#  ██╔════╝╚══██╔══╝██╔══██╗╚══██╔══╝██╔════╝   ██╔╝██╔════╝██║     ██╔══██╗██╔════╝ ██╔════╝
+#  ███████╗   ██║   ███████║   ██║   █████╗    ██╔╝ █████╗  ██║     ███████║██║  ███╗███████╗
+#  ╚════██║   ██║   ██╔══██║   ██║   ██╔══╝   ██╔╝  ██╔══╝  ██║     ██╔══██║██║   ██║╚════██║
+#  ███████║   ██║   ██║  ██║   ██║   ███████╗██╔╝   ██║     ███████╗██║  ██║╚██████╔╝███████║
+#  ╚══════╝   ╚═╝   ╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝    ╚═╝     ╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝
 
-# Preselecciona el ratio de división del nodo
-super + ctrl + {1-9}
-	bspc node -o 0.{1-9}
-
-# Cancela la preselección del nodo enfocado
-super + ctrl + n
-	bspc node -p cancel
-
-# Cancela la preselección del escritorio enfocado
-super + ctrl + m
-	bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
-
-# Cierra y mata el nodo (ventana) actual
-super + shift + BackSpace
-	bspc node -k
-
-# Cambia el tipo de ventana del nodo actual entre los tipos especificados (tiled, pseudo_tiled, floating, fullscreen)
+# Changes the window type (window state) of the current node between the specified types (tiled, pseudo_tiled, floating, fullscreen)
 super + shift + {f,g,h,j}
 	bspc node -t {tiled,pseudo_tiled,floating,fullscreen}
 
-# Mueve el nodo actual a la dirección especificada
-super + shift + {Left,Down,Up,Right}
-	bspc node -s {west,south,north,east}
+# set the node flags
+super + ctrl + {z,x,c,v}
+	bspc node -g {marked,locked,sticky,private}
 
-# Enfoca el nodo anterior en el escritorio actual
-super + shift + v
-	bspc node -f prev.local
+#  ███████╗ ██████╗  ██████╗██╗   ██╗███████╗    ██╗███████╗██╗    ██╗ █████╗ ██████╗ 
+#  ██╔════╝██╔═══██╗██╔════╝██║   ██║██╔════╝   ██╔╝██╔════╝██║    ██║██╔══██╗██╔══██╗
+#  █████╗  ██║   ██║██║     ██║   ██║███████╗  ██╔╝ ███████╗██║ █╗ ██║███████║██████╔╝
+#  ██╔══╝  ██║   ██║██║     ██║   ██║╚════██║ ██╔╝  ╚════██║██║███╗██║██╔══██║██╔═══╝ 
+#  ██║     ╚██████╔╝╚██████╗╚██████╔╝███████║██╔╝   ███████║╚███╔███╔╝██║  ██║██║     
+#  ╚═╝      ╚═════╝  ╚═════╝ ╚═════╝ ╚══════╝╚═╝    ╚══════╝ ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝     
 
-# Mueve el nodo actual al escritorio especificado
-super + shift + {1-9,0}
-	bspc node -d '^{1-9,10}'
+# focus the node in the given direction
+super + {_,shift + }{Left,Down,Up,Right}
+	bspc node -{f,s} {west,south,north,east}
 
-# Abre menu de sesion (rofi)
-super + alt + Escape
-	~/.config/polybar/menu/powermenu.sh
+# focus or send to the given desktop
+super + {_,shift + }{1-9,0}
+	bspc {desktop -f,node -d} '^{1-9,10}'
 
-# Mueve la ventana flotante en la dirección especificada
-super + alt + {Left,Down,Up,Right}
+# focus the next/previous desktop in the current monitor
+super + bracket{left,right}
+	bspc desktop -f {prev,next}.local
+
+# focus the last node/desktop
+super + ctrl + bracket{left,right}
+	bspc {node,desktop} -f last
+
+# focus the older or newer node in the focus history
+super + {o,p}
+	bspc wm -h off; \
+	bspc node {older,newer} -f; \
+	bspc wm -h on
+
+# focus the next/previous window in the current desktop
+super + {j,k}
+	bspc node -f {next,prev}.local.!hidden.window
+
+#  ██████╗ ██████╗ ███████╗███████╗███████╗██╗     ███████╗ ██████╗████████╗
+#  ██╔══██╗██╔══██╗██╔════╝██╔════╝██╔════╝██║     ██╔════╝██╔════╝╚══██╔══╝
+#  ██████╔╝██████╔╝█████╗  ███████╗█████╗  ██║     █████╗  ██║        ██║   
+#  ██╔═══╝ ██╔══██╗██╔══╝  ╚════██║██╔══╝  ██║     ██╔══╝  ██║        ██║   
+#  ██║     ██║  ██║███████╗███████║███████╗███████╗███████╗╚██████╗   ██║   
+#  ╚═╝     ╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝╚══════╝╚══════╝ ╚═════╝   ╚═╝   
+
+# preselect the direction
+super + ctrl + {Left,Down,Up,Right}
+	bspc node -p {west,south,north,east}
+
+# preselect the ratio
+super + ctrl + {1-9}
+	bspc node -o 0.{1-9}
+
+# cancel the preselection for the focused node
+super + ctrl + space
+	bspc node -p cancel
+
+# cancel the preselection for the focused desktop
+super + shift + space
+	bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
+
+#  ███╗   ███╗ ██████╗ ██╗   ██╗███████╗    ██╗██████╗ ███████╗███████╗██╗███████╗███████╗
+#  ████╗ ████║██╔═══██╗██║   ██║██╔════╝   ██╔╝██╔══██╗██╔════╝██╔════╝██║╚══███╔╝██╔════╝
+#  ██╔████╔██║██║   ██║██║   ██║█████╗    ██╔╝ ██████╔╝█████╗  ███████╗██║  ███╔╝ █████╗  
+#  ██║╚██╔╝██║██║   ██║╚██╗ ██╔╝██╔══╝   ██╔╝  ██╔══██╗██╔══╝  ╚════██║██║ ███╔╝  ██╔══╝  
+#  ██║ ╚═╝ ██║╚██████╔╝ ╚████╔╝ ███████╗██╔╝   ██║  ██║███████╗███████║██║███████╗███████╗
+#  ╚═╝     ╚═╝ ╚═════╝   ╚═══╝  ╚══════╝╚═╝    ╚═╝  ╚═╝╚══════╝╚══════╝╚═╝╚══════╝╚══════╝
+
+# move a floating window
+alt + {Left,Down,Up,Right}
 	bspc node -v {-20 0,0 20,0 -20,20 0}
 
-# Redimensiona la ventana flotante usando un script personalizado
-alt + {Left,Down,Up,Right}
-    ~/.config/bspwm/scripts/bspwm_resize {west,south,north,east}
+# Resize the floating window using a custom script
+alt + shift + {Left,Down,Up,Right}
+    ~/.config/bspwm/scripts/bspwm_resize.sh {west,south,north,east}
 
-#   ██████╗ ██████╗ ███╗   ███╗███╗   ███╗███████╗███╗   ██╗████████╗███████╗
-#  ██╔════╝██╔═══██╗████╗ ████║████╗ ████║██╔════╝████╗  ██║╚══██╔══╝██╔════╝
-#  ██║     ██║   ██║██╔████╔██║██╔████╔██║█████╗  ██╔██╗ ██║   ██║   ███████╗
-#  ██║     ██║   ██║██║╚██╔╝██║██║╚██╔╝██║██╔══╝  ██║╚██╗██║   ██║   ╚════██║
-#  ╚██████╗╚██████╔╝██║ ╚═╝ ██║██║ ╚═╝ ██║███████╗██║ ╚████║   ██║   ███████║
-#   ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝     ╚═╝╚══════╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝                                                                         
+# # expand a window by moving one of its side outward
+# alt + ctrl + {Left,Down,Up,Right}
+# 	bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}
 
-# # focus the last node/desktop
-# super + {grave,Tab}
-# 	bspc {node,desktop} -f last
+# # contract a window by moving one of its side inward
+# alt + shift + {Left,Down,Up,Right}
+# 	bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}
 
-# # focus the node for the given path jump
-# super + {p,b,comma,period}
-# 	bspc node -f @{parent,brother,first,second}
-
-# # focus the older or newer node in the focus history
-# super + {o,p}
-# 	bspc wm -h off; \
-# 	bspc node {older,newer} -f; \
-# 	bspc wm -h on
-
-# # send the newest marked node to the newest preselected node
-# super + x
-# 	bspc node newest.marked.local -n newest.!automatic.local
-
-# # swap the current node and the biggest node
-# super + c
-# 	bspc node -s biggest

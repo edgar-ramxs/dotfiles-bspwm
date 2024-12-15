@@ -114,7 +114,7 @@ function rmk() {
     shred -zun 10 -v $1
 }
 
-function extractPorts() {
+function extract_ports() {
     if [ -z "$1" ]; then
         message -warning "Usage: extractPorts <filename>"
         return 1
@@ -191,3 +191,38 @@ function settarget(){
 	    echo $1 $2 > ~/.config/polybar/htb/htb_target
 	fi
 }
+
+function fzf-lovely(){
+	if [ "$1" = "h" ]; then
+		fzf -m --reverse --preview-window down:20 --preview '[[ $(file --mime {}) =~ binary ]] &&
+ 	                echo {} is a binary file ||
+	                 (bat --style=numbers --color=always {} ||
+	                  highlight -O ansi -l {} ||
+	                  coderay {} ||
+	                  rougify {} ||
+	                  cat {}) 2> /dev/null | head -500'
+
+	else
+	        fzf -m --preview '[[ $(file --mime {}) =~ binary ]] &&
+	                         echo {} is a binary file ||
+	                         (bat --style=numbers --color=always {} ||
+	                          highlight -O ansi -l {} ||
+	                         coderay {} ||
+	                          rougify {} ||
+	                          cat {}) 2> /dev/null | head -500'
+	fi
+}
+
+function cu {
+    local count=$1
+    if [ -z "${count}" ]; then
+        count=1
+    fi
+    local path=""
+    for i in $(seq 1 ${count}); do
+        path="${path}../"
+    done
+    cd $path
+}
+
+
