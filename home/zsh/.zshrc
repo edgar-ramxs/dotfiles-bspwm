@@ -9,10 +9,6 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
     source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# install Oh-My-ZSH
-# sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-
-
 # setopt autocd                   # change directory just by typing its name
 # setopt correct                  # auto correct mistakes
 # setopt interactivecomments      # allow comments in interactive mode
@@ -138,10 +134,7 @@ if [ -f /etc/zsh_command_not_found ]; then
     . /etc/zsh_command_not_found
 fi
 
-[ -f ~/.exports] && source ~/.exports
 [ -f ~/.aliases] && source ~/.aliases
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+[ -f ~/.exports] && source ~/.exports
 [ -f ~/.functions] && source ~/.functions
-[ -f ~/.powerlevel10k/powerlevel10k.zsh-theme] && source ~/.powerlevel10k/powerlevel10k.zsh-theme
-
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh

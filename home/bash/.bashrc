@@ -45,9 +45,9 @@ if ! shopt -oq posix; then
   fi
 fi
 
-[ -f ~/.exports] && source ~/.exports
 [ -f ~/.aliases] && source ~/.aliases
+[ -f ~/.exports] && source ~/.exports
 [ -f ~/.functions] && source ~/.functions
 
-PROMPT_COMMAND='PS1_CMD1=$(git branch --show-current 2>/dev/null)'
-PS1='[\u][\w](${PS1_CMD1})\n>> '
+PROMPT_COMMAND='PS1_CMD1=$(git branch 2>/dev/null | grep '"'"'*'"'"' | colrm 1 2)'
+PS1='\[\e[38;5;69;1m\]\u\[\e[0;38;5;255m\]@\[\e[38;5;69;1m\]\h\[\e[0m\] \[\e[38;5;252m\]in\[\e[0m\] [\[\e[38;5;163m\]\w\[\e[0m\]][${PS1_CMD1}][\[\e[38;5;222m\]\t\[\e[0m\]]\n\[\e[38;5;51m\]>\[\e[0m\] '
