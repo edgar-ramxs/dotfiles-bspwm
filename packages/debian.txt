@@ -85,7 +85,7 @@ openvpn
 bluetooth
 bluez
 blueman
-blueman-manager
+# blueman-manager
 
 #  ███████╗███╗   ██╗███████╗██████╗  ██████╗██╗   ██╗    ███╗   ███╗ █████╗ ███╗   ██╗ █████╗  ██████╗ ███████╗██████╗ 
 #  ██╔════╝████╗  ██║██╔════╝██╔══██╗██╔════╝╚██╗ ██╔╝    ████╗ ████║██╔══██╗████╗  ██║██╔══██╗██╔════╝ ██╔════╝██╔══██╗
@@ -124,7 +124,7 @@ fonts-recommended
 #  ╚══════╝   ╚═╝   ╚══════╝   ╚═╝   ╚══════╝╚═╝     ╚═╝     ╚═════╝    ╚═╝   ╚═╝╚══════╝╚═╝   ╚═╝   ╚═╝╚══════╝╚══════╝
 
 avahi-daemon
-betterlockscreen
+# betterlockscreen
 dialog
 dosfstools
 gvfs-backends
@@ -164,8 +164,8 @@ wget
 zip
 unzip
 tar
-rar
-unrar
+# rar
+# unrar
 p7zip-full
 jq
 bat
@@ -179,7 +179,7 @@ htop
 cava
 lolcat
 neofetch
-fastfetch
+# fastfetch
 cbonsai
 cmatrix
 

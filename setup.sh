@@ -24,43 +24,43 @@ function message() {
     
     case "$1" in
         "-title")
-            color="\033[0;37m\033[1m"
+            color="\033[0;37m\033[1m" # (bold white)
             signal="[$]"
             shift
             echo -e "\n${color}${signal} $*${RESETC}"
         ;;
         "-subtitle")
-            color="\033[0;35m\033[1m"
+            color="\033[0;35m\033[1m" # (bold magenta).
             signal="[*]"
             shift
-            echo -e "\n${color}${signal} $*${RESETC}"
+            echo -e "\n\t${color}${signal} $*${RESETC}"
         ;;
         "-approval")
-            color="\033[38;5;208m\033[1m"
+            color="\033[38;5;51m\033[1m" # (bold cyan)
             signal="[?]"
             shift
             echo -e "\n${color}${signal} $*${RESETC}"
         ;;
         "-success")
-            color="\033[0;32m\033[1m"
+            color="\033[0;32m\033[1m" # (bold green).
             signal="[+]"
             shift
             echo -e "\t${color}${signal} $*${RESETC}"
         ;;
         "-warning")
-            color="\033[0;33m\033[1m"
+            color="\033[0;33m\033[1m" # (bold yellow)
             signal="[&]"
             shift
             echo -e "\t${color}${signal} $*${RESETC}"
         ;;
         "-error")
-            color="\033[0;31m\033[1m"
+            color="\033[0;31m\033[1m" # (bold red).
             signal="[-]"
             shift
             echo -e "\t${color}${signal} $*${RESETC}"
         ;;
         "-cancel")
-            color="\033[0;34m\033[1m"
+            color="\033[0;34m\033[1m" # (bold blue)
             signal="[!]"
             shift
             echo -e "\n${color}${signal} $*${RESETC}\n"
@@ -103,19 +103,20 @@ function reboot_system() {
         
         case "$REPLY" in
             yes|y)
-                message -success "Restarting the system..."
+                message -cancel "Restarting the system..."
                 sleep 1
                 sudo reboot
             ;;
             no|n)
                 message -warning "Remember to restart the system as the environment will fail to reload all configurations."
+                message -cancel "Exiting..."
                 exit 0
             ;;
             *)
                 message -error "Invalid response. Please enter 'yes', 'y', 'no', or 'n'."
                 ((attempts++))
                 if (( attempts == max_attempts )); then
-                    message -error "Too many invalid attempts. Exiting..."
+                    message -cancel "Too many invalid attempts. Exiting..."
                     exit 1
                 fi
             ;;
@@ -193,7 +194,7 @@ function install_packages() {
     
     grep -Ev '^#|^$' "$PACKAGES_FILE" | while IFS= read -r package; do
         if apt-cache show "$package" &>/dev/null; then
-            # message -info "(available) Installing $package..."
+            # message -success "(available) Installing $package..."
             sudo apt install -y "$package" >/dev/null 2>&1
             if [[ $? -eq 0 ]]; then
                 message -success "(installed) $package"
@@ -205,7 +206,7 @@ function install_packages() {
         fi
     done
     
-    message -success "Package installation completed for $NAME_DISTRO."
+    message -warning "Package installation completed for $NAME_DISTRO."
 }
 
 function install_fonts() {
@@ -257,7 +258,7 @@ function install_fonts() {
         rm -f "$FONT_ARCHIVE"
     done
     
-    message -warning "Reloading font cache..."
+    message -subtitle "Reloading font cache..."
     sudo fc-cache -fv >/dev/null 2>&1
     sleep 1
     
@@ -290,7 +291,7 @@ function install_pywal() {
     sleep 0.5
     
     if command -v wal &>/dev/null; then
-        message -success "Pywal is installed and ready to use."
+        message -warning "Pywal is installed and ready to use."
     else
         message -error "Pywal installation completed, but the 'wal' command is not found. Check your PATH."
         exit 1
@@ -323,16 +324,32 @@ function copy_configs() {
 
 function setter_configs() {
     local RESOLUTION=$(xrandr | grep '*' | awk '{print $1}' | sort -u)
-
+    
+    while [[ "$#" -gt 0 ]]; do
+        case "$1" in
+            --resolution)
+                RESOLUTION="$2"
+                shift 2
+            ;;
+            -r)
+                RESOLUTION="$2"
+                shift 2
+            ;;
+            *)
+                continue
+            ;;
+        esac
+    done
+    
     message -title "Installing Configs"
     copy_configs "$DIR/config" "$HOME/.config" "Setting up .config directory"
-
+    
     message -title "Installing Binaries"
     copy_configs "$DIR/bin" "$HOME/.local/bin" "Setting up personal binaries"
-
+    
     message -title "Installing Wallpapers"
     copy_configs "$DIR/images/$RESOLUTION" "$HOME/.wallpapers" "Copying wallpapers to $USER's profile"
-
+    
     # # ICONS
     # copy_configs "$DIR_RESOURCES/icons" "/usr/share/icons" "Copying icons to the system"
     
@@ -356,7 +373,7 @@ function setter_homefiles() {
             cp -rf --preserve=mode,ownership "$DIR/home/$file" "$HOME/"
             message -success "Copied $file to $HOME."
         else
-            message -warning "$file does not exist in $DIR/home. Skipping."
+            message -error "$file does not exist in $DIR/home. Skipping."
         fi
     done
     
@@ -368,81 +385,91 @@ function setter_homefiles() {
             copy_configs "$DIR/home/zsh" "$HOME" "Copying Zsh configuration"
         ;;
         *)
-            message -warning "Unknown shell: $current_shell. Skipping shell-specific files."
+            message -error "Unknown shell: $current_shell. Skipping shell-specific files."
         ;;
     esac
     
     shopt -u dotglob
     
-    message -success "Home files installation completed."
+    message -warning "Home files installation completed."
     sleep 0.5
 }
 
 function setter_symbolic_links() {
     message -title "Creating symbolic links in root user directory..."
     sleep 0.5
-
+    
     local CURRENT_SHELL=$(basename "$SHELL")
     local ROOT_HOME="/root"
     local COMMON_FILES=(".profile" ".aliases" ".exports" ".functions")
-
+    
     declare -A SHELL_FILES=(
-        ["zsh"]=(".zshrc" ".p10k.zsh")
-        ["bash"]=(".bashrc" ".bash_logout")
+        ["zsh"]=".zshrc .p10k.zsh"
+        ["bash"]=".bashrc .bash_logout"
     )
-
+    
+    message -subtitle "Linking common files..."
+    sleep 0.5
     for file in "${COMMON_FILES[@]}"; do
         if [[ -f "$HOME/$file" ]]; then
-            sudo ln -sfv "$HOME/$file" "$ROOT_HOME/$file"
-            message -success "Linked $file to $ROOT_HOME."
+            sudo ln -sfv "$HOME/$file" "$ROOT_HOME/$file" >/dev/null 2>&1
+            message -success "Linked $HOME/$file to $ROOT_HOME/$file"
         else
             message -warning "$file not found in $HOME. Skipping."
         fi
     done
-
+    
     case "$CURRENT_SHELL" in
         zsh|bash)
-            for file in "${SHELL_FILES[$CURRENT_SHELL][@]}"; do
+            message -subtitle "Linking [$CURRENT_SHELL] configuration..." 
+            sleep 0.5
+            for file in ${SHELL_FILES[$CURRENT_SHELL]}; do
                 if [[ -f "$HOME/$file" ]]; then
-                    sudo ln -sfv "$HOME/$file" "$ROOT_HOME/$file"
-                    message -success "Linked $file for $CURRENT_SHELL to $ROOT_HOME."
+                    sudo ln -sfv "$HOME/$file" "$ROOT_HOME/$file" >/dev/null 2>&1
+                    message -success "Linked $HOME/$file to $ROOT_HOME/$file"
                 else
                     message -warning "$file not found in $HOME. Skipping."
                 fi
             done
-            ;;
+        ;;
         *)
-            message -warning "Unknown shell: $CURRENT_SHELL. No shell-specific files were linked."
-            ;;
+            message -error "Unknown shell: $CURRENT_SHELL. No shell-specific files were linked."
+        ;;
     esac
 
-    message -success "Symbolic link creation completed."
     sleep 0.5
 }
 
 function setter_permissions() {
-    message -title "Setting execution permissions to dotfiles..."
+    message -title "Setting execution permissions to specified file types..."
     sleep 0.5
-
+    
     local DIRECTORIES=(
-        "$HOME/.config/bspwm"
-        "$HOME/.config/polybar"
+        "$HOME/.config/bspwm/scripts"
+        "$HOME/.config/polybar/htb"
+        "$HOME/.config/polybar/menu"
         "$HOME/.local/bin"
     )
+
+    local EXTENSIONS=("*.sh" "*.py")
 
     for dir in "${DIRECTORIES[@]}"; do
         if [[ -d "$dir" ]]; then
             message -subtitle "Processing directory: $dir"
-            find "$dir" -type f -exec chmod +x {} \; -exec message -success "Execution permission set: {}" \;
+            for ext in "${EXTENSIONS[@]}"; do
+                while IFS= read -r file; do
+                    chmod +x "$file"
+                    message -success "Execution permission set: $file"
+                done < <(find "$dir" -type f -name "$ext")
+            done
         else
             message -warning "Directory not found: $dir"
         fi
     done
-
-    message -success "Execution permissions have been set for all files in the specified directories."
+    
+    message -success "Execution permissions have been set for all specified file types in the directories."
     sleep 0.5
 }
-
 
 #  ███╗   ███╗ █████╗ ██╗███╗   ██╗
 #  ████╗ ████║██╔══██╗██║████╗  ██║
@@ -461,7 +488,7 @@ install_packages
 install_fonts
 install_pywal
 xdg-user-dirs-update
-setter_configs
+setter_configs --resolution 1920x1080
 setter_homefiles
 setter_symbolic_links
 setter_permissions
