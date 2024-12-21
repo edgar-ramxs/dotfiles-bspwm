@@ -50,4 +50,3 @@ nm-applet &
 blueman-applet &
 
 sleep 0.5
-ghp_oKe15hCury3ZjJSLpVFm85vJWclciA3bupnn
