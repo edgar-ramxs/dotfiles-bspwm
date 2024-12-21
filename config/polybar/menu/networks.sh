@@ -8,10 +8,8 @@ dir="$HOME/.config/rofi"
 theme='menu_networks'
 host=$(hostname)
 
-rofi_cmd() {
-	rofi -dmenu \
-		-p "$host" \
-		-theme "${dir}/${theme}.rasi"
+view_rofi() {
+	rofi -dmenu -p "$host" -theme "${dir}/${theme}.rasi"
 }
 
 run_cmd() {
@@ -25,7 +23,7 @@ run_cmd() {
 }
 
 run_rofi() {
-	echo -e "$IP_VPN\n$IP_RED_LOCAL\n$IP_VICTIMA" | rofi_cmd
+	echo -e "$IP_VPN\n$IP_RED_LOCAL\n$IP_VICTIMA" | view_rofi
 }
 
 chosen="$(run_rofi)"
@@ -40,4 +38,3 @@ case ${chosen} in
 		run_cmd --victima
         ;;
 esac
-

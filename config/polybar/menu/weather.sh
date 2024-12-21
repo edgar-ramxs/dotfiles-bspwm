@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+if [ -z "$WEATHER_KEY" ]; then
+    echo "API"
+    exit 1
+fi
+
 LOCATION=$(curl -s https://ipinfo.io/loc)
 
 LAT=$(echo $LOCATION | cut -d',' -f1)
@@ -8,10 +13,14 @@ LON=$(echo $LOCATION | cut -d',' -f2)
 response=$(curl -s "https://api.openweathermap.org/data/2.5/weather?lat=${LAT}&lon=${LON}&appid=${WEATHER_KEY}&units=metric")
 
 temperature=$(echo $response | jq '.main.temp' | cut -d'.' -f1)
+if [ $? -ne 0 ] || [ -z "$temperature" ]; then
+    echo "JSON"
+    exit 1
+fi
 
-if (( $(echo "$temperature <= 10" | bc -l) )); then
+if [ "$temperature" -le 10 ]; then
     classification=""
-elif (( $(echo "$temperature > 10 && $temperature <= 25" | bc -l) )); then
+elif [ "$temperature" -le 25 ]; then
     classification=""
 else
     classification=""

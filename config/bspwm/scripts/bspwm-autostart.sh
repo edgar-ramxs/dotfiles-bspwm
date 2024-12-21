@@ -7,28 +7,31 @@
 #  ██║  ██║╚██████╔╝   ██║   ╚██████╔╝███████║   ██║   ██║  ██║██║  ██║   ██║   
 #  ╚═╝  ╚═╝ ╚═════╝    ╚═╝    ╚═════╝ ╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   
 
-wmname LG3D &
-vmware-user-suid-wrapper &
+## Graphics problems with Java applications in certain window managers
+# wmname LG3D &
+# vmware-user-suid-wrapper &
 
 # Set the keyboard layout to Latin American Spanish
 setxkbmap -layout latam &
 
 # Resetting screen dimensions
 xrandr --output Virtual1 --mode 1920x1080 --rate 60.00 &
+sleep 0.5
 
 # Reset wallpaper
 nitrogen --restore &
+sleep 0.5
 
 # Run window composer
 picom --config $HOME/.config/picom/picom.conf --no-vsync &
 sleep 0.5
 
 # Execute taskbars
-$HOME/.config/bspwm/scripts/bspwm_polybar.sh &
+$HOME/.config/bspwm/scripts/bspwm-polybar.sh &
 sleep 0.5
 
 # Reset Pywal color palette
-$HOME/.config/bspwm/scripts/bspwm_pywal.sh &
+$HOME/.config/bspwm/scripts/bspwm-pywal.sh &
 sleep 0.5
 
 # Enable authenticator for rofi
