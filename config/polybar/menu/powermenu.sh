@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-host=$(hostname)
+host=$(lsb_release -is)
 uptime=$(uptime -p | sed -e 's/up //g')
 dir="~/.config/rofi"
 theme='menu_powermenu'

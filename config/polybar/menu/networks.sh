@@ -1,15 +1,17 @@
 #!/usr/bin/env bash
 
-IP_VPN=$(~/.config/polybar/htb/status_vpn.sh)
-IP_VICTIMA=$(~/.config/polybar/htb/status_target.sh)
-IP_RED_LOCAL=$(~/.config/polybar/htb/status_network.sh)
+IP_VPN=$(~/.config/polybar/htb/vpn.sh)
+IP_VICTIMA=$(~/.config/polybar/htb/target.sh)
+IP_RED_LOCAL=$(~/.config/polybar/htb/network.sh)
 
 dir="$HOME/.config/rofi"
 theme='menu_networks'
 host=$(hostname)
 
-view_rofi() {
-	rofi -dmenu -p "$host" -theme "${dir}/${theme}.rasi"
+rofi_cmd() {
+	rofi -dmenu \
+		-p "$host" \
+		-theme "${dir}/${theme}.rasi"
 }
 
 run_cmd() {
@@ -23,7 +25,7 @@ run_cmd() {
 }
 
 run_rofi() {
-	echo -e "$IP_VPN\n$IP_RED_LOCAL\n$IP_VICTIMA" | view_rofi
+	echo -e "$IP_VPN\n$IP_RED_LOCAL\n$IP_VICTIMA" | rofi_cmd
 }
 
 chosen="$(run_rofi)"
@@ -38,3 +40,4 @@ case ${chosen} in
 		run_cmd --victima
         ;;
 esac
+
