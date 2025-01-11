@@ -1,17 +1,15 @@
 #!/usr/bin/env bash
 
-IP_VPN=$(~/.config/polybar/htb/vpn.sh)
-IP_VICTIMA=$(~/.config/polybar/htb/target.sh)
-IP_RED_LOCAL=$(~/.config/polybar/htb/network.sh)
+IP_VPN=$(~/.config/rofi/htb/vpn.sh)
+IP_VICTIMA=$(~/.config/rofi/htb/target.sh)
+IP_RED_LOCAL=$(~/.config/rofi/htb/network.sh)
 
-dir="$HOME/.config/rofi"
+dir="$HOME/.config/rofi/doc"
 theme='menu_networks'
 host=$(hostname)
 
 rofi_cmd() {
-	rofi -dmenu \
-		-p "$host" \
-		-theme "${dir}/${theme}.rasi"
+	rofi -dmenu -p "$host" -theme "${dir}/${theme}.rasi"
 }
 
 run_cmd() {

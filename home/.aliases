@@ -36,9 +36,6 @@ alias smki="sudo make clean install"
 alias updating='sudo apt update -y && sudo apt upgrade -y'
 alias grub-update="sudo grub-mkconfig -o /boot/grub/grub.cfg"
 
-alias py-ins="pip3 install"
-alias py-uins="pip3 uninstall"
-
 alias sys-sto="sudo systemctl stop"
 alias sys-sta="sudo systemctl start"
 alias sys-stu="sudo systemctl status"
