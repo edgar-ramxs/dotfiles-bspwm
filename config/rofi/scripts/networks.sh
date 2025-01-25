@@ -1,41 +1,49 @@
 #!/usr/bin/env bash
 
-IP_VPN=$(~/.config/rofi/htb/vpn.sh)
-IP_VICTIMA=$(~/.config/rofi/htb/target.sh)
-IP_RED_LOCAL=$(~/.config/rofi/htb/network.sh)
+host=`hostname`
+uptime="`uptime -p | sed -e 's/up //g'`"
+icono=$(~/.config/bspwm/scripts/bspwm-distro.sh)
+theme="$HOME/.config/rofi/views/powermenu.rasi"
+list_col='3'
+list_row='1'
 
-dir="$HOME/.config/rofi/doc"
-theme='menu_networks'
-host=$(hostname)
+ip_vpn=$(~/.config/rofi/htb/vpn.sh)
+ip_target=$(~/.config/rofi/htb/target.sh)
+ip_network=$(~/.config/rofi/htb/network.sh)
 
 rofi_cmd() {
-	rofi -dmenu -p "$host" -theme "${dir}/${theme}.rasi"
+	rofi -theme-str 'window {width: 800px;}' \
+		-theme-str "listview {columns: $list_col; lines: $list_row;}" \
+		-theme-str "textbox-prompt-colon { str: \" $icono\"; }" \
+		-dmenu \
+		-p "$host" \
+		-mesg "Uptime: $uptime" \
+		-theme "${theme}"
 }
 
 run_cmd() {
 	if [[ $1 == '--vpn' ]]; then
-		echo $IP_VPN | awk '{print $2}' | tr -d '\n' | xclip -selection clipboard 
+		echo $ip_vpn | awk '{print $2}' | tr -d '\n' | xclip -selection clipboard 
 	elif [[ $1 == '--local' ]]; then
-		echo $IP_RED_LOCAL | awk '{print $2}' | tr -d '\n' | xclip -selection clipboard 
+		echo $ip_network | awk '{print $2}' | tr -d '\n' | xclip -selection clipboard 
 	elif [[ $1 == '--victima' ]]; then
-		echo $IP_VICTIMA | awk '{print $2}' | tr -d '\n' | xclip -selection clipboard
+		echo $ip_target | awk '{print $2}' | tr -d '\n' | xclip -selection clipboard
 	fi
 }
 
 run_rofi() {
-	echo -e "$IP_VPN\n$IP_RED_LOCAL\n$IP_VICTIMA" | rofi_cmd
+	echo -e "$ip_vpn\n$ip_network\n$ip_target" | rofi_cmd
 }
 
 chosen="$(run_rofi)"
 case ${chosen} in
-    $IP_VPN)
+    $ip_vpn)
 		run_cmd --vpn
         ;;
-    $IP_RED_LOCAL)
+    $ip_network)
 		run_cmd --local
         ;;
-    $IP_VICTIMA)
+    $ip_target)
 		run_cmd --victima
         ;;
 esac
-

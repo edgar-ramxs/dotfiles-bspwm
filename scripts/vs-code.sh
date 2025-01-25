@@ -33,16 +33,3 @@ echo "Limpiando archivos temporales..."
 rm -rf "$TEMP_DIR"
 
 echo "Instalación completa."
-
-
-
-
-
-
-
-
-
-
-
-
-

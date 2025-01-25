@@ -1,91 +1,68 @@
 #!/usr/bin/env bash
 
-type="$HOME/.config/rofi/views"
-style='applets.rasi'
-theme="$type/$style"
+theme="$HOME/.config/rofi/views/applets.rasi"
+icono=$(~/.config/bspwm/scripts/bspwm-distro.sh)
+prompt='Music'
+list_col='6'
+list_row='1'
 
 # Theme Elements
 status="`mpc status`"
 if [[ -z "$status" ]]; then
-	prompt='Offline'
 	mesg="MPD is Offline"
 else
-	prompt="`mpc -f "%artist%" current`"
 	mesg="`mpc -f "%title%" current` :: `mpc status | grep "#" | awk '{print $3}'`"
 fi
 
-if [[ ( "$theme" == *'type-1'* ) || ( "$theme" == *'type-3'* ) || ( "$theme" == *'type-5'* ) ]]; then
-	list_col='1'
-	list_row='6'
-elif [[ ( "$theme" == *'type-2'* ) || ( "$theme" == *'type-4'* ) ]]; then
-	list_col='6'
-	list_row='1'
-fi
-
 # Options
-layout=`cat ${theme} | grep 'USE_ICON' | cut -d'=' -f2`
-if [[ "$layout" == 'NO' ]]; then
-	if [[ ${status} == *"[playing]"* ]]; then
-		option_1=" Pause"
-	else
-		option_1=" Play"
-	fi
-	option_2=" Stop"
-	option_3=" Previous"
-	option_4=" Next"
-	option_5=" Repeat"
-	option_6=" Random"
+if [[ ${status} == *"[playing]"* ]]; then
+	option_1="󰐊 "
 else
-	if [[ ${status} == *"[playing]"* ]]; then
-		option_1=""
-	else
-		option_1=""
-	fi
-	option_2=""
-	option_3=""
-	option_4=""
-	option_5=""
-	option_6=""
+	option_1="󰐎 " 
 fi
+option_2="󰏤 "
+option_3="󰒮 "
+option_4="󰒭 "
+option_5="󰑖 "
+option_6=" "
 
-# Toggle Actions
-active=''
-urgent=''
-# Repeat
-if [[ ${status} == *"repeat: on"* ]]; then
-    active="-a 4"
-elif [[ ${status} == *"repeat: off"* ]]; then
-    urgent="-u 4"
-else
-    option_5=" Parsing Error"
-fi
-# Random
-if [[ ${status} == *"random: on"* ]]; then
-    [ -n "$active" ] && active+=",5" || active="-a 5"
-elif [[ ${status} == *"random: off"* ]]; then
-    [ -n "$urgent" ] && urgent+=",5" || urgent="-u 5"
-else
-    option_6=" Parsing Error"
-fi
+# # Toggle Actions
+# active=''
+# urgent=''
 
-# Rofi CMD
+# # Repeat
+# if [[ ${status} == *"repeat: on"* ]]; then
+#     active="-a 4"
+# elif [[ ${status} == *"repeat: off"* ]]; then
+#     urgent="-u 4"
+# else
+#     option_5=" "
+# fi
+
+# # Random
+# if [[ ${status} == *"random: on"* ]]; then
+#     [ -n "$active" ] && active+=",5" || active="-a 5"
+# elif [[ ${status} == *"random: off"* ]]; then
+#     [ -n "$urgent" ] && urgent+=",5" || urgent="-u 5"
+# else
+#     option_6=" "
+# fi
+
+
 rofi_cmd() {
 	rofi -theme-str "listview {columns: $list_col; lines: $list_row;}" \
-		-theme-str 'textbox-prompt-colon {str: "";}' \
+		-theme-str "textbox-prompt-colon { str: \" $icono\"; }" \
 		-dmenu \
 		-p "$prompt" \
 		-mesg "$mesg" \
-		${active} ${urgent} \
 		-markup-rows \
 		-theme ${theme}
 }
 
-# Pass variables to rofi dmenu
 run_rofi() {
 	echo -e "$option_1\n$option_2\n$option_3\n$option_4\n$option_5\n$option_6" | rofi_cmd
 }
 
-# Execute Command
 run_cmd() {
 	if [[ "$1" == '--opt1' ]]; then
 		mpc -q toggle && notify-send -u low -t 1000 " `mpc current`"
@@ -102,7 +79,6 @@ run_cmd() {
 	fi
 }
 
-# Actions
 chosen="$(run_rofi)"
 case ${chosen} in
     $option_1)

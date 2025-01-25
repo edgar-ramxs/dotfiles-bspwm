@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [ -z "$WEATHER_KEY" ]; then
-	echo " API"
+	echo "%{T2}󱞐 %{T-}%{T1}API%{T-}"
 	exit 1
 fi
 
@@ -14,7 +14,7 @@ response=$(curl -s "https://api.openweathermap.org/data/2.5/weather?lat=${LAT}&l
 
 temperature=$(echo $response | jq '.main.temp' | cut -d'.' -f1)
 if [ $? -ne 0 ] || [ -z "$temperature" ]; then
-	echo " JSON"
+	echo "%{T2}󱞐 %{T-}%{T1}JSON%{T-}"
 	exit 1
 fi
 
@@ -26,4 +26,4 @@ else
 	classification=""
 fi
 
-echo "%{T2}${classification}%{T-} ${temperature}°C"
+echo "%{T2}${classification}%{T-} %{T1}${temperature}°C%{T-}"

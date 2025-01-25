@@ -1,44 +1,23 @@
 #!/usr/bin/env bash
 
-## Author  : Aditya Shakya (adi1090x)
-## Github  : @adi1090x
-#
-## Applets : Screenshot
-
-# Import Current Theme
-type="$HOME/.config/rofi/views"
-style='applets.rasi'
-theme="$type/$style"
-
-# Theme Elements
-prompt='Screenshot'
+icono=$(~/.config/bspwm/scripts/bspwm-distro.sh)
+theme="$HOME/.config/rofi/views/applets.rasi"
 mesg="DIR: `xdg-user-dir PICTURES`/Screenshots"
-
+prompt='Screenshot'
 list_col='5'
 list_row='1'
-win_width='670px'
 
 # Options
-layout=`cat ${theme} | grep 'USE_ICON' | cut -d'=' -f2`
-if [[ "$layout" == 'NO' ]]; then
-	option_1=" Capture Desktop"
-	option_2=" Capture Area"
-	option_3=" Capture Window"
-	option_4=" Capture in 5s"
-	option_5=" Capture in 10s"
-else
-	option_1=""
-	option_2=""
-	option_3=""
-	option_4=""
-	option_5=""
-fi
+option_1=" " # Capture Desktop
+option_2=" " # Capture Area
+option_3="󱣴 " # Capture Window
+option_4="󰔝 " # Capture in 5s
+option_5="󰔜 " # Capture in 10s
 
 # Rofi CMD
 rofi_cmd() {
-	rofi -theme-str "window {width: $win_width;}" \
-		-theme-str "listview {columns: $list_col; lines: $list_row;}" \
-		-theme-str 'textbox-prompt-colon {str: "";}' \
+	rofi -theme-str "listview {columns: $list_col; lines: $list_row;}" \
+		-theme-str "textbox-prompt-colon { str: \" $icono\"; }" \
 		-dmenu \
 		-p "$prompt" \
 		-mesg "$mesg" \

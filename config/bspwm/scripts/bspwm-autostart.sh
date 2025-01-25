@@ -15,7 +15,7 @@
 setxkbmap -layout latam &
 
 # Resetting screen dimensions
-xrandr --output HDMI-1 --mode 1920x1080 --rate 60.00 &
+xrandr --output Virtual1 --mode 1920x1080 --rate 60.00 &
 sleep 0.5
 
 # Reset wallpaper
@@ -48,5 +48,7 @@ nm-applet &
 
 # Enable bluetooth manager
 blueman-applet &
+
+dunst &
 
 sleep 0.5

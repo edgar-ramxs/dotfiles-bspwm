@@ -2,7 +2,7 @@
 
 acpi_output=$(acpi -b)
 if [[ -z "$acpi_output" ]]; then
-  echo "%{T2} 󱟩 %{T-} 0%"
+  echo "%{T2} 󱟩 %{T-} %{T1}0%%{T-}"
   exit 1
 fi
 
@@ -61,4 +61,4 @@ get_icon() {
 }
 
 icon=$(get_icon "$percentage" "$state")
-echo "%{T2}$icon %{T-}$percentage%"
+echo "%{T2}$icon %{T-}%{T1}$percentage%%{T-}" 

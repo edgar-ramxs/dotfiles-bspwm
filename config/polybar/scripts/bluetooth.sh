@@ -6,10 +6,10 @@ if [ "$bluetooth_status" = "yes" ]; then
     device_connected=$(bluetoothctl info | grep 'Connected: yes' | wc -l)
 
     if [ "$device_connected" -gt 0 ]; then
-        echo "󰂰"
+        echo "󰂰 "
     else
-        echo ""
+        echo " "
     fi
 else
-    echo "󰂲"
+    echo "󰂲 "
 fi

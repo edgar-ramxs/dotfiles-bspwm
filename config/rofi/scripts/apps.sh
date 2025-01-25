@@ -2,17 +2,17 @@
 
 icono=$(~/.config/bspwm/scripts/bspwm-distro.sh)
 theme="$HOME/.config/rofi/views/applets.rasi"
-prompt='Applications'
-mesg="Installed Packages : `pacman -Q | wc -l` (pacman)"
+mesg="Installed Packages => `apt list --installed 2>/dev/null | grep -v 'Listing' | wc -l` (apt)"
+prompt="Applications"
 list_col='6'
 list_row='1'
 
 # CMDs (add your apps here)
-term_cmd='alacritty'
+term_cmd='kitty'
 file_cmd='thunar'
 text_cmd='geany'
 web_cmd='firefox'
-music_cmd='alacritty -e ncmpcpp'
+music_cmd='kitty -e ncmpcpp'
 setting_cmd='xfce4-settings-manager'
 
 # Options
@@ -23,22 +23,21 @@ option_4="󰈹 "
 option_5="󰝚 "
 option_6=" "
 
-# Rofi CMD
+
 rofi_cmd() {
-	rofi -dmenu -markup-rows \
+	rofi -theme-str "listview {columns: $list_col; lines: $list_row;}" \
+		-theme-str "textbox-prompt-colon { str: \" $icono\"; }" \
+		-dmenu \
 		-p "$prompt" \
-		-theme-str "listview {columns: $list_col; lines: $list_row;}" \
-		-theme-str "textbox-prompt-colon { str: \"$icono\"; }" \
 		-mesg "$mesg" \
+		-markup-rows \
 		-theme ${theme}
 }
 
-# Pass variables to rofi dmenu
 run_rofi() {
 	echo -e "$option_1\n$option_2\n$option_3\n$option_4\n$option_5\n$option_6" | rofi_cmd
 }
 
-# Execute Command
 run_cmd() {
 	if [[ "$1" == '--opt1' ]]; then
 		${term_cmd}
@@ -55,7 +54,6 @@ run_cmd() {
 	fi
 }
 
-# Actions
 chosen="$(run_rofi)"
 case ${chosen} in
     $option_1)

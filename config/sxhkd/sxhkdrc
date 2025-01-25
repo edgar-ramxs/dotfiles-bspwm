@@ -5,17 +5,16 @@
 #  ╚██╗ ██╔╝██║   ██║██║     ██║   ██║██║╚██╔╝██║██╔══╝  
 #   ╚████╔╝ ╚██████╔╝███████╗╚██████╔╝██║ ╚═╝ ██║███████╗
 #    ╚═══╝   ╚═════╝ ╚══════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝
-#                                                                                                                                                        
 
-# Ajusta el volumen del audio hacia abajo en un 5%
+# Adjust the audio volume down by 5%
 XF86AudioLowerVolume
 	pactl set-sink-volume 0 -5% 
 
-# Ajusta el volumen del audio hacia arriba en un 5%
+# Adjust the audio volume up by 5%
 XF86AudioRaiseVolume
 	pactl set-sink-volume 0 +5% 
 
-# Alterna el estado de silencio del audio
+# Toggles audio mute state
 XF86AudioMute
 	pactl set-sink-mute 0 toggle
 
@@ -25,13 +24,12 @@ XF86AudioMute
 #  ██╔══██╗██╔══██╗██║██║   ██║██╔══██║   ██║   ██║╚██╗██║██╔══╝  ╚════██║╚════██║
 #  ██████╔╝██║  ██║██║╚██████╔╝██║  ██║   ██║   ██║ ╚████║███████╗███████║███████║
 #  ╚═════╝ ╚═╝  ╚═╝╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═══╝╚══════╝╚══════╝╚══════╝
-#                                                                                 
 
-# Reduce el brillo de la pantalla en un 5%
+# Reduce screen brightness by 5%
 XF86MonBrightnessDown
 	brightnessctl set 5%-
 
-# Aumenta el brillo de la pantalla en un 5%
+# Increase screen brightness by 5%
 XF86MonBrightnessUp
 	brightnessctl set +5%
 
@@ -41,121 +39,120 @@ XF86MonBrightnessUp
 #  ╚════██║██╔══██║██║   ██║██╔══██╗   ██║   ██║     ██║   ██║   ██║   ╚════██║
 #  ███████║██║  ██║╚██████╔╝██║  ██║   ██║   ╚██████╗╚██████╔╝   ██║   ███████║
 #  ╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝    ╚═════╝ ╚═════╝    ╚═╝   ╚══════╝
-#                                                                              
 
-# Recarga la configuración de sxhkd (Super Key Handler Daemon)
+# Reload sxhkd (Super Key Handler Daemon) configuration
 super + Escape
 	pkill -USR1 -x sxhkd
 
-# Abre el lanzador de programas rofi con el tema especificado
+# Opens the rofi program launcher with the specified theme
 super + Return
 	rofi -show drun -theme "~/.config/rofi/views/launcher.rasi"
 
-# Cierra el nodo (ventana) actual
+# Closes the current node (window)
 super + BackSpace
 	bspc node -c
 
-# Captura una captura de pantalla usando flameshot
+# Capture a screenshot using flameshot
 super + Insert
 	flameshot gui
 
-# Enfoca el nodo en la dirección especificada
+# Focuses the node in the specified direction
 super + {Left,Down,Up,Right}
 	bspc node -f {west,south,north,east}
 
-# Enfoca o envía al escritorio especificado
+# Focus or send to the specified desktop
 super + {1-9,0}
 	bspc desktop -f '^{1-9,10}'
 
-# Abre menu con conexiones de wifi (rofi)
+# Open menu with wifi connections (rofi)
 super + w
 	~/.config/polybar/menu/wifi_menu.sh
 
-# Abre menu de conexiones de redes (rofi)
+# Open network connections menu (rofi)
 super + e
 	~/.config/polybar/menu/networks.sh
 
-# Abre Visual Studio Code
+# Open Visual Studio Code
 super + r
 	code 
 
-# Abre un terminal kitty
+# Open a kitty terminal
 super + t
 	kitty
 
-# Abre Browser
+# Open the default browser
 super + y
 	firefox-esr
 
-# Abre el gestor de archivos Thunar
+# Open the Thunar file manager
 super + u
 	thunar
 
-# Abre nitrogen para gestionar fondos de pantalla
+# Open nitrogen to manage wallpapers
 super + i
 	nitrogen
 
-# Abre un terminal st y ejecuta btop para monitorizar el rendimiento del sistema
+# Open a st terminal and run btop to monitor system performance
 super + o
 	st -e btop &
 
-# Alterna entre el diseño de ventanas en mosaico y el diseño monocle
+# Switch between tiled window layout and monocle layout
 super + z
 	bspc desktop -l next
 
-# Enfoca el siguiente nodo en el escritorio actual
+# Focus the next node on the current desktop
 super + x
 	bspc node -f next.local
 
-# Reinicia bspwm
+# Restart bspwm
 super + ctrl + Escape
 	bspc wm -r
 
-# Preselecciona la dirección para mover el nodo
+# Preset the direction to move the node
 super + ctrl + {Left,Down,Up,Right}
 	bspc node -p {west,south,north,east}
 
-# Preselecciona el ratio de división del nodo
+# Preselect the node split ratio
 super + ctrl + {1-9}
 	bspc node -o 0.{1-9}
 
-# Cancela la preselección del nodo enfocado
+# Cancels the preselection of the focused node
 super + ctrl + n
 	bspc node -p cancel
 
-# Cancela la preselección del escritorio enfocado
+# Cancel the preset of the focused desktop
 super + ctrl + m
 	bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
 
-# Cierra y mata el nodo (ventana) actual
+# Closes and kills the current node (window)
 super + shift + BackSpace
 	bspc node -k
 
-# Cambia el tipo de ventana del nodo actual entre los tipos especificados (tiled, pseudo_tiled, floating, fullscreen)
+# Switches the window type of the current node between the specified types (tiled, pseudo_tiled, floating, fullscreen)
 super + shift + {f,g,h,j}
 	bspc node -t {tiled,pseudo_tiled,floating,fullscreen}
 
-# Mueve el nodo actual a la dirección especificada
+# Moves the current node to the specified address
 super + shift + {Left,Down,Up,Right}
 	bspc node -s {west,south,north,east}
 
-# Enfoca el nodo anterior en el escritorio actual
+# Focuses the previous node on the current desktop
 super + shift + v
 	bspc node -f prev.local
 
-# Mueve el nodo actual al escritorio especificado
+# Moves the current node to the specified desktop
 super + shift + {1-9,0}
 	bspc node -d '^{1-9,10}'
 
-# Abre menu de sesion (rofi)
+# Open session menu (rofi)
 super + alt + Escape
 	~/.config/polybar/menu/powermenu.sh
 
-# Mueve la ventana flotante en la dirección especificada
+# Moves the floating window in the specified direction
 super + alt + {Left,Down,Up,Right}
 	bspc node -v {-20 0,0 20,0 -20,20 0}
 
-# Redimensiona la ventana flotante usando un script personalizado
+# Resize floating window using custom script
 alt + {Left,Down,Up,Right}
     ~/.config/bspwm/scripts/bspwm_resize {west,south,north,east}
 
@@ -165,7 +162,6 @@ alt + {Left,Down,Up,Right}
 #  ██║     ██║   ██║██║╚██╔╝██║██║╚██╔╝██║██╔══╝  ██║╚██╗██║   ██║   ╚════██║
 #  ╚██████╗╚██████╔╝██║ ╚═╝ ██║██║ ╚═╝ ██║███████╗██║ ╚████║   ██║   ███████║
 #   ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝     ╚═╝╚══════╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝
-#                                                                            
 
 # # focus the last node/desktop
 # super + {grave,Tab}
