@@ -2,7 +2,7 @@
 
 acpi_output=$(acpi -b)
 if [[ -z "$acpi_output" ]]; then
-  echo "%{T2} 󱟩 %{T-} %{T1}0%%{T-}"
+  echo "%{T2}󱟩 %{T-} %{T1}0%%{T-}"
   exit 1
 fi
 
@@ -15,25 +15,25 @@ get_icon() {
 
   if [[ "$state" == "Charging" ]]; then
     if ((perc >= 90)); then
-      echo "󰂅" # 90-100%
+      echo "󰂅 " # 90-100%
     elif ((perc >= 80)); then
-      echo "󰂋" # 80-89%
+      echo "󰂋 " # 80-89%
     elif ((perc >= 70)); then
-      echo "󰂊" # 70-79%
+      echo "󰂊 " # 70-79%
     elif ((perc >= 60)); then
-      echo "󰢞" # 60-69%
+      echo "󰢞 " # 60-69%
     elif ((perc >= 50)); then
-      echo "󰂉" # 50-59%
+      echo "󰂉 " # 50-59%
     elif ((perc >= 40)); then
-      echo "󰢝" # 40-49%
+      echo "󰢝 " # 40-49%
     elif ((perc >= 30)); then
-      echo "󰂈" # 30-39%
+      echo "󰂈 " # 30-39%
     elif ((perc >= 20)); then
-      echo "󰂇" # 20-29%
+      echo "󰂇 " # 20-29%
     elif ((perc >= 10)); then
-      echo "󰂆" # 10-19%
+      echo "󰂆 " # 10-19%
     else
-      echo "󰢜" # 0-9%
+      echo "󰢜 " # 0-9%
     fi
   else
     if ((perc >= 90)); then
@@ -61,4 +61,4 @@ get_icon() {
 }
 
 icon=$(get_icon "$percentage" "$state")
-echo "%{T2}$icon %{T-}%{T1}$percentage%%{T-}" 
+echo "%{T2}$icon%{T-}%{T1}$percentage%%{T-}" 
