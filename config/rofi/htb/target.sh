@@ -8,5 +8,5 @@ if [ $ip_target ] && [ $name_target ]; then
 elif [ $(cat ~/.config/rofi/htb/mark-name | wc -w) -eq 1 ]; then
     echo "󱓇 $ip_target"
 else
-    echo " No target "
+    echo "  No target "
 fi

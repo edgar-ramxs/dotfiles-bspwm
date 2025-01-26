@@ -16,8 +16,8 @@ rofi_cmd() {
 		-theme-str "listview {columns: $list_col; lines: $list_row;}" \
 		-theme-str "textbox-prompt-colon { str: \" $icono\"; }" \
 		-dmenu \
-		-p "$host" \
-		-mesg "Uptime: $uptime" \
+		-p "Networks" \
+		-mesg " Connections: Ethical hacking module " \
 		-theme "${theme}"
 }
 
