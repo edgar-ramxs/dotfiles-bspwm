@@ -54,22 +54,26 @@ Read the [KEYBINDING.md](KEYBINDING.md) to find out what the keyboard shortcuts 
 </div>
 
 
-## Visuals
-<table>
-  <tr>
-    <td><img src="assets/visual_nativo_morado.png" width="500" height="220"/></td>
-    <td><img src="assets/visual_nativo_melon.png" width="500" height="220"/></td>
-  </tr>
-  <tr>
-    <td><img src="assets/visual_vm_github.png" width="500" height=220"/></td>
-    <td><img src="assets/visual_vm_neofetch.png" width="500" height="220"/></td>
-  </tr>
-</table>
+| Visuals |
+|:-:|
+| <img src="assets/1.png"/> |
+| <img src="assets/2.png"/> |
+| <img src="assets/3.png"/> |
+| <img src="assets/4.png"/> |
+
+| Applets |
+|:-:|
+| <img src="assets/a1.png"/> |
+| <img src="assets/a2.png"/> |
+| <img src="assets/a3.png"/> |
+| <img src="assets/a4.png"/> |
+| <img src="assets/a5.png"/> |
+| <img src="assets/a6.png"/> |
 
 
 ## To Do's
 - [x] Scratch my balls
-- [x] Terminate the automatic installer
+- [ ] Terminate the automatic installer
 - [ ] Adapt the dotfiles for all possible Debian based distros
 
 
