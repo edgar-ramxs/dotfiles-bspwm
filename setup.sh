@@ -21,56 +21,15 @@ DISTRO=$(lsb_release -is)
 function message() {
     local signal color
     local RESETC="\033[0m\e[0m"
-    
     case "$1" in
-        "-title")
-            color="\033[0;37m\033[1m" # (bold white)
-            signal="[$]"
-            shift
-            echo -e "\n${color}${signal} $*${RESETC}"
-        ;;
-        "-subtitle")
-            color="\033[0;35m\033[1m" # (bold magenta).
-            signal="[*]"
-            shift
-            echo -e "\n\t${color}${signal} $*${RESETC}"
-        ;;
-        "-approval")
-            color="\033[38;5;51m\033[1m" # (bold cyan)
-            signal="[?]"
-            shift
-            echo -e "\n${color}${signal} $*${RESETC}"
-        ;;
-        "-success")
-            color="\033[0;32m\033[1m" # (bold green).
-            signal="[+]"
-            shift
-            echo -e "\t${color}${signal} $*${RESETC}"
-        ;;
-        "-warning")
-            color="\033[0;33m\033[1m" # (bold yellow)
-            signal="[&]"
-            shift
-            echo -e "\t${color}${signal} $*${RESETC}"
-        ;;
-        "-error")
-            color="\033[0;31m\033[1m" # (bold red).
-            signal="[-]"
-            shift
-            echo -e "\t${color}${signal} $*${RESETC}"
-        ;;
-        "-cancel")
-            color="\033[0;34m\033[1m" # (bold blue)
-            signal="[!]"
-            shift
-            echo -e "\n${color}${signal} $*${RESETC}\n"
-        ;;
-        *)
-            color="$RESETC"
-            signal=""
-            shift
-            echo -e "${color}${signal} $*${RESETC}"
-        ;;
+        "-title")       color="\033[0;37m\033[1m"; signal="[$]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
+        "-subtitle")    color="\033[0;35m\033[1m"; signal="[*]"; shift; echo -e "\n\t${color}${signal} $*${RESETC}";;
+        "-approval")    color="\033[38;5;51m\033[1m"; signal="[?]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
+        "-success")     color="\033[0;32m\033[1m"; signal="[+]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
+        "-warning")     color="\033[0;33m\033[1m"; signal="[&]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
+        "-error")       color="\033[0;31m\033[1m"; signal="[-]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
+        "-cancel")      color="\033[0;34m\033[1m"; signal="[!]"; shift; echo -e "\n${color}${signal} $*${RESETC}\n";;
+        *)              color="$RESETC"; signal=""; shift; echo -e "${color}${signal} $*${RESETC}";;
     esac
 }
 
