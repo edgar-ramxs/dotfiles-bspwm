@@ -1,54 +1,106 @@
-https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64
-
-xrandr | grep "connected primary" | awk 'print $4' | tr -d '\n' | cut -d '+' -f1
-
-for i in {0..15}; do printf "\e[48;5;${i}m => \e[0m ${i}\n"
-
-
 #!/usr/bin/env bash
 
-# Salida en caso de error
+#  ██████╗ ███████╗██████╗ ██╗ █████╗ ███╗   ██╗    ██████╗  █████╗  ██████╗██╗  ██╗ █████╗  ██████╗ ███████╗███████╗
+#  ██╔══██╗██╔════╝██╔══██╗██║██╔══██╗████╗  ██║    ██╔══██╗██╔══██╗██╔════╝██║ ██╔╝██╔══██╗██╔════╝ ██╔════╝██╔════╝
+#  ██║  ██║█████╗  ██████╔╝██║███████║██╔██╗ ██║    ██████╔╝███████║██║     █████╔╝ ███████║██║  ███╗█████╗  ███████╗
+#  ██║  ██║██╔══╝  ██╔══██╗██║██╔══██║██║╚██╗██║    ██╔═══╝ ██╔══██║██║     ██╔═██╗ ██╔══██║██║   ██║██╔══╝  ╚════██║
+#  ██████╔╝███████╗██████╔╝██║██║  ██║██║ ╚████║    ██║     ██║  ██║╚██████╗██║  ██╗██║  ██║╚██████╔╝███████╗███████║
+#  ╚═════╝ ╚══════╝╚═════╝ ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝    ╚═╝     ╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚══════╝
+
 set -e
+sudo -v
 
-# Definir directorio temporal para descargar archivos
+function message() {
+    local signal color
+    local RESETC="\033[0m\e[0m"
+    case "$1" in
+        "-title")       color="\033[0;37m\033[1m"; signal="[$]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
+        "-subtitle")    color="\033[0;35m\033[1m"; signal="[*]"; shift; echo -e "\n\t${color}${signal} $*${RESETC}";;
+        "-approval")    color="\033[38;5;51m\033[1m"; signal="[?]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
+        "-success")     color="\033[0;32m\033[1m"; signal="[+]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
+        "-warning")     color="\033[0;33m\033[1m"; signal="[&]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
+        "-error")       color="\033[0;31m\033[1m"; signal="[-]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
+        "-cancel")      color="\033[0;34m\033[1m"; signal="[!]"; shift; echo -e "\n${color}${signal} $*${RESETC}\n";;
+        *)              color="$RESETC"; signal=""; shift; echo -e "${color}${signal} $*${RESETC}";;
+    esac
+}
+
+function check_execution() {
+    if [[ $1 -ne 0 ]]; then
+        message -error "$2"
+        exit 1
+    else
+        message -success "$3"
+    fi
+}
+
 TEMP_DIR=$(mktemp -d)
-echo "Directorio temporal creado en: $TEMP_DIR"
+message -title "Temporary directory created: $TEMP_DIR"
 
-# Descargar Discord
-echo "Descargando Discord..."
-DISCORD_URL="https://discord.com/api/download?platform=linux&format=deb"
-DISCORD_DEB="$TEMP_DIR/discord.deb"
-wget -O "$DISCORD_DEB" "$DISCORD_URL"
+function download_discord() {
+    message -subtitle "Downloading Discord..."
+    local DISCORD_URL="https://discord.com/api/download?platform=linux&format=deb"
+    local DISCORD_DEB="$TEMP_DIR/discord.deb"
+    wget -O "$DISCORD_DEB" "$DISCORD_URL"
+    check_execution $? "Failed to download Discord" "Discord downloaded successfully"
+    
+    message -subtitle "Installing Discord..."
+    sudo dpkg -i "$DISCORD_DEB"
+    check_execution $? "Failed to install Discord" "Discord installed successfully"
+    sudo apt-get install -f -y
+}
 
-# Descargar Visual Studio Code
-echo "Descargando Visual Studio Code..."
-VSCODE_URL="https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"
-VSCODE_DEB="$TEMP_DIR/code.deb"
-wget -O "$VSCODE_DEB" "$VSCODE_URL"
+function download_vscode() {
+    message -subtitle "Downloading Visual Studio Code..."
+    local VSCODE_URL="https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"
+    local VSCODE_DEB="$TEMP_DIR/code.deb"
+    wget -O "$VSCODE_DEB" "$VSCODE_URL"
+    check_execution $? "Failed to download Visual Studio Code" "Visual Studio Code downloaded successfully"
+    
+    message -subtitle "Installing Visual Studio Code..."
+    sudo dpkg -i "$VSCODE_DEB"
+    check_execution $? "Failed to install Visual Studio Code" "Visual Studio Code installed successfully"
+    sudo apt-get install -f -y
+}
 
-# Instalar paquetes
-echo "Instalando Discord..."
-sudo dpkg -i "$DISCORD_DEB"
-sudo apt-get install -f -y  # Para resolver cualquier dependencia faltante
+function install_brave() {
+    message -subtitle "Installing Brave Browser..."
+    sudo apt install -y curl
+    check_execution $? "Failed to install curl" "Curl installed successfully"
+    
+    sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg \
+        https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
+    check_execution $? "Failed to download Brave Browser key" "Brave Browser key downloaded successfully"
+    
+    echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main" \
+        | sudo tee /etc/apt/sources.list.d/brave-browser-release.list
+    
+    sudo apt update
+    check_execution $? "Failed to update package list" "Package list updated successfully"
+    
+    sudo apt install -y brave-browser
+    check_execution $? "Failed to install Brave Browser" "Brave Browser installed successfully"
+}
 
-echo "Instalando Visual Studio Code..."
-sudo dpkg -i "$VSCODE_DEB"
-sudo apt-get install -f -y  # Para resolver cualquier dependencia faltante
+function usage() {
+    echo "Usage: $0 [-d] [-v] [-b]"
+    echo "  -d    Download and install Discord"
+    echo "  -v    Download and install Visual Studio Code"
+    echo "  -b    Install Brave Browser"
+    echo "  -h    Display this help"
+    exit 1
+}
 
-# Limpiar archivos temporales
-echo "Limpiando archivos temporales..."
+while getopts "dvb" opt; do
+    case $opt in
+        d) download_discord ;;
+        v) download_vscode ;;
+        b) install_brave ;;
+        *) usage ;;
+    esac
+done
+
+message -subtitle "Cleaning up temporary files..."
 rm -rf "$TEMP_DIR"
-
-echo "Instalación completa."
-
-
-sudo apt install curl
-
-sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
-
-echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main"|sudo tee /etc/apt/sources.list.d/brave-browser-release.list
-
-sudo apt update
-
-sudo apt install brave-browser
-
+message -success "Process completed successfully."
+exit 1

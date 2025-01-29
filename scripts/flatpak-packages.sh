@@ -56,8 +56,6 @@ function add_flathub_repo() {
 
 function install_flatpak_package() {
     local package=$1
-    message -title "Installing Flatpak packages"
-    sleep 1
     message -subtitle "Installing: $package..."
     flatpak install -y flathub "$package" >/dev/null 2>&1
     check_execution $? "Failed to install $package." "$package installed successfully."
@@ -79,7 +77,7 @@ function main() {
         "org.libretro.RetroArch"
         "org.gnome.Boxes"
     )
-
+    message -title "Installing Flatpak packages"
     for package in "${FLATPAK_PACKAGES[@]}"; do
         install_flatpak_package "$package"
     done
