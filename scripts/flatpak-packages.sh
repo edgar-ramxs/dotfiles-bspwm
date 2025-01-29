@@ -34,101 +34,59 @@ function check_execution() {
     fi
 }
 
-message -title "Installing Flatpak and GNOME Flatpak Plugin..."
-sudo apt update -y >/dev/null 2>&1
-sudo apt install -y flatpak gnome-software-plugin-flatpak >/dev/null 2>&1
-check_execution $? "Failed to install Flatpak and plugin." "Flatpak and plugin installed successfully."
+function ensure_flatpak() {
+    message -title "Installing Flatpak and GNOME Flatpak Plugin..."
+    if ! command -v flatpak &>/dev/null; then
+        message -subtitle "Flatpak is not installed. Installing Flatpak..."
+        sudo apt update -y >/dev/null 2>&1
+        sudo apt install -y flatpak gnome-software-plugin-flatpak >/dev/null 2>&1
+        check_execution $? "Failed to install Flatpak and GNOME plugin." "Flatpak and GNOME plugin installed successfully."
+    else
+        message -subtitle "Flatpak is already installed."
+    fi
+    sleep 1
+}
 
-message -title "Adding Flathub repository..."
-sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-check_execution $? "Failed to add Flathub repository." "Flathub repository added successfully."
+function add_flathub_repo() {
+    message -title "Adding Flathub repository..."
+    sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+    check_execution $? "Failed to add Flathub repository." "Flathub repository added successfully."
+    sleep 1
+}
 
-declare -a FLATPAK_PACKAGES=(
-    "com.bitwarden.desktop"
-    "md.obsidian.Obsidian"
-    "org.libreoffice.LibreOffice"
-    "com.obsproject.Studio"
-    "org.kde.kdenlive"
-    "com.discordapp.Discord"
-    "com.brave.Browser"
-    "org.DolphinEmu.dolphin-emu"
-    "org.libretro.RetroArch"
-    "org.gnome.Boxes"
-)
-
-function install_flatpak() {
+function install_flatpak_package() {
     local package=$1
-    message -title "Installing Flatpak package: $package..."
+    message -title "Installing Flatpak packages"
+    sleep 1
+    message -subtitle "Installing: $package..."
     flatpak install -y flathub "$package" >/dev/null 2>&1
     check_execution $? "Failed to install $package." "$package installed successfully."
     sleep 1
 }
 
-for package in "${FLATPAK_PACKAGES[@]}"; do
-    install_flatpak "$package"
-done
+function main() {
+    ensure_flatpak
+    add_flathub_repo
+    declare -a FLATPAK_PACKAGES=(
+        "com.bitwarden.desktop"
+        "md.obsidian.Obsidian"
+        "org.libreoffice.LibreOffice"
+        "com.obsproject.Studio"
+        "org.kde.kdenlive"
+        "com.discordapp.Discord"
+        "com.brave.Browser"
+        "org.DolphinEmu.dolphin-emu"
+        "org.libretro.RetroArch"
+        "org.gnome.Boxes"
+    )
 
-message -success "All Flatpak packages have been installed and launched successfully."
+    for package in "${FLATPAK_PACKAGES[@]}"; do
+        install_flatpak_package "$package"
+    done
 
+    message -success "All Flatpak packages have been installed successfully!"
+    exit 1
+}
 
-
-# # Ensure Flatpak is installed
-# function ensure_flatpak() {
-#     if ! command -v flatpak &>/dev/null; then
-#         message -title "Flatpak is not installed. Installing Flatpak..."
-#         sudo apt update -y >/dev/null 2>&1
-#         sudo apt install -y flatpak gnome-software-plugin-flatpak >/dev/null 2>&1
-#         check_execution $? "Failed to install Flatpak and GNOME plugin." "Flatpak and GNOME plugin installed successfully."
-#     else
-#         message -info "Flatpak is already installed."
-#     fi
-# }
-
-# # Add Flathub repository if it doesn't exist
-# function add_flathub_repo() {
-#     message -title "Adding Flathub repository..."
-#     sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-#     check_execution $? "Failed to add Flathub repository." "Flathub repository added successfully."
-# }
-
-# # Install a Flatpak package
-# function install_flatpak_package() {
-#     local package=$1
-#     message -subtitle "Installing: $package..."
-#     flatpak install -y flathub "$package" >/dev/null 2>&1
-#     check_execution $? "Failed to install $package." "$package installed successfully."
-#     sleep 1
-# }
-
-# # Main script
-# function main() {
-#     # Step 1: Ensure Flatpak is installed
-#     ensure_flatpak
-
-#     # Step 2: Add Flathub repository
-#     add_flathub_repo
-
-#     # Step 3: List of Flatpak packages to install
-#     declare -a FLATPAK_PACKAGES=(
-#         "com.bitwarden.desktop"
-#         "md.obsidian.Obsidian"
-#         "org.libreoffice.LibreOffice"
-#         "com.obsproject.Studio"
-#         "org.kde.kdenlive"
-#         "com.discordapp.Discord"
-#         "com.brave.Browser"
-#         "org.DolphinEmu.dolphin-emu"
-#         "org.libretro.RetroArch"
-#         "org.gnome.Boxes"
-#     )
-
-#     # Step 4: Install each Flatpak package
-#     for package in "${FLATPAK_PACKAGES[@]}"; do
-#         install_flatpak_package "$package"
-#     done
-
-#     message -success "All Flatpak packages have been installed successfully!"
-# }
-
-# # Run the script
-# main
+# Run the script
+main
