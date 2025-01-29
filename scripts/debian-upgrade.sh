@@ -51,7 +51,7 @@ deb http://deb.debian.org/debian testing-updates main contrib non-free non-free-
 deb-src http://deb.debian.org/debian testing-updates main contrib non-free non-free-firmware
 "
 
-echo "$NEW_SOURCES" | sudo tee "$SOURCE_LIST" >dev/null 2>&1
+echo "$NEW_SOURCES" | sudo tee "$SOURCE_LIST" >/dev/null 2>&1
 if grep -q "testing" "$SOURCE_LIST"; then
     message -success "New sources correctly configured in $SOURCE_LIST."
 else
