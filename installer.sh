@@ -307,7 +307,7 @@ function setter_configs() {
     copy_configs "$DIR/bin" "$HOME/.local/bin" "Setting up personal binaries"
     
     message -title "Installing Wallpapers"
-    copy_configs "$DIR/images/$RESOLUTION" "$HOME/.wallpapers" "Copying wallpapers to $USER's profile"
+    copy_configs "$DIR/images/$RESOLUTION" "$HOME/.config/wallpapers" "Copying wallpapers to $USER's profile"
     
     # # ICONS
     # copy_configs "$DIR_RESOURCES/icons" "/usr/share/icons" "Copying icons to the system"

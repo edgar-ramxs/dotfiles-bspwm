@@ -1,0 +1,9 @@
+[submodule "repositories/learn"]
+        path = themes/learn
+        url = 
+        
+https://github.com/davatorium/rofi.git
+https://github.com/yshui/picom.git
+https://github.com/baskerville/bspwm.git
+https://github.com/baskerville/sxhkd.git
+https://github.com/pipeseroni/pipes.sh.git
