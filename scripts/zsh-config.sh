@@ -14,14 +14,14 @@ function message() {
     local signal color
     local RESETC="\033[0m\e[0m"
     case "$1" in
-        "-title")       color="\033[0;37m\033[1m"; signal="[$]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
-        "-subtitle")    color="\033[0;35m\033[1m"; signal="[*]"; shift; echo -e "\n\t${color}${signal} $*${RESETC}";;
-        "-approval")    color="\033[38;5;51m\033[1m"; signal="[?]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
-        "-success")     color="\033[0;32m\033[1m"; signal="[+]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
-        "-warning")     color="\033[0;33m\033[1m"; signal="[&]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
-        "-error")       color="\033[0;31m\033[1m"; signal="[-]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
-        "-cancel")      color="\033[0;34m\033[1m"; signal="[!]"; shift; echo -e "\n${color}${signal} $*${RESETC}\n";;
-        *)              color="$RESETC"; signal=""; shift; echo -e "${color}${signal} $*${RESETC}";;
+        "-title")       color="\033[0;37m\033[1m";      signal="[$]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
+        "-subtitle")    color="\033[0;35m\033[1m";      signal="[*]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
+        "-approval")    color="\033[38;5;51m\033[1m";   signal="[?]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
+        "-success")     color="\033[0;32m\033[1m";      signal="[+]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
+        "-warning")     color="\033[0;33m\033[1m";      signal="[&]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
+        "-error")       color="\033[0;31m\033[1m";      signal="[-]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
+        "-cancel")      color="\033[0;34m\033[1m";      signal="[!]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
+        *)              color="$RESETC";                signal=""; shift; echo -e "${color}${signal} $*${RESETC}";;
     esac
 }
 
@@ -73,11 +73,14 @@ function install_oh_my_zsh() {
 }
 
 function install_plugins() {
-    message -title "Installing Zsh plugins..."
     local plugins=(
         "https://github.com/zsh-users/zsh-syntax-highlighting.git"
         "https://github.com/zsh-users/zsh-autosuggestions.git"
     )
+
+    message -title "Installing Zsh plugins..."
+    sleep 0.5
+
     for plugin in "${plugins[@]}"; do
         local plugin_name=$(basename "$plugin" .git)
         local plugin_path="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/$plugin_name"
@@ -103,4 +106,3 @@ install_oh_my_zsh
 install_plugins
 set_default_shell
 message -success "installation completed successfully."
-exit 1

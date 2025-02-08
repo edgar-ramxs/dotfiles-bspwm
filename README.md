@@ -22,7 +22,7 @@ You can start by reviewing the packages using the `install_packages` function, e
 
 
 ## Post-installation
-Read the [KEYBINDING.md](KEYBINDING.md) to find out what the keyboard shortcuts are that were configured by me.
+Read the [KEYBINDING.md](assets/KEYBINDING.md) to find out what the keyboard shortcuts are that were configured by me.
 
 
 ## Installation
@@ -53,22 +53,12 @@ Read the [KEYBINDING.md](KEYBINDING.md) to find out what the keyboard shortcuts 
 
 </div>
 
-
 | Visuals |
-|:-:|
-| <img src="assets/1.png"/> |
-| <img src="assets/2.png"/> |
-| <img src="assets/3.png"/> |
-| <img src="assets/4.png"/> |
-
-| Applets |
 |:-:|
 | <img src="assets/a1.png"/> |
 | <img src="assets/a2.png"/> |
 | <img src="assets/a3.png"/> |
 | <img src="assets/a4.png"/> |
-| <img src="assets/a5.png"/> |
-| <img src="assets/a6.png"/> |
 
 
 ## To Do's
