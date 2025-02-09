@@ -1,9 +1,9 @@
-#   █████╗ ██╗     ██╗ █████╗ ███████╗███████╗███████╗
-#  ██╔══██╗██║     ██║██╔══██╗██╔════╝██╔════╝██╔════╝
-#  ███████║██║     ██║███████║███████╗█████╗  ███████╗
-#  ██╔══██║██║     ██║██╔══██║╚════██║██╔══╝  ╚════██║
-#  ██║  ██║███████╗██║██║  ██║███████║███████╗███████║
-#  ╚═╝  ╚═╝╚══════╝╚═╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝
+#      █████╗ ██╗     ██╗ █████╗ ███████╗███████╗███████╗
+#     ██╔══██╗██║     ██║██╔══██╗██╔════╝██╔════╝██╔════╝
+#     ███████║██║     ██║███████║███████╗█████╗  ███████╗
+#     ██╔══██║██║     ██║██╔══██║╚════██║██╔══╝  ╚════██║
+#  ██╗██║  ██║███████╗██║██║  ██║███████║███████╗███████║
+#  ╚═╝╚═╝  ╚═╝╚══════╝╚═╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝
 
 alias ls="lsd --group-dirs=first"
 alias la="lsd -a --group-dirs=first"
@@ -27,10 +27,10 @@ alias per-644="chmod 644"
 alias per-755="chmod 755"
 
 alias stop-venv="deactivate"
-alias start-venv="source $(get_venv_name)/bin/activate"
+alias start-venv="source $(get-venv-name)/bin/activate"
 
-alias neofetch="neofetch --off"
-alias fastfetch="fastfetch --logo none"
+# "neofetch --off" | "fastfetch --logo none"
+alias fetch="neofetch"
 
 alias smki="sudo make clean install"
 alias updating="sudo apt update -y && sudo apt upgrade -y"

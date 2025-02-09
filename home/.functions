@@ -1,22 +1,22 @@
-#  ███████╗██╗   ██╗███╗   ██╗ ██████╗████████╗██╗ ██████╗ ███╗   ██╗███████╗
-#  ██╔════╝██║   ██║████╗  ██║██╔════╝╚══██╔══╝██║██╔═══██╗████╗  ██║██╔════╝
-#  █████╗  ██║   ██║██╔██╗ ██║██║        ██║   ██║██║   ██║██╔██╗ ██║███████╗
-#  ██╔══╝  ██║   ██║██║╚██╗██║██║        ██║   ██║██║   ██║██║╚██╗██║╚════██║
-#  ██║     ╚██████╔╝██║ ╚████║╚██████╗   ██║   ██║╚██████╔╝██║ ╚████║███████║
-#  ╚═╝      ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝
+#     ███████╗██╗   ██╗███╗   ██╗ ██████╗████████╗██╗ ██████╗ ███╗   ██╗███████╗
+#     ██╔════╝██║   ██║████╗  ██║██╔════╝╚══██╔══╝██║██╔═══██╗████╗  ██║██╔════╝
+#     █████╗  ██║   ██║██╔██╗ ██║██║        ██║   ██║██║   ██║██╔██╗ ██║███████╗
+#     ██╔══╝  ██║   ██║██║╚██╗██║██║        ██║   ██║██║   ██║██║╚██╗██║╚════██║
+#  ██╗██║     ╚██████╔╝██║ ╚████║╚██████╗   ██║   ██║╚██████╔╝██║ ╚████║███████║
+#  ╚═╝╚═╝      ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝                                                                             
 
 function message() {
     local signal color
     local RESETC="\033[0m\e[0m"
     case "$1" in
-        "-title")       color="\033[0;37m\033[1m"; signal="[$]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
-        "-subtitle")    color="\033[0;35m\033[1m"; signal="[*]"; shift; echo -e "\n\t${color}${signal} $*${RESETC}";;
-        "-approval")    color="\033[38;5;51m\033[1m"; signal="[?]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
-        "-success")     color="\033[0;32m\033[1m"; signal="[+]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
-        "-warning")     color="\033[0;33m\033[1m"; signal="[&]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
-        "-error")       color="\033[0;31m\033[1m"; signal="[-]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
-        "-cancel")      color="\033[0;34m\033[1m"; signal="[!]"; shift; echo -e "\n${color}${signal} $*${RESETC}\n";;
-        *)              color="$RESETC"; signal=""; shift; echo -e "${color}${signal} $*${RESETC}";;
+        "-title")       color="\033[0;37m\033[1m";      signal="[$]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
+        "-subtitle")    color="\033[0;35m\033[1m";      signal="[*]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
+        "-approval")    color="\033[38;5;51m\033[1m";   signal="[?]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
+        "-cancel")      color="\033[0;34m\033[1m";      signal="[!]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
+        "-success")     color="\033[0;32m\033[1m";      signal="[+]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
+        "-warning")     color="\033[0;33m\033[1m";      signal="[&]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
+        "-error")       color="\033[0;31m\033[1m";      signal="[-]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
+        *)              color="$RESETC";                signal=""; shift; echo -e "${color}${signal} $*${RESETC}";;
     esac
 }
 
@@ -25,7 +25,7 @@ function man() {
     local bold_red='\e[1;31m'
     local highlight='\e[1;44;33m'
     local bold_green='\e[1;32m'
-
+    
     env \
     LESS_TERMCAP_mb="$bold_red" \
     LESS_TERMCAP_md="$bold_red" \
@@ -37,7 +37,7 @@ function man() {
     man "$@"
 }
 
-function extract_files() {
+function extract-files() {
     if [ -f "$1" ]; then
         case "$1" in
             *.tar.bz2) tar xvjf "$1" ;;
@@ -58,6 +58,7 @@ function extract_files() {
     fi
 }
 
+
 function cmkdir() {
     if [ -z "$1" ]; then
         message -warning "Usage: cmk <directory-name>"
@@ -73,9 +74,9 @@ function rmk() {
     shred -zun 10 -v $1
 }
 
-function extract_ports() {
+function extract-ports() {
     if [ -z "$1" ]; then
-        message -warning "Usage: extractPorts <filename>"
+        message -warning "Usage: extract-ports <filename>"
         return 1
     fi
     
@@ -100,7 +101,7 @@ function extract_ports() {
     rm extractPorts.tmp
 }
 
-function open_file() {
+function open-file() {
     local file=$1
     if [ -z "$EDITOR" ]; then
         message -warning "La variable EDITOR no está definida."
@@ -116,60 +117,60 @@ function open_file() {
     fi
 }
 
-function create_venv() {
+function create-venv() {
     local dir_name=$(basename "$(pwd)")
     local env_name=$(echo "$dir_name" | tr '[:upper:]' '[:lower:]' | iconv -f utf8 -t ascii//TRANSLIT)
     env_name=".$env_name-env"
-
+    
     python3 -m venv "$env_name"
     if [ $? -ne 0 ]; then
         message -error "Failed to create virtual environment."
         return 1
     fi
-
+    
     source "$env_name/bin/activate"
     if [ $? -ne 0 ]; then
         message -error "Failed to activate virtual environment."
         return 1
     fi
-
+    
     message -success "Virtual environment '$env_name' created and activated."
 }
 
-function get_venv_name() {
+function get-venv-name() {
     local dir_name=$(basename "$(pwd)")
     echo -e ".$(echo "$dir_name" | tr '[:upper:]' '[:lower:]' | iconv -f utf8 -t ascii//TRANSLIT)-env"
 }
 
 function settarget(){
-	if [ $# -eq 1 ]; then
-	    echo $1 > ~/.config/polybar/htb/htb_target
-	elif [ $# -gt 2 ]; then
-	    echo "settarget [IP] [NAME] | settarget [IP]"
-	else
-	    echo $1 $2 > ~/.config/polybar/htb/htb_target
-	fi
+    if [ $# -eq 1 ]; then
+        echo $1 > ~/.config/rofi/htb/mark-name
+        elif [ $# -gt 2 ]; then
+        echo "settarget [IP] [NAME] | settarget [IP]"
+    else
+        echo $1 $2 > ~/.config/rofi/htb/mark-name
+    fi
 }
 
 function fzf-lovely(){
-	if [ "$1" = "h" ]; then
-		fzf -m --reverse --preview-window down:20 --preview '[[ $(file --mime {}) =~ binary ]] &&
+    if [ "$1" = "h" ]; then
+        fzf -m --reverse --preview-window down:20 --preview '[[ $(file --mime {}) =~ binary ]] &&
  	                echo {} is a binary file ||
 	                 (bat --style=numbers --color=always {} ||
 	                  highlight -O ansi -l {} ||
 	                  coderay {} ||
 	                  rougify {} ||
-	                  cat {}) 2> /dev/null | head -500'
-
-	else
-	        fzf -m --preview '[[ $(file --mime {}) =~ binary ]] &&
+        cat {}) 2> /dev/null | head -500'
+        
+    else
+        fzf -m --preview '[[ $(file --mime {}) =~ binary ]] &&
 	                         echo {} is a binary file ||
 	                         (bat --style=numbers --color=always {} ||
 	                          highlight -O ansi -l {} ||
 	                         coderay {} ||
 	                          rougify {} ||
-	                          cat {}) 2> /dev/null | head -500'
-	fi
+        cat {}) 2> /dev/null | head -500'
+    fi
 }
 
 function cu {
@@ -182,4 +183,99 @@ function cu {
         path="${path}../"
     done
     cd $path
+}
+
+function compile-pls() {
+    # Verificar si se proporcionó un archivo
+    if [[ -z "$1" ]]; then
+        message -cancel "Error: Debes proporcionar un archivo."
+        return 1
+    fi
+    
+    # Verificar si el archivo existe
+    if [[ ! -f "$1" ]]; then
+        message -cancel "Error: El archivo '$1' no existe."
+        return 1
+    fi
+    
+    local filename=$(basename "$1")
+    local extension="${filename##*.}"
+    local name_without_ext="${filename%.*}"
+    
+    # Función auxiliar para verificar si un comando está instalado
+    command_exists() {
+        command -v "$1" >/dev/null 2>&1
+    }
+    
+    case "$extension" in
+        "kt")
+            if command_exists kotlinc && command_exists java; then
+                kotlinc "$filename" -include-runtime -d "${name_without_ext}.jar" && java -jar "${name_without_ext}.jar"
+            else
+                message -cancel "Error: Kotlin o Java no están instalados."
+                return 1
+            fi
+        ;;
+        "java")
+            if command_exists javac && command_exists java; then
+                javac "$filename" && java "$name_without_ext"
+            else
+                message -cancel "Error: Java no está instalado."
+                return 1
+            fi
+        ;;
+        "cpp")
+            if command_exists g++; then
+                g++ "$filename" -o "$name_without_ext" && "./$name_without_ext"
+            else
+                message -cancel "Error: g++ no está instalado."
+                return 1
+            fi
+        ;;
+        "c")
+            if command_exists gcc; then
+                gcc "$filename" -o "$name_without_ext" && "./$name_without_ext"
+            else
+                message -cancel "Error: gcc no está instalado."
+                return 1
+            fi
+        ;;
+        "pas")
+            if command_exists fpc; then
+                fpc "$filename" && "./$name_without_ext"
+            else
+                message -cancel "Error: Free Pascal Compiler (fpc) no está instalado."
+                return 1
+            fi
+        ;;
+        *)
+            message -cancel "Error: Extensión de archivo no admitida: .$extension"
+            return 1
+        ;;
+    esac
+}
+
+
+
+function hydra() {
+    clear &&
+    echo \
+    "    ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢤⡀⠀⠰⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⣠⣤⣀⣀⣀⣀⡀⠀⢀⣠⠀⠀⠀⠀⠀⠠⠐⠒⣒⣲⣶⣦⣽⣦⣀⢷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠛⠛⢿⣿⣶⣽⣿⣿⣯⣥⣀⡀⠀⠀⠀⣠⣶⣿⣿⣿⠿⠟⠿⢿⣿⣿⣿⣶⣄⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠈⠻⠛⠉⠙⠻⣿⣿⣶⣍⠀⠊⢱⣿⣿⣿⡇⠀⠀⠀⠀⠈⣿⣿⣶⣽⣆⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⣿⣿⣯⡑⠀⢸⣿⣿⣿⣿⡄⠀⠀⠀⢀⠙⠛⠛⠿⣿⣿⣦⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⣿⣿⣿⢷⠀⠘⣏⠻⣿⣿⣿⣦⣤⣀⣈⣲⣤⣀⣀⡀⠛⠃⠀⠀⠀⠀⠀
+⠀⠀⠀⢀⠀⠀⠀⠀⠀⠀⠀⠀⣾⣿⣿⣿⠀⠀⠀⠈⠔⠚⣻⣿⣿⣿⣿⣿⣿⣿⣿⣯⣝⣧⣤⣄⣀⠀⠀⠀
+⠀⠀⠀⢠⣇⣴⣮⣥⣤⡀⠀⢸⣿⣿⡏⠏⠀⠀⠀⣠⣾⣿⣿⡿⠟⢿⣿⣿⣆⠈⢿⣿⠿⠿⠿⠿⣿⠀⠀⠀
+⠀⠀⣠⢿⣿⡿⠿⣿⣿⣷⣅⢸⣿⣿⡇⠀⠀⠀⠔⣹⣿⣿⡏⠀⠀⠈⣿⣿⣿⡀⠀⠠⠄⣀⠀⡆⠀⠀⠀⠀
+⠀⢀⣯⣾⡿⠆⠀⢸⣿⣿⣧⠉⣿⣿⣷⡀⠀⠀⢠⣿⣿⣿⣧⡀⠀⢀⣿⣿⣿⠀⠠⣲⣿⣿⣿⣿⣦⡀⠀⠀
+⠀⣿⡟⠁⠀⠀⠀⣾⣿⣿⠻⠀⠘⢿⣿⣿⣦⡀⠀⢏⠻⣿⣿⣿⣆⣼⣿⣿⣿⢀⣺⣿⣿⠁⠈⣿⣷⣷⡀⠀
+⠀⠀⠀⠀⠀⠀⢸⣿⣿⣇⠁⠀⠀⠀⠙⢿⣿⣿⣷⣮⣄⣹⣿⣿⣿⣿⣿⣿⡿⠀⡿⣿⣿⣄⠀⠀⠈⠹⡿⠀
+⠀⠀⠀⠀⠀⠀⠀⢿⣿⣿⣦⣄⣀⠀⠀⠀⠘⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠃⠀⠘⢹⣿⣿⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠈⠻⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣃⣀⣠⣴⣿⣿⠏⠀⠀⠀⠀⠀⠀
+    ⠀⠀⠀⠀⠀⠀⠀⠀⠲⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣻⠅⠀⠀⠀⠀⠀⠀⠀⠀"
+    tput civis
+    read -n 1
+    tput cnorm
 }

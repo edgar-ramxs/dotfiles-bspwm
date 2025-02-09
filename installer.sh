@@ -31,21 +31,20 @@ function message() {
         "-title")       color="\033[0;37m\033[1m";      signal="[$]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
         "-subtitle")    color="\033[0;35m\033[1m";      signal="[*]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
         "-approval")    color="\033[38;5;51m\033[1m";   signal="[?]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
+        "-cancel")      color="\033[0;34m\033[1m";      signal="[!]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
         "-success")     color="\033[0;32m\033[1m";      signal="[+]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
         "-warning")     color="\033[0;33m\033[1m";      signal="[&]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
         "-error")       color="\033[0;31m\033[1m";      signal="[-]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
-        "-cancel")      color="\033[0;34m\033[1m";      signal="[!]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
         *)              color="$RESETC";                signal=""; shift; echo -e "${color}${signal} $*${RESETC}";;
     esac
 }
 
 function usage() {
-    message -title "Usage: $0 -s [option] -r [option] -p [option] -t [option]"
-    message -subtitle "Parameter     Target  Options                 Description"
-    message -warning "shell         -s      [bash|zsh]              Download and install Discord"
-    message -warning "resolution    -r      [1920x1080|1366x768]    Download and install Visual Studio Code"
-    message -warning "packages      -p      [all|dev|hack|games]    Install Brave Browser"
-    message -warning "theme         -t      [a|b|c]                 Install Brave Browser"
+    message -title "Usage: $0 -s [option] -r [option]"
+    message -warning "Parameter     Target  Options                 Description"
+    message -success "shell         -s      [bash|zsh]              Set default shell"
+    message -success "resolution    -r      [1920x1080|1366x768]    Set default screen resolution for wallpapers"
+    echo ""
     exit 1
 }
 
@@ -396,6 +395,49 @@ function install_pywal() {
     fi
 }
 
+function install_oh_my_zsh() {
+    message -title "Installing Oh My Zsh"
+    sleep 0.5
+
+    local plugins=(
+        "https://github.com/zsh-users/zsh-syntax-highlighting.git"
+        "https://github.com/zsh-users/zsh-autosuggestions.git"
+    )
+
+    message -subtitle "Checking that there is no .oh-my-zsh directory..."
+    sleep 0.5
+
+    if [ -d "$HOME/.oh-my-zsh" ]; then
+        message -warning "A previous installation of Oh My Zsh was found. Removing it..."
+        rm -rf "$HOME/.oh-my-zsh"
+        message -success "Previous installation removed."
+    fi
+
+    message -subtitle "Downloading and installing Oh My Zsh..."
+    sleep 0.5
+
+    yes | sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" >/dev/null 2>&1
+    check_execution $? "Error installing Oh My Zsh" "Oh My Zsh installed successfully."
+
+    message -subtitle "Installing Zsh plugins..."
+    sleep 0.5
+
+    for plugin in "${plugins[@]}"; do
+        local plugin_name=$(basename "$plugin" .git)
+        local plugin_path="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/$plugin_name"
+        message -warning "Installing: $plugin_name"
+        git clone "$plugin" "$plugin_path" >/dev/null 2>&1
+        check_execution $? "Error installing $plugin_name" "$plugin_name installed correctly."
+    done
+
+    message -subtitle "Downloading zsh theme..."
+    sleep 0.5
+
+    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k" >/dev/null 2>&1
+    check_execution $? "Error installing" "installed correctly."
+}
+
+
 #  ███████╗███████╗████████╗████████╗██╗███╗   ██╗ ██████╗ ███████╗
 #  ██╔════╝██╔════╝╚══██╔══╝╚══██╔══╝██║████╗  ██║██╔════╝ ██╔════╝
 #  ███████╗█████╗     ██║      ██║   ██║██╔██╗ ██║██║  ███╗███████╗
@@ -420,14 +462,14 @@ function copy_configs() {
 }
 
 function setter_configs() {
-    message -title "Installing Configs"
-    copy_configs "$DIR/config" "$HOME/.config" "Setting up .config directory"
+    message -title "Installing Configuration"
+    copy_configs "$DIR/config" "$HOME/.config" "Setting up .config directory..."
     
     message -title "Installing Binaries"
-    copy_configs "$DIR/bin" "$HOME/.local/bin" "Setting up personal binaries"
+    copy_configs "$DIR/bin" "$HOME/.local/bin" "Setting up personal binaries..."
     
     message -title "Installing Wallpapers"
-    copy_configs "$DIR/wallpapers/$P_RESOLUTION" "$HOME/.config/wallpapers" "Copying wallpapers to $USER's profile"
+    copy_configs "$DIR/wallpapers/$P_RESOLUTION" "$HOME/.config/wallpapers" "Copying wallpapers to $USER's profile..."
     
     # # ICONS
     # copy_configs "$DIR_RESOURCES/icons" "/usr/share/icons" "Copying icons to the system"
@@ -440,13 +482,13 @@ function setter_configs() {
 }
 
 function setter_homefiles() {
-    local current_shell=$(basename "$SHELL")
-    
     message -title "Installing Home Files"
     sleep 0.5
     
+    message -subtitle "Copying Home Files..."
+    sleep 0.5
+
     shopt -s dotglob
-    
     for file in .aliases .exports .functions .profile; do
         if [[ -f "$DIR/home/$file" ]]; then
             cp -rf --preserve=mode,ownership "$DIR/home/$file" "$HOME/"
@@ -455,17 +497,40 @@ function setter_homefiles() {
             message -error "$file does not exist in $DIR/home. Skipping."
         fi
     done
-
-    case "$current_shell" in
-        bash)   copy_configs "$DIR/home/bash" "$HOME" "Copying Bash configuration";;
-        zsh)    copy_configs "$DIR/home/zsh" "$HOME" "Copying Zsh configuration";;
-        *)      message -error "Unknown shell: $current_shell. Skipping shell-specific files.";;
-    esac
-    
     shopt -u dotglob
     
-    message -warning "Home files installation completed."
+    message -success "Home files installation completed."
     sleep 0.5
+}
+
+function setter_shell(){
+    message -title "Setting default shell"
+    sleep 0.5
+
+    case "$1" in
+        "bash")
+            message -subtitle "Changing default shell to bash..."
+            sudo chsh -s "$(which bash)" "$USER"
+            sudo chsh -s "$(which bash)" "root"
+            message -success "bash is now the default shell."
+            
+            copy_configs "$DIR/home/bash" "$HOME" "Copying Bash configuration..."
+        ;;
+        "zsh")
+            message -subtitle "Changing default shell to bash..."
+            sudo chsh -s "$(which zsh)" "$USER"
+            sudo chsh -s "$(which zsh)" "root"
+            message -success "Zsh is now the default shell."
+            
+            install_oh_my_zsh
+            
+            copy_configs "$DIR/home/zsh" "$HOME" "Copying Zsh configuration..."
+        ;;
+        *)
+            continue
+        ;;
+    esac
+    
 }
 
 function setter_permissions() {
@@ -478,7 +543,7 @@ function setter_permissions() {
         "$HOME/.local/bin"
     )
 
-    message -title "Setting execution permissions to specified file types..."
+    message -title "Setting execution permissions to specified file types"
     sleep 0.5
     
     for dir in "${DIRECTORIES[@]}"; do
@@ -504,7 +569,7 @@ function setter_symbolic_links() {
     local CURRENT_SHELL=$(basename "$SHELL")
     local COMMON_FILES=(".profile" ".aliases" ".exports" ".functions")
 
-    message -title "Creating symbolic links in root user directory..."
+    message -title "Creating symbolic links in root user directory"
     sleep 0.5
     
     declare -A SHELL_FILES=(
@@ -514,6 +579,7 @@ function setter_symbolic_links() {
     
     message -subtitle "Linking common files..."
     sleep 0.5
+
     for file in "${COMMON_FILES[@]}"; do
         if [[ -f "$HOME/$file" ]]; then
             sudo ln -sfv "$HOME/$file" "$ROOT_HOME/$file" >/dev/null 2>&1
@@ -551,7 +617,7 @@ function setter_symbolic_links() {
 #  ██║ ╚═╝ ██║██║  ██║██║██║ ╚████║
 #  ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝
 
-while getopts ":s:r:p:t:" opt; do
+while getopts ":s:r:" opt; do
     case ${opt} in
         s) P_SHELL="$OPTARG"
             [[ "$P_SHELL" =~ ^(bash|zsh)$ ]] || usage
@@ -559,18 +625,17 @@ while getopts ":s:r:p:t:" opt; do
         r) P_RESOLUTION="$OPTARG"
             [[ "$P_RESOLUTION" =~ ^(1920x1080|1366x768)$ ]] || usage
         ;;
-        p) P_PACKAGES="$OPTARG"
-            [[ "$P_PACKAGES" =~ ^(all|dev|hack|games)$ ]] || usage
-        ;;
-        t) P_THEME="$OPTARG"
-            [[ "$P_THEME" =~ ^(a|b|c)$ ]] || usage
-        ;;
+        # p) P_PACKAGES="$OPTARG"
+        #     [[ "$P_PACKAGES" =~ ^(all|dev|hack|games)$ ]] || usage
+        # ;;
+        # t) P_THEME="$OPTARG"
+        #     [[ "$P_THEME" =~ ^(a|b|c)$ ]] || usage
+        # ;;
         *) usage ;;
     esac
 done
 
-
-if [[ -z "$P_SHELL" || -z "$P_RESOLUTION" || -z "$P_PACKAGES" || -z "$P_THEME" ]]; then
+if [[ -z "$P_SHELL" || -z "$P_RESOLUTION" ]]; then
     usage
 fi
 
@@ -588,6 +653,7 @@ install_pywal
 
 xdg-user-dirs-update
 
+setter_shell $P_SHELL
 setter_configs
 setter_homefiles
 setter_permissions

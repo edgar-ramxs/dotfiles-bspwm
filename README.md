@@ -3,6 +3,7 @@
   <img src="https://img.shields.io/github/repo-size/edgar-ramxs/dotfiles-bspwm?style=for-the-badge&color=cba6f7" alt="GitHub repo size">
 </div>
 
+
 # Introduction
 Hello, I created these dotfiles to use the BSPWM window manager. The idea came up when I decided to install a minimal version of Debian. Why? I'm not sure, it was a bit of a crazy impulse, but I stuck with the idea, and it eventually evolved. In the end, I decided to create these dotfiles to use them in minimal environments of Debian-based distributions like Kali Linux, Parrot, Ubuntu, and others.
 
@@ -21,10 +22,6 @@ To do this, you can use the script located in the `debian_bookworm_to_trixie.sh`
 You can start by reviewing the packages using the `install_packages` function, editing it to check if the packages are available in the repositories. This is useful if you prefer not to upgrade to Debian 13 (Trixie).
 
 
-## Post-installation
-Read the [KEYBINDING.md](assets/KEYBINDING.md) to find out what the keyboard shortcuts are that were configured by me.
-
-
 ## Installation
 ```bash
     git clone https://github.com/edgar-ramxs/dotfiles-bspwm.git ~/dotfiles-bspwm
@@ -32,6 +29,11 @@ Read the [KEYBINDING.md](assets/KEYBINDING.md) to find out what the keyboard sho
     chmod +x installer.sh
     ./installer.sh
 ```
+
+
+## Post-installation
+Read the [KEYBINDING.md](assets/KEYBINDING.md) to find out what the keyboard shortcuts are that were configured by me.
+
 
 ## Details
 <div align="center">

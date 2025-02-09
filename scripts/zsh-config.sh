@@ -39,7 +39,7 @@ function install_zsh() {
     message -title "Zsh installation"
     sleep 0.5
 
-    message -subtitle "Verifying "
+    message -subtitle "Verifying that Zsh is installed..."
     sleep 0.5
 
     if ! command -v zsh >/dev/null 2>&1; then
@@ -65,7 +65,7 @@ function install_zsh() {
 }
 
 function install_oh_my_zsh() {
-    message -title "Installing Oh My Zsh..."
+    message -title "Installing Oh My Zsh"
     sleep 0.5
 
     local plugins=(
@@ -73,7 +73,7 @@ function install_oh_my_zsh() {
         "https://github.com/zsh-users/zsh-autosuggestions.git"
     )
 
-    message -subtitle "Checking that there is no .oh-my-zsh directory"
+    message -subtitle "Checking that there is no .oh-my-zsh directory..."
     sleep 0.5
 
     if [ -d "$HOME/.oh-my-zsh" ]; then
@@ -99,7 +99,7 @@ function install_oh_my_zsh() {
         check_execution $? "Error installing $plugin_name" "$plugin_name installed correctly."
     done
 
-    message -subtitle "Downloading zsh theme"
+    message -subtitle "Downloading zsh theme..."
     sleep 0.5
 
     git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k" >/dev/null 2>&1
@@ -122,5 +122,5 @@ function install_oh_my_zsh() {
 
 install_zsh
 install_oh_my_zsh
-message -success "installation completed successfully."
+message -cancel "installation completed successfully."
 exit 0

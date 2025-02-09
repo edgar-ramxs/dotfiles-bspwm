@@ -1,15 +1,15 @@
-#  ███████╗██╗  ██╗██████╗  ██████╗ ██████╗ ████████╗███████╗
-#  ██╔════╝╚██╗██╔╝██╔══██╗██╔═══██╗██╔══██╗╚══██╔══╝██╔════╝
-#  █████╗   ╚███╔╝ ██████╔╝██║   ██║██████╔╝   ██║   ███████╗
-#  ██╔══╝   ██╔██╗ ██╔═══╝ ██║   ██║██╔══██╗   ██║   ╚════██║
-#  ███████╗██╔╝ ██╗██║     ╚██████╔╝██║  ██║   ██║   ███████║
-#  ╚══════╝╚═╝  ╚═╝╚═╝      ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚══════╝
+#     ███████╗██╗  ██╗██████╗  ██████╗ ██████╗ ████████╗███████╗
+#     ██╔════╝╚██╗██╔╝██╔══██╗██╔═══██╗██╔══██╗╚══██╔══╝██╔════╝
+#     █████╗   ╚███╔╝ ██████╔╝██║   ██║██████╔╝   ██║   ███████╗
+#     ██╔══╝   ██╔██╗ ██╔═══╝ ██║   ██║██╔══██╗   ██║   ╚════██║
+#  ██╗███████╗██╔╝ ██╗██║     ╚██████╔╝██║  ██║   ██║   ███████║
+#  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝      ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚══════╝
+
 
 export EDITOR='code'
 export EDITOR_ALT='vim'
 export BROWSER='firefox'
-export LANG=en_CL.UTF-8
-
+export LANG='en_CL.UTF-8'
 export DOTFILES="$HOME/dotfiles-bspwm"
 export WALLPAPERS="$HOME/.config/wallpapers"
 export PROGRAMMING="$HOME/Documents/Programming"
@@ -36,5 +36,5 @@ export PATH="/usr/local/bin:/usr/bin:/bin:$PATH"
 export PATH="/usr/local/games:/usr/games:/usr/share/games:$PATH"
 export PATH="/usr/local/sbin:/usr/sbin:/sbin:$PATH"
 export PATH="/root/.local/bin:/snap/bin:/usr/sandbox:$PATH"
-export PATH="$HOME/.local/share/flatpak/exports/share/applications:/var/lib/flatpak/exports/share/applications:$PATH"
+export PATH="$HOME/.local/share/flatpak/exports/share/applications:$HOME/.local/share/flatpak/exports/bin/:/var/lib/flatpak/exports/share/applications:$PATH"
 
