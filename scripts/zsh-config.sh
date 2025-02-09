@@ -61,6 +61,16 @@ function install_zsh() {
 
 function install_oh_my_zsh() {
     message -title "Installing Oh My Zsh..."
+    sleep 0.5
+
+    local plugins=(
+        "https://github.com/zsh-users/zsh-syntax-highlighting.git"
+        "https://github.com/zsh-users/zsh-autosuggestions.git"
+    )
+
+    message -subtitle "Revisando que no haya un directorio de .oh-my-zsh"
+    sleep 0.5
+
     if [ -d "$HOME/.oh-my-zsh" ]; then
         message -warning "A previous installation of Oh My Zsh was found. Removing it..."
         rm -rf "$HOME/.oh-my-zsh"
@@ -68,41 +78,44 @@ function install_oh_my_zsh() {
     fi
 
     message -subtitle "Downloading and installing Oh My Zsh..."
-    yes | sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    sleep 0.5
+
+    yes | sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" >/dev/null 2>&1
     check_execution $? "Error installing Oh My Zsh" "Oh My Zsh installed successfully."
-}
 
-function install_plugins() {
-    local plugins=(
-        "https://github.com/zsh-users/zsh-syntax-highlighting.git"
-        "https://github.com/zsh-users/zsh-autosuggestions.git"
-    )
-
-    message -title "Installing Zsh plugins..."
+    message -subtitle "Installing Zsh plugins..."
     sleep 0.5
 
     for plugin in "${plugins[@]}"; do
         local plugin_name=$(basename "$plugin" .git)
         local plugin_path="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/$plugin_name"
-        message -subtitle "Installing: $plugin_name"
+        message -warning "Installing: $plugin_name"
         git clone "$plugin" "$plugin_path" >/dev/null 2>&1
         check_execution $? "Error installing $plugin_name" "$plugin_name installed correctly."
     done
-}
 
-function set_default_shell() {
-    message -title "Verifying default shell..."
+    message -subtitle "Downloading theme zsh"
+    sleep 0.5
+    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k" >/dev/null 2>&1
+    check_execution $? "Error installing" "installed correctly."
+
+
+    message -subtitle "Verifying default shell..."
+    sleep 0.5
+
     if [ "$SHELL" != "$(which zsh)" ]; then
         message -subtitle "Changing default shell to Zsh..."
         sudo chsh -s "$(which zsh)" "$USER"
+        sudo chsh -s "$(which zsh)" "root"
+        exec zsh
         message -success "Zsh is now the default shell."
     else
         message -success "Zsh is now the default shell."
     fi
+
 }
 
 install_zsh
 install_oh_my_zsh
-install_plugins
-set_default_shell
 message -success "installation completed successfully."
+exit 0
