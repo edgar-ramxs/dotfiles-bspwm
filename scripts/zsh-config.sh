@@ -36,7 +36,12 @@ function check_execution() {
 }
 
 function install_zsh() {
-    message -title "Verifying Zsh installation..."
+    message -title "Zsh installation"
+    sleep 0.5
+
+    message -subtitle "Verifying "
+    sleep 0.5
+
     if ! command -v zsh >/dev/null 2>&1; then
         message -warning "Zsh is not installed. Proceeding with installation..."
         if command -v apt >/dev/null 2>&1; then
@@ -68,7 +73,7 @@ function install_oh_my_zsh() {
         "https://github.com/zsh-users/zsh-autosuggestions.git"
     )
 
-    message -subtitle "Revisando que no haya un directorio de .oh-my-zsh"
+    message -subtitle "Checking that there is no .oh-my-zsh directory"
     sleep 0.5
 
     if [ -d "$HOME/.oh-my-zsh" ]; then
@@ -94,25 +99,25 @@ function install_oh_my_zsh() {
         check_execution $? "Error installing $plugin_name" "$plugin_name installed correctly."
     done
 
-    message -subtitle "Downloading theme zsh"
+    message -subtitle "Downloading zsh theme"
     sleep 0.5
+
     git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k" >/dev/null 2>&1
     check_execution $? "Error installing" "installed correctly."
-
 
     message -subtitle "Verifying default shell..."
     sleep 0.5
 
     if [ "$SHELL" != "$(which zsh)" ]; then
-        message -subtitle "Changing default shell to Zsh..."
+        message -warning "Changing default shell to Zsh..."
         sudo chsh -s "$(which zsh)" "$USER"
         sudo chsh -s "$(which zsh)" "root"
-        exec zsh
         message -success "Zsh is now the default shell."
     else
         message -success "Zsh is now the default shell."
     fi
-
+    
+    exec zsh
 }
 
 install_zsh
