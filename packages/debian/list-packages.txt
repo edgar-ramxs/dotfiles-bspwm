@@ -212,3 +212,14 @@ obs-studio
 firefox-esr
 font-manager
 
+##  EXTRA
+# cryptsetup
+# gnupg
+# gpg
+# ca-certificates
+# openssl
+# pyca
+# firejail
+# openvpn
+# strongswan
+# vpnc

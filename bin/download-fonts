@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 #  ███████╗ ██████╗ ███╗   ██╗████████╗███████╗
 #  ██╔════╝██╔═══██╗████╗  ██║╚══██╔══╝██╔════╝
 #  █████╗  ██║   ██║██╔██╗ ██║   ██║   ███████╗
@@ -9,19 +8,20 @@
 #  ╚═╝      ╚═════╝ ╚═╝  ╚═══╝   ╚═╝   ╚══════╝
 # LINK: https://github.com/ryanoasis/nerd-fonts/releases/latest/
 
-
 FONTS=(
     "0xProto" "3270" "Agave" "AnonymousPro" "Arimo" "AurulentSansMono"
-    "BigBlueTerminal" "BitstreamVeraSansMono" "CascadiaCode" "CascadiaMono" "CodeNewRoman" "ComicShannsMono"
-    "CommitMono" "Cousine" "D2Coding" "DaddyTimeMono" "DejaVuSansMono" "DroidSansMono"
-    "EnvyCodeR" "FantasqueSansMono" "FiraCode" "FiraMono" "GeistMono" "Go-Mono"
-    "Gohu" "Hack" "Hasklig" "HeavyData" "Hermit" "iA-Writer"
-    "IBMPlexMono" "Inconsolata" "InconsolataGo" "InconsolataLGC" "IntelOneMono" "Iosevka"
-    "IosevkaTerm" "IosevkaTermSlab" "JetBrainsMono" "Lekton" "LiberationMono" "Lilex"
-    "MartianMono" "Meslo" "Monaspace" "Monofur" "Monoid" "Mononoki"
-    "MPlus" "NerdFontsSymbolsOnly" "Noto" "OpenDyslexic" "Overpass" "ProFont"
-    "ProggyClean" "Recursive" "RobotoMono" "ShareTechMono" "SourceCodePro" "SpaceMono"
-    "Terminus" "Tinos" "Ubuntu" "UbuntuMono" "UbuntuSans" "VictorMono" "ZedMono"
+    "BigBlueTerminal" "BitstreamVeraSansMono" "CascadiaCode" "CascadiaMono"
+    "CodeNewRoman" "ComicShannsMono" "CommitMono" "Cousine" "D2Coding"
+    "DaddyTimeMono" "DejaVuSansMono" "DroidSansMono" "EnvyCodeR"
+    "FantasqueSansMono" "FiraCode" "FiraMono" "GeistMono" "Go-Mono"
+    "Gohu" "Hack" "Hasklig" "HeavyData" "Hermit" "iA-Writer" "IBMPlexMono"
+    "Inconsolata" "InconsolataGo" "InconsolataLGC" "IntelOneMono" "Iosevka"
+    "IosevkaTerm" "IosevkaTermSlab" "JetBrainsMono" "Lekton" "LiberationMono"
+    "Lilex" "MartianMono" "Meslo" "Monaspace" "Monofur" "Monoid" "Mononoki"
+    "MPlus" "NerdFontsSymbolsOnly" "Noto" "OpenDyslexic" "Overpass"
+    "ProFont" "ProggyClean" "Recursive" "RobotoMono" "ShareTechMono"
+    "SourceCodePro" "SpaceMono" "Terminus" "Tinos" "Ubuntu" "UbuntuMono"
+    "UbuntuSans" "VictorMono" "ZedMono"
 )
 
 function message() {
@@ -49,14 +49,15 @@ function is_valid_font() {
     return 1
 }
 
-DIR_TMP="/tmp/fonts_tmp"
-DIR_FONTS="/usr/share/fonts"
-mkdir -p "$DIR_TMP"
-
 if [ $# -eq 0 ]; then
     message -error "Error: At least one font must be provided as a parameter."
     exit 1
 fi
+
+sudo -v
+DIR_TMP="/tmp/fonts_tmp"
+DIR_FONTS="/usr/share/fonts"
+mkdir -p "$DIR_TMP"
 
 for font_name in "$@"; do
     if is_valid_font "$font_name"; then
@@ -90,8 +91,6 @@ done
 
 
 rm -rf "$DIR_TMP"
-sleep 0.5
-
 sudo fc-cache -fv >/dev/null 2>&1
 sleep 0.5
 

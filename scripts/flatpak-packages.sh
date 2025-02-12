@@ -7,9 +7,6 @@
 #  ██║     ███████╗██║  ██║   ██║   ██║     ██║  ██║██║  ██╗    ██║██║ ╚████║███████║   ██║   ██║  ██║███████╗███████╗███████╗██║  ██║
 #  ╚═╝     ╚══════╝╚═╝  ╚═╝   ╚═╝   ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝    ╚═╝╚═╝  ╚═══╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝╚═╝  ╚═╝
 
-set -e
-sudo -v
-
 function message() {
     local signal color
     local RESETC="\033[0m\e[0m"
@@ -85,5 +82,8 @@ function main() {
     message -success "All Flatpak packages have been installed successfully!"
     exit 1
 }
+
+set -e
+sudo -v
 
 main

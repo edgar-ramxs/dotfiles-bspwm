@@ -15,6 +15,22 @@ function message() {
     esac
 }
 
+trap ctrl_c INT
+function ctrl_c() {
+    message -cancel "Exiting...\n"
+    exit 1
+}
+
+function check_execution() {
+    if [ $1 != 0 ] && [ $1 != 130 ]; then
+        message -error "Error: $2"
+        sleep 0.5
+    else
+        message -success "Successful: $3"
+        sleep 0.5
+    fi
+}
+
 function add_or_update_variable() {
     local VAR_NAME="$1"
     local VAR_VALUE="$2"
@@ -30,9 +46,6 @@ function add_or_update_variable() {
 
 # Archivo de entorno (puedes cambiarlo para pruebas)
 ENV_FILE="/etc/environment"
-
-# Pide la contraseña solo una vez al inicio
-sudo -v
 
 # Inicializa variables para cada parámetro
 CUSTOM_PATH=""
@@ -87,6 +100,9 @@ while getopts "p:e:b:w:" opt; do
         ;;
     esac
 done
+
+# Pide la contraseña solo una vez al inicio
+sudo -v
 
 # Agrega o actualiza las variables si se han proporcionado valores válidos
 [ -n "$CUSTOM_PATH" ] && add_or_update_variable "PATH" "$CUSTOM_PATH"

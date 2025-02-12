@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-sudo -v
-
 #  ██╗   ██╗ █████╗ ██████╗ ██╗ █████╗ ██████╗ ██╗     ███████╗███████╗
 #  ██║   ██║██╔══██╗██╔══██╗██║██╔══██╗██╔══██╗██║     ██╔════╝██╔════╝
 #  ██║   ██║███████║██████╔╝██║███████║██████╔╝██║     █████╗  ███████╗
@@ -13,8 +11,6 @@ DIR=$(pwd)
 USER=$(whoami)
 DISTRO=$(grep -i '^ID=' /etc/os-release | cut -d= -f2 | tr -d '"' | tr '[:upper:]' '[:lower:]')
 P_SHELL=""
-P_THEME=""
-P_PACKAGES=""
 P_RESOLUTION=""
 
 #  ███████╗██╗   ██╗███╗   ██╗ ██████╗████████╗██╗ ██████╗ ███╗   ██╗███████╗
@@ -303,7 +299,7 @@ function install_packages() {
         ;;
     esac
     
-    message -success "Package installation completed for $DISTRO."
+    message -warning "Package installation completed for $DISTRO."
 }
 
 function install_fonts(){
@@ -437,7 +433,6 @@ function install_oh_my_zsh() {
     check_execution $? "Error installing" "installed correctly."
 }
 
-
 #  ███████╗███████╗████████╗████████╗██╗███╗   ██╗ ██████╗ ███████╗
 #  ██╔════╝██╔════╝╚══██╔══╝╚══██╔══╝██║████╗  ██║██╔════╝ ██╔════╝
 #  ███████╗█████╗     ██║      ██║   ██║██╔██╗ ██║██║  ███╗███████╗
@@ -507,13 +502,14 @@ function setter_shell(){
     message -title "Setting default shell"
     sleep 0.5
 
-    case "$1" in
+    case "$P_SHELL" in
         "bash")
             message -subtitle "Changing default shell to bash..."
             sudo chsh -s "$(which bash)" "$USER"
             sudo chsh -s "$(which bash)" "root"
             message -success "bash is now the default shell."
-            
+
+            echo -e "shell      bash" > $HOME/.config/kitty/shell.conf
             copy_configs "$DIR/home/bash" "$HOME" "Copying Bash configuration..."
         ;;
         "zsh")
@@ -523,7 +519,8 @@ function setter_shell(){
             message -success "Zsh is now the default shell."
             
             install_oh_my_zsh
-            
+
+            echo -e "shell      zsh" > $HOME/.config/kitty/shell.conf
             copy_configs "$DIR/home/zsh" "$HOME" "Copying Zsh configuration..."
         ;;
         *)
@@ -635,6 +632,7 @@ while getopts ":s:r:" opt; do
     esac
 done
 
+
 if [[ -z "$P_SHELL" || -z "$P_RESOLUTION" ]]; then
     usage
 fi
@@ -645,6 +643,9 @@ if [ "$UID" -eq 0 ]; then
     exit 1
 fi
 
+
+sudo -v
+
 updating_packages
 
 install_packages
@@ -653,7 +654,7 @@ install_pywal
 
 xdg-user-dirs-update
 
-setter_shell $P_SHELL
+setter_shell
 setter_configs
 setter_homefiles
 setter_permissions

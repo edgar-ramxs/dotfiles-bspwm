@@ -7,9 +7,6 @@
 #  ███████╗███████║██║  ██║    ██║██║ ╚████║███████║   ██║   ██║  ██║███████╗███████╗███████╗██║  ██║
 #  ╚══════╝╚══════╝╚═╝  ╚═╝    ╚═╝╚═╝  ╚═══╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝╚═╝  ╚═╝
 
-set -e
-sudo -v
-
 function message() {
     local signal color
     local RESETC="\033[0m\e[0m"
@@ -119,6 +116,9 @@ function install_oh_my_zsh() {
     
     exec zsh
 }
+
+set -e
+sudo -v
 
 install_zsh
 install_oh_my_zsh

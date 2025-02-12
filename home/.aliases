@@ -5,17 +5,22 @@
 #  ██╗██║  ██║███████╗██║██║  ██║███████║███████╗███████║
 #  ╚═╝╚═╝  ╚═╝╚══════╝╚═╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝
 
+# neofetch | fastfetch
+alias fetch="neofetch"
+
 alias ls="lsd --group-dirs=first"
 alias la="lsd -a --group-dirs=first"
 alias ll="lsd -lh --group-dirs=first"
-alias lla="lsd -lha --group-dirs=first"
+alias lh="lsd -lha --group-dirs=first"
 
 alias cls="clear"
 alias cll="clear; ls"
 alias cla="clear; ls -la"
+alias clf="clear; fetch"
 
 alias cat="batcat"
 alias icat="kitty +kitten icat"
+alias clock="tty-clock -s -b -c -r"
 
 alias reload-zsh="source ~/.zshrc"
 alias reload-bash="source ~/.bashrc"
@@ -28,9 +33,6 @@ alias per-755="chmod 755"
 
 alias stop-venv="deactivate"
 alias start-venv="source $(get-venv-name)/bin/activate"
-
-# "neofetch --off" | "fastfetch --logo none"
-alias fetch="neofetch"
 
 alias smki="sudo make clean install"
 alias updating="sudo apt update -y && sudo apt upgrade -y"
@@ -48,7 +50,8 @@ alias rcfg-bashrc="$EDITOR $HOME/.bashrc"
 alias rcfg-aliases="$EDITOR $HOME/.aliases"
 alias rcfg-exports="$EDITOR $HOME/.exports"
 alias rcfg-functions="$EDITOR $HOME/.functions"
+
+alias rcfg-sxhkd="$EDITOR $HOME/.config/sxhkd/sxhkdrc"
 alias rcfg-bspwm="$EDITOR $HOME/.config/bspwm/bspwmrc"
-alias rcfg-binds="$EDITOR $HOME/.config/sxhkd/sxhkdrc"
 alias rcfg-kitty="$EDITOR $HOME/.config/kitty/kitty.conf"
 alias rcfg-polybar="$EDITOR $HOME/.config/polybar/config.ini"

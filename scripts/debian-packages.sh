@@ -7,9 +7,6 @@
 #  ██████╔╝███████╗██████╔╝██║██║  ██║██║ ╚████║    ██║     ██║  ██║╚██████╗██║  ██╗██║  ██║╚██████╔╝███████╗███████║
 #  ╚═════╝ ╚══════╝╚═════╝ ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝    ╚═╝     ╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚══════╝
 
-set -e
-sudo -v
-
 function message() {
     local signal color
     local RESETC="\033[0m\e[0m"
@@ -33,9 +30,6 @@ function check_execution() {
         message -success "$3"
     fi
 }
-
-TEMP_DIR=$(mktemp -d)
-message -title "Temporary directory created: $TEMP_DIR"
 
 function download_discord() {
     message -subtitle "Downloading Discord..."
@@ -61,6 +55,12 @@ function download_vscode() {
     sudo dpkg -i "$VSCODE_DEB"
     check_execution $? "Failed to install Visual Studio Code" "Visual Studio Code installed successfully"
     sudo apt-get install -f -y
+    
+    # curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+    # sudo install -o root -g root -m 644 microsoft.gpg /etc/apt/keyrings/microsoft-archive-keyring.gpg
+    # sudo sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/microsoft-archive-keyring.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list'
+    # sudo apt-get update
+    # sudo apt-get install code # or code-insiders
 }
 
 function install_brave() {
@@ -69,11 +69,11 @@ function install_brave() {
     check_execution $? "Failed to install curl" "Curl installed successfully"
     
     sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg \
-        https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
+    https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
     check_execution $? "Failed to download Brave Browser key" "Brave Browser key downloaded successfully"
     
     echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main" \
-        | sudo tee /etc/apt/sources.list.d/brave-browser-release.list
+    | sudo tee /etc/apt/sources.list.d/brave-browser-release.list
     
     sudo apt update
     check_execution $? "Failed to update package list" "Package list updated successfully"
@@ -91,6 +91,12 @@ function usage() {
     exit 1
 }
 
+set -e
+sudo -v
+
+TEMP_DIR=$(mktemp -d)
+message -title "Temporary directory created: $TEMP_DIR"
+
 while getopts "dvb" opt; do
     case $opt in
         d) download_discord ;;
@@ -102,5 +108,7 @@ done
 
 message -subtitle "Cleaning up temporary files..."
 rm -rf "$TEMP_DIR"
+
 message -success "Process completed successfully."
 exit 1
+ 
