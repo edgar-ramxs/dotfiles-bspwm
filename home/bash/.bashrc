@@ -40,8 +40,8 @@ fi
 
 
 # Sources
-source ~/.functions
 source ~/.exports
+source ~/.functions
 source ~/.aliases
 
 

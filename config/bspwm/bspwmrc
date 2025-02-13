@@ -19,17 +19,20 @@ $HOME/.config/bspwm/scripts/bspwm-autostart.sh
 bspc monitor -d I II III IV V VI VII VIII IX X
 
 ## rules
+bspc rule -a code focus=on
 bspc rule -a kitty focus=on
-bspc rule -a thunar desktop='^1' focus=on
-bspc rule -a code desktop='^2' focus=on
-bspc rule -a firefox-esr desktop='^3' focus=on
+bspc rule -a thunar focus=on
+bspc rule -a firefox-esr focus=on
+# bspc rule -a <Application> desktop='^1'
+# bspc rule -a <Application> desktop='^2'
+# bspc rule -a <Application> desktop='^3'
 # bspc rule -a <Application> desktop='^4'
 # bspc rule -a <Application> desktop='^5'
 # bspc rule -a <Application> desktop='^6'
 # bspc rule -a <Application> desktop='^7'
 # bspc rule -a <Application> desktop='^8'
 # bspc rule -a <Application> desktop='^9'
-bspc rule -a obs desktop='^10' focus=on
+# bspc rule -a <Application> desktop='^10'
 
 ## 
 bspc config single_monocle false

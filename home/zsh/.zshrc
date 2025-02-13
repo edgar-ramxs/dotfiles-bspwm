@@ -5,7 +5,23 @@
 #  ██╗███████╗███████║██║  ██║██║  ██║╚██████╗
 #  ╚═╝╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝
 
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+# If you come from bash you might have to change your $PATH.
+# export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
+
+# Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
+
+# Set name of the theme to load --- if set to "random", it will
+# load a random theme each time Oh My Zsh is loaded, in which case,
+# to know which specific one was loaded, run: echo $RANDOM_THEME
+# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # Set list of themes to pick from when loading at random
@@ -92,12 +108,41 @@ source $ZSH/oh-my-zsh.sh
 # setopt hist_ignore_space        # ignore commands that start with space
 # setopt hist_verify              # show command with history expansion to user before running it
 # setopt share_history            # share command history data
-
 setopt histignorealldups   # Evita duplicados en el historial
 setopt sharehistory        # Comparte historial entre sesiones
 setopt extended_history    # Guarda timestamps en el historial
 setopt inc_append_history  # Guarda comandos en historial inmediatamente
 setopt histreduceblanks    # Elimina espacios extra en los comandos
+
+# User configuration
+
+# export MANPATH="/usr/local/man:$MANPATH"
+
+# You may need to manually set your language environment
+# export LANG=en_US.UTF-8
+
+# Preferred editor for local and remote sessions
+# if [[ -n $SSH_CONNECTION ]]; then
+#   export EDITOR='vim'
+# else
+#   export EDITOR='nvim'
+# fi
+
+# Compilation flags
+# export ARCHFLAGS="-arch $(uname -m)"
+
+# Set personal aliases, overriding those provided by Oh My Zsh libs,
+# plugins, and themes. Aliases can be placed here, though Oh My Zsh
+# users are encouraged to define aliases within a top-level file in
+# the $ZSH_CUSTOM folder, with .zsh extension. Examples:
+# - $ZSH_CUSTOM/aliases.zsh
+# - $ZSH_CUSTOM/macos.zsh
+# For a full list of active aliases, run `alias`.
+#
+# Example aliases
+# alias zshconfig="mate ~/.zshrc"
+# alias ohmyzsh="mate ~/.oh-my-zsh"
+
 
 export HISTFILE='~/.zsh_history'
 export HISTSIZE=10000
@@ -140,97 +185,11 @@ bindkey "^I" complete                   # Muestra las opciones al presionar Tab
 bindkey "^N" backward-kill-line         # (Ctrl + N) Eliminar desde el inicio hasta el cursor
 bindkey "^M" kill-line                  # (Ctrl + M) Eliminar desde el final hasta el cursor
 
-# bindkey -e                            # Activa edición estilo emacs (Ctrl+A, Ctrl+E, etc.)
-# bindkey "^[l" forward-word            # (Alt + L) → Mover adelante una palabra
-# bindkey "^[h" backward-word           # (Alt + H) → Mover atrás una palabra
-# bindkey "^N" backward-kill-line       # (Ctrl + N) → Elimina desde el cursor hasta el inicio
-# bindkey "^M" kill-line                # (Ctrl + M) → Elimina desde el cursor hasta el final
-# bindkey "^[j" down-line-or-history    # (Alt + J) → Bajar en el historial
-# bindkey "^[k" up-line-or-history      # (Alt + K) → Subir en el historial
-# bindkey '^ ' autosuggest-accept       # (Ctrl + Espacio) → Aceptar sugerencia automática
-# bindkey '^H' autosuggest-clear        # (Ctrl + H) → Limpiar sugerencias automáticas
-
-
 # Sources
-source ~/.functions
 source ~/.exports
+source ~/.functions
 source ~/.aliases
 
 
-
-# #!/usr/bin/env zsh
-# source ${ZDOTDIR}/environment.zsh
-# source ${ZDOTDIR}/options.zsh # Source zsh options
-# source ${ZDOTDIR}/aliases.zsh # Source zsh aliases
-# source ${ZDOTDIR}/functions.zsh # Source custom functions
-# source ${ZDOTDIR}/keybinds.zsh # Source zsh keybinds
-
-# ZGENOMDIR="$XDG_DATA_HOME/zgenom"
-# if [ ! -d "$ZGENOMDIR" ]; then
-# 	echo "Installing zgenom to: ${ZGENOMDIR}..."
-# 	git clone https://github.com/jandamm/zgenom.git "$ZGENOMDIR"
-# fi
-
-# source ${ZDOTDIR}/zgenom.zsh # Source zgenom for plugins
-# source ${ZDOTDIR}/keybinds-late.zsh # Source late load keybinds
-
-# autoload -Uz compinit
-# compinit -d $XDG_CACHE_HOME/.zcompdump
-
-# add-zsh-hook -Uz chpwd chpwd-osc7-pwd
-
-# PROMPT='%F{yellow}%3~%f $ '
-
-# # Run fetch script on zsh start
-# if [ -z $WAYLAND_DISPLAY ]; then
-# 	fastfetch -l none
-# else
-# 	fastfetch
-# fi
-
-
-
-
-# autoload -Uz compinit
-
-# for dump in ~/.config/zsh/zcompdump(N.mh+24); do
-#   compinit -d ~/.config/zsh/zcompdump
-# done
-
-# compinit -C -d ~/.config/zsh/zcompdump
-
-# # Set XDG Base Directory paths
-# export XDG_CONFIG_HOME="${HOME}/.config"          # User configuration files
-# export XDG_CACHE_HOME="${HOME}/.cache"            # User cache files
-# export XDG_DATA_HOME="${HOME}/.local/share"       # User data files
-# export XDG_STATE_HOME="${HOME}/.local/state"      # User state files
-
-# # Set other tool and configuration paths to clean up ~
-# export GOPATH="$XDG_DATA_HOME"/go
-# export CARGO_HOME="$XDG_DATA_HOME"/cargo          # Cargo package manager
-# export GNUPGHOME="$XDG_DATA_HOME"/gnupg           # GNU Privacy Guard home
-# export _JAVA_OPTIONS="-Djava.util.prefs.userRoot="${XDG_CONFIG_HOME}"/java \
-#                       -Dawt.useSystemAAFontSettings=gasp" # Java preferences
-# export CUDA_CACHE_PATH="$XDG_CACHE_HOME"/nv
-# export ANDROID_HOME="${XDG_DATA_HOME}/android"    # Android SDK home
-
-# # Set zsh shell history file path and set max history length
-# export HISTFILE="${XDG_STATE_HOME}/zsh/history"
-# export HISTSIZE=5000
-# export SAVEHIST=$HISTSIZE
-# export HISTDUP=erase
-
-# export ZSH_FZF_HISTORY_SEARCH_DATES_IN_SEARCH=0 # Disable dates in zsh-fzf-history
-# export ZSH_FZF_HISTORY_SEARCH_EVENT_NUMBERS=0 # Disable index in zsh-fzf-history
-# export ZSH_FZF_HISTORY_SEARCH_REMOVE_DUPLICATES=1 # Hide duplicates in zsh-fzf-history
-
-# # Add additional directories to PATH
-# export PATH=${PATH}:~/.local/scripts:~/.local/bin:"$XDG_DATA_HOME"/cargo/bin:"$XDG_DATA_HOME"/go/bin 
-
-# # Set sudo password prompt
-# export SUDO_PROMPT='[] Enter Password: '
-
-# # Set default editor
-# export EDITOR='nvim'
-
-# export SSH_AUTH_SOCK=$XDG_RUNTIME_DIR/gcr/ssh # Keyring
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh

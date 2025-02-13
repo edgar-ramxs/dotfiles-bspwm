@@ -1,0 +1,73 @@
+# #!/usr/bin/env zsh
+# source ${ZDOTDIR}/environment.zsh
+# source ${ZDOTDIR}/options.zsh # Source zsh options
+# source ${ZDOTDIR}/aliases.zsh # Source zsh aliases
+# source ${ZDOTDIR}/functions.zsh # Source custom functions
+# source ${ZDOTDIR}/keybinds.zsh # Source zsh keybinds
+
+# ZGENOMDIR="$XDG_DATA_HOME/zgenom"
+# if [ ! -d "$ZGENOMDIR" ]; then
+# 	echo "Installing zgenom to: ${ZGENOMDIR}..."
+# 	git clone https://github.com/jandamm/zgenom.git "$ZGENOMDIR"
+# fi
+
+# source ${ZDOTDIR}/zgenom.zsh # Source zgenom for plugins
+# source ${ZDOTDIR}/keybinds-late.zsh # Source late load keybinds
+
+# autoload -Uz compinit
+# compinit -d $XDG_CACHE_HOME/.zcompdump
+
+# add-zsh-hook -Uz chpwd chpwd-osc7-pwd
+
+# PROMPT='%F{yellow}%3~%f $ '
+
+# # Run fetch script on zsh start
+# if [ -z $WAYLAND_DISPLAY ]; then
+# 	fastfetch -l none
+# else
+# 	fastfetch
+# fi
+
+# autoload -Uz compinit
+
+# for dump in ~/.config/zsh/zcompdump(N.mh+24); do
+#   compinit -d ~/.config/zsh/zcompdump
+# done
+
+# compinit -C -d ~/.config/zsh/zcompdump
+
+# # Set XDG Base Directory paths
+# export XDG_CONFIG_HOME="${HOME}/.config"          # User configuration files
+# export XDG_CACHE_HOME="${HOME}/.cache"            # User cache files
+# export XDG_DATA_HOME="${HOME}/.local/share"       # User data files
+# export XDG_STATE_HOME="${HOME}/.local/state"      # User state files
+
+# # Set other tool and configuration paths to clean up ~
+# export GOPATH="$XDG_DATA_HOME"/go
+# export CARGO_HOME="$XDG_DATA_HOME"/cargo          # Cargo package manager
+# export GNUPGHOME="$XDG_DATA_HOME"/gnupg           # GNU Privacy Guard home
+# export _JAVA_OPTIONS="-Djava.util.prefs.userRoot="${XDG_CONFIG_HOME}"/java \
+#                       -Dawt.useSystemAAFontSettings=gasp" # Java preferences
+# export CUDA_CACHE_PATH="$XDG_CACHE_HOME"/nv
+# export ANDROID_HOME="${XDG_DATA_HOME}/android"    # Android SDK home
+
+# # Set zsh shell history file path and set max history length
+# export HISTFILE="${XDG_STATE_HOME}/zsh/history"
+# export HISTSIZE=5000
+# export SAVEHIST=$HISTSIZE
+# export HISTDUP=erase
+
+# export ZSH_FZF_HISTORY_SEARCH_DATES_IN_SEARCH=0 # Disable dates in zsh-fzf-history
+# export ZSH_FZF_HISTORY_SEARCH_EVENT_NUMBERS=0 # Disable index in zsh-fzf-history
+# export ZSH_FZF_HISTORY_SEARCH_REMOVE_DUPLICATES=1 # Hide duplicates in zsh-fzf-history
+
+# # Add additional directories to PATH
+# export PATH=${PATH}:~/.local/scripts:~/.local/bin:"$XDG_DATA_HOME"/cargo/bin:"$XDG_DATA_HOME"/go/bin 
+
+# # Set sudo password prompt
+# export SUDO_PROMPT='[] Enter Password: '
+
+# # Set default editor
+# export EDITOR='nvim'
+
+# export SSH_AUTH_SOCK=$XDG_RUNTIME_DIR/gcr/ssh # Keyring

@@ -662,9 +662,9 @@ install_pywal
 xdg-user-dirs-update
 
 setter_configs
-setter_homefiles
-setter_shell
 setter_permissions
+setter_shell
+setter_homefiles
 setter_symbolic_links
 
 reboot_system
