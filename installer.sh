@@ -661,9 +661,9 @@ install_pywal
 
 xdg-user-dirs-update
 
-setter_shell
 setter_configs
 setter_homefiles
+setter_shell
 setter_permissions
 setter_symbolic_links
 
