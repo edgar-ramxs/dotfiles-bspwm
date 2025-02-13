@@ -510,19 +510,25 @@ function setter_shell(){
             sudo chsh -s "$(which bash)" "root"
             message -success "bash is now the default shell."
 
-            echo -e "shell bash" > $HOME/.config/kitty/shell.conf
+            echo -e "shell bash" > ~/.config/kitty/shell.conf
+
+            shopt -s dotglob 
             copy_configs "$DIR/home/bash" "$HOME" "Copying Bash configuration..."
+            shopt -u dotglob 
         ;;
         zsh)
-            message -subtitle "Changing default shell to bash..."
+            message -subtitle "Changing default shell to zsh..."
             sudo chsh -s "$(which zsh)" "$USER"
             sudo chsh -s "$(which zsh)" "root"
             message -success "Zsh is now the default shell."
             
             install_oh_my_zsh
 
-            echo -e "shell zsh" > $HOME/.config/kitty/shell.conf
+            echo -e "shell zsh" > ~/.config/kitty/shell.conf
+
+            shopt -s dotglob 
             copy_configs "$DIR/home/zsh" "$HOME" "Copying Zsh configuration..."
+            shopt -u dotglob 
         ;;
         *)
             continue
