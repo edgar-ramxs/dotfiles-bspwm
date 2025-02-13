@@ -23,7 +23,7 @@ export SUDO_PROMPT="[󱕴] Password [󱕴]: "
 export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 
 export PATH="$HOME/.local/bin:$HOME/bin:$PATH"
-export PATH="/usr/local/bin:/usr/bin:/bin:$PATH"
+export PATH="/usr/local/bin:/usr/local/go/bin:/usr/bin:/bin:$PATH"
 export PATH="/usr/local/games:/usr/games:/usr/share/games:$PATH"
 export PATH="/usr/local/sbin:/usr/sbin:/sbin:$PATH"
 export PATH="/root/.local/bin:/snap/bin:/usr/sandbox:$PATH"

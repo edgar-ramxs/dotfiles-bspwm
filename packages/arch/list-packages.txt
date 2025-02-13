@@ -17,3 +17,4 @@ gnome-tweaks
 gnome-shell-extension-desktop-icons-ng
 gnome-shell-extension-arc-menu
 gnome-shell-extension-dash-to-panel
+libxcb xcb-util xcb-util-wm xcb-util-keysyms

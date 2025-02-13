@@ -11,23 +11,26 @@ Hello, I created these dotfiles to use the BSPWM window manager. The idea came u
   + [Debian](https://www.debian.org/)
   + [Kali Linux](https://www.kali.org/)
 
-> NOTE: Don't use the installer, it contains some problems. Please, if you want to use my dotfiles, use the files manually.
-
 
 ## Pre-installation
 As of **October 2024**, if you are using **Debian 12**, some packages may not be available. Therefore, it is recommended to update the kernel and migrate to an environment with **Debian 13 (Trixie)** by performing a full system upgrade.
 
-To do this, you can use the script located in the `debian_bookworm_to_trixie.sh` directory, and once the upgrade is complete, continue with the installation.
+To do this, you can use the script located in the `debian_testing.sh` directory, and once the upgrade is complete, continue with the installation.
 
 You can start by reviewing the packages using the `install_packages` function, editing it to check if the packages are available in the repositories. This is useful if you prefer not to upgrade to Debian 13 (Trixie).
 
 
 ## Installation
 ```bash
-    git clone https://github.com/edgar-ramxs/dotfiles-bspwm.git ~/dotfiles-bspwm
-    cd ~/dotfiles-bspwm
-    chmod +x installer.sh
-    ./installer.sh
+sudo apt install -y git vim neofetch
+
+git clone https://github.com/edgar-ramxs/dotfiles-bspwm.git ~/dotfiles-bspwm
+
+cd ~/dotfiles-bspwm
+
+chmod +x installer.sh
+
+./installer.sh -s [bash|zsh] -r [1920x1080|1366x768]
 ```
 
 
@@ -40,18 +43,18 @@ Read the [KEYBINDING.md](assets/KEYBINDING.md) to find out what the keyboard sho
 
   |     | Component                 | Package                                                     |
   | --- | ------------------------- | ----------------------------------------------------------- |
-  | 💻 | **Window Manager**         |  [Bspwm](https://github.com/baskerville/bspwm)              |
-  | 🐱 | **Terminal**               |  [Kitty](https://sw.kovidgoyal.net/kitty/)                  |
-  | 🦊 | **Shell**                  |  [Zsh](https://ohmyz.sh/)                                   |
-  | 🎼 | **Compositor**             |  [Picom](https://github.com/yshui/picom)                    |
-  | 💈 | **Bar**                    |  [Polybar](https://github.com/polybar/polybar)              |
-  | 🔍 | **Menu Launcher**          |  [Rofi](https://github.com/davatorium/rofi)                 |
-  | 🔔 | **Notify Daemon**          |  [Dunst](https://github.com/dunst-project/dunst)            |
-  | 📝 | **Editor**                 |  [Visual Studio Code](https://code.visualstudio.com/)       |
-  | 🚀 | **Browser**                |  [Firefox](https://www.mozilla.org/)                        |
-  | 📂 | **File Manager**           |  [Thunar](https://wiki.archlinux.org/title/Thunar)          |
-  | 🎨 | **Wallpaper Manager**      |  [Nitrogen](https://wiki.archlinux.org/title/Nitrogen)      |
-  | 🍉 | **Colors**                 |  [Pywal](https://github.com/dylanaraps/pywal)               |
+  | 💻 | **Window Manager**         |  [bspwm](https://github.com/baskerville/bspwm)              |
+  | 🐱 | **Terminal**               |  [kitty](https://sw.kovidgoyal.net/kitty/)                  |
+  | 🦊 | **Shell**                  |  [zsh](https://ohmyz.sh/)                                   |
+  | 🎼 | **Compositor**             |  [picom](https://github.com/yshui/picom)                    |
+  | 💈 | **Bar**                    |  [polybar](https://github.com/polybar/polybar)              |
+  | 🔍 | **Menu Launcher**          |  [rofi](https://github.com/davatorium/rofi)                 |
+  | 🔔 | **Notify Daemon**          |  [dunst](https://github.com/dunst-project/dunst)            |
+  | 📝 | **Editor**                 |  [visual studio code](https://code.visualstudio.com/)       |
+  | 🚀 | **Browser**                |  [firefox](https://www.mozilla.org/)                        |
+  | 📂 | **File Manager**           |  [thunar](https://wiki.archlinux.org/title/Thunar)          |
+  | 🎨 | **Wallpaper Manager**      |  [nitrogen](https://wiki.archlinux.org/title/Nitrogen)      |
+  | 🍉 | **Colors**                 |  [pywal](https://github.com/dylanaraps/pywal)               |
 
 </div>
 

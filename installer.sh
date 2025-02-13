@@ -303,7 +303,8 @@ function install_packages() {
 }
 
 function install_fonts(){
-    local FONTS=("FiraCode" "CascadiaCode" "Iosevka" "Hack" "JetBrainsMono")
+    local FONTS=("FiraCode" "CascadiaCode" "Iosevka" "Hack" "JetBrainsMono" "Meslo" "Mononoki" "Inconsolata" "RobotoMono" "0xProto") 
+
     local DIR_FONTS="/usr/share/fonts"
     local DIR_DOWNLOADS="/tmp/fonts_tmp"
     mkdir -p "$DIR_DOWNLOADS"
@@ -503,16 +504,16 @@ function setter_shell(){
     sleep 0.5
 
     case "$P_SHELL" in
-        "bash")
+        bash)
             message -subtitle "Changing default shell to bash..."
             sudo chsh -s "$(which bash)" "$USER"
             sudo chsh -s "$(which bash)" "root"
             message -success "bash is now the default shell."
 
-            echo -e "shell      bash" > $HOME/.config/kitty/shell.conf
+            echo -e "shell bash" > $HOME/.config/kitty/shell.conf
             copy_configs "$DIR/home/bash" "$HOME" "Copying Bash configuration..."
         ;;
-        "zsh")
+        zsh)
             message -subtitle "Changing default shell to bash..."
             sudo chsh -s "$(which zsh)" "$USER"
             sudo chsh -s "$(which zsh)" "root"
@@ -520,7 +521,7 @@ function setter_shell(){
             
             install_oh_my_zsh
 
-            echo -e "shell      zsh" > $HOME/.config/kitty/shell.conf
+            echo -e "shell zsh" > $HOME/.config/kitty/shell.conf
             copy_configs "$DIR/home/zsh" "$HOME" "Copying Zsh configuration..."
         ;;
         *)
