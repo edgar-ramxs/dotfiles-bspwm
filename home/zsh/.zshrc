@@ -174,16 +174,16 @@ else
 fi
 
 # Bind keys
-bindkey "\e[A" history-search-backward  # (up arrow) Buscar hacia atrás en el historial
-bindkey "\e[B" history-search-forward   # (down arrow) Buscar hacia adelante en el historial
-bindkey "\e[1~" beginning-of-line       # (home) Mover el cursor al inicio de la línea
-bindkey "\e[4~" end-of-line             # (end) Mover el cursor al final de la línea
-bindkey "\e[D" backward-word            # (left arrow) Mover el cursor al inicio de la palabra anterior
-bindkey "\e[C" forward-word             # (right arrow) Mover el cursor al inicio de la siguiente palabra
-setopt menu_complete                    # Muestra todas las opciones disponibles si hay ambigüedad
-bindkey "^I" complete                   # Muestra las opciones al presionar Tab
-bindkey "^N" backward-kill-line         # (Ctrl + N) Eliminar desde el inicio hasta el cursor
-bindkey "^M" kill-line                  # (Ctrl + M) Eliminar desde el final hasta el cursor
+# bindkey "\e[A" history-search-backward  # (up arrow) Buscar hacia atrás en el historial
+# bindkey "\e[B" history-search-forward   # (down arrow) Buscar hacia adelante en el historial
+# bindkey "\e[1~" beginning-of-line       # (home) Mover el cursor al inicio de la línea
+# bindkey "\e[4~" end-of-line             # (end) Mover el cursor al final de la línea
+# bindkey "\e[D" backward-word            # (left arrow) Mover el cursor al inicio de la palabra anterior
+# bindkey "\e[C" forward-word             # (right arrow) Mover el cursor al inicio de la siguiente palabra
+# setopt menu_complete                    # Muestra todas las opciones disponibles si hay ambigüedad
+# bindkey "^I" complete                   # Muestra las opciones al presionar Tab
+# bindkey "^N" backward-kill-line         # (Ctrl + N) Eliminar desde el inicio hasta el cursor
+# bindkey "^M" kill-line                  # (Ctrl + M) Eliminar desde el final hasta el cursor
 
 # Sources
 source ~/.exports
