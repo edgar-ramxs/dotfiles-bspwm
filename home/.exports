@@ -5,7 +5,6 @@
 #  ██╗███████╗██╔╝ ██╗██║     ╚██████╔╝██║  ██║   ██║   ███████║
 #  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝      ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚══════╝
 
-export LANG="en_CL.UTF-8"
 export EDITOR="code"
 export EDITOR2="vim"
 export BROWSER="firefox"
