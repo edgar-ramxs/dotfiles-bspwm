@@ -99,7 +99,6 @@ policykit-1-gnome
 
 
 # Development
-git
 gcc
 cpp
 make
@@ -117,7 +116,6 @@ jq
 bat
 lsd
 exa
-vim
 zip
 tar
 rar
@@ -137,8 +135,6 @@ locate
 lolcat
 cbonsai
 cmatrix
-neofetch
-fastfetch
 tty-clock
 p7zip-full
 imagemagick

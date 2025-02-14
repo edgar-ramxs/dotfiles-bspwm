@@ -5,24 +5,37 @@
 
 
 # Introduction
-Hello, I created these dotfiles to use the BSPWM window manager. The idea came up when I decided to install a minimal version of Debian. Why? I'm not sure, it was a bit of a crazy impulse, but I stuck with the idea, and it eventually evolved. In the end, I decided to create these dotfiles to use them in minimal environments of Debian-based distributions like Kali Linux, Parrot, Ubuntu, and others.
+🙋‍♂️ Hi, I've created this installation process automation using a `tiling window manager`, in this case `bspwm` preferably, to customize a minimalist Debian system environment from scratch.
 
-- These dotfiles have been tested on the following distributions:
+⛳ Initially, I decided to create these dotfiles for use in minimal environments of Debian-based distributions such as Kali Linux, Parrot, Ubuntu, and others. 🫰 However, I am going to prepare the setup and automatic installation for other popular distributions such as Arch, Fedora, etc.
+
+
+- 🧑‍💻 These dotfiles have been tested on the following distributions:
   + [Debian](https://www.debian.org/)
   + [Kali Linux](https://www.kali.org/)
 
 
 ## Pre-installation
-As of **October 2024**, if you are using **Debian 12**, some packages may not be available. Therefore, it is recommended to update the kernel and migrate to an environment with **Debian 13 (Trixie)** by performing a full system upgrade.
 
-To do this, you can use the script located in the `debian_testing.sh` directory, and once the upgrade is complete, continue with the installation.
-
-You can start by reviewing the packages using the `install_packages` function, editing it to check if the packages are available in the repositories. This is useful if you prefer not to upgrade to Debian 13 (Trixie).
+```bash
+# repository organization
+.
+├── installer.sh
+├── README.md
+├── assets          # photos, documents, etc. to view the environment
+├── bin             # binaries or scripts for use within the environment
+├── config          # Configuring applications, managers and tools
+├── home            # Shell configuration and others
+├── packages        # List of packages to be installed
+├── scripts         # scripts to install or update tools
+└── wallpapers      # wallpapers for the environment
+```
+There are automated scripts to install, configure and download some tools for the custom environment inside the `scripts/` directory. 📭 For example, there is a script called `debian_testing.sh` that upgrades to the debian testing branch, where it can be used at the beginning or end of the automated installation, if you want to switch to the testing branch.
 
 
 ## Installation
 ```bash
-sudo apt install -y git vim neofetch
+sudo apt install -y git vim neofetch # or fastfetch
 
 git clone https://github.com/edgar-ramxs/dotfiles-bspwm.git ~/dotfiles-bspwm
 
@@ -63,7 +76,6 @@ Read the [KEYBINDING.md](assets/KEYBINDING.md) to find out what the keyboard sho
 | <img src="assets/a1.png"/> |
 | <img src="assets/a2.png"/> |
 | <img src="assets/a3.png"/> |
-| <img src="assets/a4.png"/> |
 
 
 ## To Do's
@@ -83,6 +95,11 @@ Read the [KEYBINDING.md](assets/KEYBINDING.md) to find out what the keyboard sho
       </tr>
     </thead>
     <tbody>
+      <tr>
+        <td><strong>😎 @drewgrif</strong></td>
+        <td><a href="https://github.com/drewgrif/bookworm-scripts">📝 Link</a></td>
+        <td>📦 all in one</td>
+      </tr>
       <tr>
         <td><strong>😎 @ZLCube</strong></td>
         <td><a href="https://github.com/ZLCube/KaliBspwm">📝 Link</a></td>
@@ -165,22 +182,20 @@ Read the [KEYBINDING.md](assets/KEYBINDING.md) to find out what the keyboard sho
 
 
 <!-- Another dotfiles for bspwm
+
 https://github.com/drewgrif/debian-installers
 https://github.com/drewgrif/bookworm-scripts
 https://github.com/justleoo/dotfiles -> bspwm config
 https://github.com/mmsaeed509/bspwm-dots
-
-
 https://github.com/aadityasinha-dotcom/dotfile -> configs
 https://github.com/K4rlosReyes/arch-bspwm -> arch install guide, bspwm config
 https://github.com/radstevee/dotfiles -> bspwm config
 https://github.com/nameCh3ll/rice
 https://github.com/saimoomedits/bspwm-first-rice -> bspwm config
 https://github.com/DominatorXS/LinuxDotz -> bspwm config
-
-
 https://github.com/ChrisTitusTech/Debian-titus -> auto-installer, debian.
 https://github.com/lostalejandro/bspwm -> auto-installer, debian, bspwm config.
 https://github.com/Alien-Tec/debian-dotfiles -> auto-installer, bspwm config.
 https://github.com/hidayry/dotfiles-bspwm -> bspwm config, debian. 
+
 -->

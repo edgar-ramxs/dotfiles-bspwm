@@ -614,6 +614,109 @@ function setter_symbolic_links() {
     sleep 0.5
 }
 
+function setter_display_manager(){
+    # lightdm | gdm3 | sddm | lxdm | slim
+    local display_manager="sddm"
+
+    message -title "Installing the display manager"
+    sleep 0.5
+
+    case $display_manager in 
+        lightdm)
+            message -subtitle "Installing LightDM..."
+            
+            sudo apt install -y lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings >/dev/null 2>&1
+            check_execution $? "Failed" "Successfully"
+
+            sudo systemctl enable lightdm >/dev/null 2>&1
+            check_execution $? "Failed" "Successfully"
+
+            # echo "LightDM has been installed and enabled."
+            sudo systemctl is-active --quiet lightdm && sudo systemctl is-enabled --quiet lightdm >/dev/null 2>&1
+            check_execution $? "Failed" "Successfully"
+        ;;
+
+        gdm3)
+            message -subtitle "Installing minimal GDM3..."
+
+            sudo apt install -y --no-install-recommends gdm3 >/dev/null 2>&1
+            check_execution $? "Failed" "Successfully"
+
+            sudo systemctl enable gdm3 >/dev/null 2>&1
+            check_execution $? "Failed" "Successfully"
+
+            sudo systemctl is-active --quiet gdm && sudo systemctl is-enabled --quiet gdm >/dev/null 2>&1
+            check_execution $? "Failed" "Successfully"
+        ;;
+
+        sddm)
+            message -subtitle "Installing minimal SDDM..."
+
+            sudo apt install -y --no-install-recommends sddm >/dev/null 2>&1
+            check_execution $? "Failed" "Successfully"
+
+            sudo systemctl enable sddm
+            check_execution $? "Failed" "Successfully"
+
+            sudo systemctl is-active --quiet sddm && sudo systemctl is-enabled --quiet sddm >/dev/null 2>&1
+            check_execution $? "Failed" "Successfully"
+        ;;
+
+        lxdm)
+            message -subtitle "Installing LXDM..."
+
+            sudo apt install -y --no-install-recommends lxdm >/dev/null 2>&1
+            check_execution $? "Failed" "Successfully"
+
+            sudo systemctl enable lxdm >/dev/null 2>&1
+            check_execution $? "Failed" "Successfully"
+
+            sudo systemctl is-active --quiet lxdm && sudo systemctl is-enabled --quiet lxdm >/dev/null 2>&1
+            check_execution $? "Failed" "Successfully"
+        ;;
+
+        slim)
+            message -subtitle "Installing SLiM..."
+
+            sudo apt install -y slim >/dev/null 2>&1
+            check_execution $? "Failed" "Successfully"
+
+            sudo systemctl enable slim >/dev/null 2>&1
+            check_execution $? "Failed" "Successfully"
+
+            sudo systemctl is-active --quiet slim && sudo systemctl is-enabled --quiet slim >/dev/null 2>&1
+            check_execution $? "Failed" "Successfully"
+        ;;
+
+        *)
+            message -error "Display manager not supported for this distribution: $DISTRO"
+            continue
+        ;;
+    esac
+}
+
+function setter_services() {
+    message -title "Activate services in the system"
+    sleep 0.5
+    
+    message -subtitle "avahi-daemon"
+    sudo systemctl enable avahi-daemon >/dev/null 2>&1
+    check_execution $? "Failed" "Successfully"
+
+    message -subtitle "acpid"
+    sudo systemctl enable acpid >/dev/null 2>&1
+    check_execution $? "Failed" "Successfully"
+
+    message -subtitle "bluetooth"
+    sudo systemctl enable bluetooth >/dev/null 2>&1
+    check_execution $? "Failed" "Successfully"
+
+    message -subtitle "cups"
+    sudo systemctl enable cups.service >/dev/null 2>&1
+    check_execution $? "Failed" "Successfully"
+    
+}
+
 #  ███╗   ███╗ █████╗ ██╗███╗   ██╗
 #  ████╗ ████║██╔══██╗██║████╗  ██║
 #  ██╔████╔██║███████║██║██╔██╗ ██║
@@ -666,5 +769,7 @@ setter_permissions
 setter_shell
 setter_homefiles
 setter_symbolic_links
+setter_services
+setter_display_manager
 
 reboot_system

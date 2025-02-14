@@ -149,7 +149,6 @@ export SAVEHIST=10000
 
 autoload -Uz compinit && compinit
 autoload -Uz promptinit && promptinit
-prompt adam1  # Cambia esto para probar otros estilos con `prompt -p`
 
 zstyle ':completion:*' menu select=2      # Selección con TAB
 zstyle ':completion:*' auto-description 'specify: %d'
