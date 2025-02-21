@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+
+# Definir el directorio de destino
+DOTFILES_DIR="$HOME/dotfiles-bspwm"
+
+# Crear el directorio si no existe
+if [ ! -d "$DOTFILES_DIR" ]; then
+    mkdir -p "$DOTFILES_DIR"
+fi
+
+# Lista de directorios a respaldar con su destino
+declare -A DOTFILES_DIRS
+DOTFILES_DIRS=(
+    ["$HOME/.config/bspwm"]="$DOTFILES_DIR/config"
+    ["$HOME/.config/btop"]="$DOTFILES_DIR/config"
+    ["$HOME/.config/dunst"]="$DOTFILES_DIR/config"
+    ["$HOME/.config/fastfetch"]="$DOTFILES_DIR/config"
+    ["$HOME/.config/git"]="$DOTFILES_DIR/config"
+    ["$HOME/.config/gtk-3.0"]="$DOTFILES_DIR/config"
+    ["$HOME/.config/htop"]="$DOTFILES_DIR/config"
+    ["$HOME/.config/kitty"]="$DOTFILES_DIR/config"
+    ["$HOME/.config/neofetch"]="$DOTFILES_DIR/config"
+    ["$HOME/.config/nitrogen"]="$DOTFILES_DIR/config"
+    ["$HOME/.config/picom"]="$DOTFILES_DIR/config"
+    ["$HOME/.config/polybar"]="$DOTFILES_DIR/config"
+    ["$HOME/.config/rofi"]="$DOTFILES_DIR/config"
+    ["$HOME/.config/sxhkd"]="$DOTFILES_DIR/config"
+    ["$HOME/.config/zsh"]="$DOTFILES_DIR/config"
+    ["$HOME/.local/bin"]="$DOTFILES_DIR"
+)
+
+# Copiar y reemplazar los directorios en el destino
+for src in "${!DOTFILES_DIRS[@]}"; do
+    dest="${DOTFILES_DIRS[$src]}"
+    if [ ! -d "$dest" ]; then
+        mkdir -p "$dest"
+    fi
+ 
+    if [ -e "$src" ]; then
+        cp -r "$src" "$dest"
+    else
+        echo "[WARN] $src no encontrado, omitiendo..."
+    fi
+done
+
+
+# Lista de archivos ocultos de configuración a respaldar con su destino
+declare -A DOTFILES_FILES
+DOTFILES_FILES=(
+    ["$HOME/.aliases"]="$DOTFILES_DIR/home/.aliases"
+    ["$HOME/.exports"]="$DOTFILES_DIR/home/.exports"
+    ["$HOME/.functions"]="$DOTFILES_DIR/home/.functions"
+    ["$HOME/.profile"]="$DOTFILES_DIR/home/.profile"
+)
+
+    # ["$HOME/.bashrc"]="$DOTFILES_DIR/.bashrc"
+    # ["$HOME/.zshrc"]="$DOTFILES_DIR/.zshrc"
+
+# # Copiar y reemplazar los archivos en el destino
+for src in "${!DOTFILES_FILES[@]}"; do
+    dest="${DOTFILES_FILES[$src]}"
+    if [ -e "$src" ]; then
+        cp "$src" "$dest"
+    else
+        echo "[WARN] $src no encontrado, omitiendo..."
+    fi
+done
+
+# # Mensaje de éxito
+# echo "Backup completado en $DOTFILES_DIR"

@@ -111,4 +111,3 @@ rm -rf "$TEMP_DIR"
 
 message -success "Process completed successfully."
 exit 1
- 

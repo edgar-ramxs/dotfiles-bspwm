@@ -23,7 +23,7 @@ nitrogen --restore &
 sleep 0.5
 
 # Run window composer
-picom --config $HOME/.config/picom/picom.conf --no-vsync &
+picom --config $HOME/.config/picom/picom.conf &
 sleep 0.5
 
 # Execute taskbars

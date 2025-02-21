@@ -25,7 +25,8 @@ SHL="$(basename "${SHELL}")"
 WMA="$(xprop -id $(xprop -root -notype | awk '$1=="_NET_SUPPORTING_WM_CHECK:"{print $5}') -notype -f _NET_WM_NAME 8t | grep "WM_NAME" | cut -f2 -d \")"
 DSK="$(df -h --output=used / | awk 'NR == 2 { print $1 }')"
 MEM="$(free -m | awk 'NR==2{printf "%sMiB\n", $3, $2}')"
-CPU=$(awk -v RS="" '{printf "%.2f%\n", 100 - ($5 * 100 / ($2+$3+$4+$5))}' /proc/stat)
+CPU="$(mpstat -o JSON | jq '.sysstat.hosts[0].statistics[0]["cpu-load"][0].usr')%"
+
 
 # FUNCTIONS
 function fetch1 (){
