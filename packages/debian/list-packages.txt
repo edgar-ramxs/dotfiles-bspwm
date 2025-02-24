@@ -1,0 +1,142 @@
+#  ██████╗ ███████╗██████╗ ██╗ █████╗ ███╗   ██╗
+#  ██╔══██╗██╔════╝██╔══██╗██║██╔══██╗████╗  ██║
+#  ██║  ██║█████╗  ██████╔╝██║███████║██╔██╗ ██║
+#  ██║  ██║██╔══╝  ██╔══██╗██║██╔══██║██║╚██╗██║
+#  ██████╔╝███████╗██████╔╝██║██║  ██║██║ ╚████║
+#  ╚═════╝ ╚══════╝╚═════╝ ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝
+
+# Graphical Server
+xorg
+xserver-xorg
+xinit
+xterm
+xclip
+xvkbd
+xinput
+xdotool
+xbindkeys
+xbacklight
+xdg-user-dirs
+xdg-user-dirs-gtk
+
+# Graphic Environment
+bspwm
+sxhkd
+picom
+polybar
+thunar
+dunst
+rofi
+zsh
+suckless-tools
+conky
+wmname
+
+# Audio Manager
+pulseaudio
+pulseaudio-utils
+pulseaudio-module-bluetooth
+pavucontrol
+
+# Network Manager
+openvpn
+openssl
+net-tools
+network-manager
+network-manager-gnome
+
+# Bluetooth Manager
+bluetooth
+bluez
+bluez-utils
+blueman
+blueman-manager
+
+# Energy Manager
+tlp
+acpi
+acpid
+brightnessctl
+xfce4-power-manager
+
+# Printer
+cups
+simple-scan
+system-config-printer
+
+# Appearance
+arandr
+nitrogen
+lxappearance
+betterlockscreen
+papirus-icon-theme
+gtk2-engines-murrine
+
+# Fonts
+fonts-cantarell
+fonts-recommended
+
+# System Utilities
+dialog
+mtools
+pcmanfm
+dosfstools
+avahi-daemon
+gvfs-backends
+libnotify-bin
+openssh-client
+policykit-1-gnome
+
+# Development
+gcc
+cpp
+make
+cmake
+build-essential
+python3
+python3-pip
+nodejs
+npm
+meson
+
+# Essential Tools
+jq
+bat
+lsd
+exa
+zip
+tar
+rar
+curl
+wget
+gzip
+tree
+btop
+htop
+cava
+unzip
+unrar
+scrub
+scrot
+cowsay
+locate
+lolcat
+cbonsai
+cmatrix
+tty-clock
+p7zip-full
+imagemagick
+
+# Applications
+kitty
+evolution
+flameshot
+obs-studio
+firefox-esr
+font-manager
+synaptic
+zathura
+mousepad
+micro
+vlc
+maim

@@ -1,0 +1,62 @@
+#      █████╗ ██╗     ██╗ █████╗ ███████╗███████╗███████╗
+#     ██╔══██╗██║     ██║██╔══██╗██╔════╝██╔════╝██╔════╝
+#     ███████║██║     ██║███████║███████╗█████╗  ███████╗
+#     ██╔══██║██║     ██║██╔══██║╚════██║██╔══╝  ╚════██║
+#  ██╗██║  ██║███████╗██║██║  ██║███████║███████╗███████║
+#  ╚═╝╚═╝  ╚═╝╚══════╝╚═╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝
+
+if command -v fastfetch &>/dev/null; then
+    alias fetch="fastfetch"
+elif command -v neofetch &>/dev/null; then
+    alias fetch="neofetch"
+else
+    alias fetch="fetching"
+fi
+
+alias ls="lsd --group-dirs=first"
+alias la="lsd -a --group-dirs=first"
+alias ll="lsd -lh --group-dirs=first"
+alias lh="lsd -lha --group-dirs=first"
+
+alias cls="clear"
+alias cll="clear; ls"
+alias cla="clear; ls -la"
+alias clf="clear; fetch"
+
+alias cat="batcat"
+alias icat="kitty +kitten icat"
+alias clock="tty-clock -s -b -c -r"
+
+alias reload-zsh="source ~/.zshrc"
+alias reload-bash="source ~/.bashrc"
+alias reload-fonts="fc-cache -v -f"
+
+alias per-mx="chmod a+x"
+alias per-000="chmod 000"
+alias per-644="chmod 644"
+alias per-755="chmod 755"
+
+alias stop-venv="deactivate"
+alias start-venv="source $(get-venv-name)/bin/activate"
+
+alias smki="sudo make clean install"
+alias updating="sudo apt update -y && sudo apt upgrade -y"
+alias grub-update="sudo grub-mkconfig -o /boot/grub/grub.cfg"
+
+alias sys-sto="sudo systemctl stop"
+alias sys-sta="sudo systemctl start"
+alias sys-stu="sudo systemctl status"
+alias sys-ena="sudo systemctl enable"
+alias sys-dis="sudo systemctl disable"
+alias sys-res="sudo systemctl restart"
+
+alias rcfg-zshrc="$EDITOR $HOME/.zshrc"
+alias rcfg-bashrc="$EDITOR $HOME/.bashrc"
+alias rcfg-aliases="$EDITOR $HOME/.aliases"
+alias rcfg-exports="$EDITOR $HOME/.exports"
+alias rcfg-functions="$EDITOR $HOME/.functions"
+
+alias rcfg-sxhkd="$EDITOR $HOME/.config/sxhkd/sxhkdrc"
+alias rcfg-bspwm="$EDITOR $HOME/.config/bspwm/bspwmrc"
+alias rcfg-kitty="$EDITOR $HOME/.config/kitty/kitty.conf"
+alias rcfg-polybar="$EDITOR $HOME/.config/polybar/config.ini"

@@ -1,0 +1,11 @@
+[user]
+		name = Edgar Ramos
+		email = 
+		username = edgar-ramxs
+[init]
+		defaultBranch = main
+[core]
+		editor = code
+		autocrlf = input
+[web]
+		browser = firefox-esr

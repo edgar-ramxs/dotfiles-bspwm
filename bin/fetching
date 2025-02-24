@@ -1,0 +1,104 @@
+#!/usr/bin/env bash
+
+# COLORS
+end='\033[0m'
+bold='\033[1m';
+red='\033[31m'
+blue='\033[34m'
+cyan='\033[36m'
+pink='\033[38;5;206m'
+white='\033[37m'
+black='\033[30m'
+brown='\033[38;5;94m'
+green='\033[32m'
+yellow='\033[33m'
+purple='\033[35m'
+
+# FETCH VALUES
+USR="${USER}"
+HST=$(uname -n)
+DIS=$(uname -o | awk -F '"' '/PRETTY_NAME/ { print $2 }' /etc/os-release)
+KER="$(uname -r | cut -d '-' -f1)"
+PKG="$(dpkg --get-selections | grep -v deinstall | awk '{print $1}' | wc -l)"
+UPT="$(uptime -p | sed -e 's/hour/hr/' -e 's/hours/hrs/' -e 's/minutes/mins/' -e 's/minute/min/' -e 's/up //')"
+SHL="$(basename "${SHELL}")"
+WMA="$(xprop -id $(xprop -root -notype | awk '$1=="_NET_SUPPORTING_WM_CHECK:"{print $5}') -notype -f _NET_WM_NAME 8t | grep "WM_NAME" | cut -f2 -d \")"
+DSK="$(df -h --output=used / | awk 'NR == 2 { print $1 }')"
+MEM="$(free -m | awk 'NR==2{printf "%sMiB\n", $3, $2}')"
+CPU="$(mpstat -o JSON | jq '.sysstat.hosts[0].statistics[0]["cpu-load"][0].usr')%"
+
+
+# FUNCTIONS
+function fetch1 (){
+    printf '%b' "
+${bold}${blue}       ██           ${end}${bold}${blue} ${white} DIS ${purple} => ${yellow} ${DIS}${end}
+${bold}${blue}      ████          ${end}${bold}${blue} ${white} KER ${purple} => ${yellow} ${KER}${end}
+${bold}${blue}      ▀████         ${end}${bold}${blue}󰏗 ${white} PKG ${purple} => ${yellow} ${PKG}${end}
+${bold}${blue}    ██▄ ████        ${end}${bold}${blue} ${white} UPT ${purple} => ${yellow} ${UPT}${end}
+${bold}${blue}   ██████████       ${end}${bold}${blue} ${white} SHL ${purple} => ${yellow} ${SHL}${end}
+${bold}${blue}  ████▀  ▀████      ${end}${bold}${blue} ${white} DSK ${purple} => ${yellow} ${DSK}${end}
+${bold}${blue} ████▀    ▀████     ${end}${bold}${blue} ${white} MEM ${purple} => ${yellow} ${MEM}${end}
+${bold}${blue}▀▀▀          ▀▀▀    ${end}${bold}${blue} ${white} CPU ${purple} => ${yellow} ${CPU}${end}
+\n"
+}
+
+function fetch2 (){
+printf '%b' "
+${bold}${pink}⠄⠄⠸⣿⣿⢣⢶⣟⣿⣖⣿⣷⣻⣮⡿⣽⣿⣻⣖⣶⣤⣭⡉⠄⠄⠄⠄⠄  ${end}${bold}${blue} ${white} USR ${purple} => ${yellow} ${USR}${end}
+${bold}${pink}⠄⠄⠄⢹⠣⣛⣣⣭⣭⣭⣁⡛⠻⢽⣿⣿⣿⣿⢻⣿⣿⣿⣽⡧⡄⠄⠄⠄  ${end}${bold}${blue} ${white} HST ${purple} => ${yellow} ${HST}${end}
+${bold}${pink}⠄⠄⠄⠄⣼⣿⣿⣿⣿⣿⣿⣿⣿⣶⣌⡛⢿⣽⢘⣿⣷⣿⡻⠏⣛⣀⠄⠄  ${end}${bold}${blue} ${white} DIS ${purple} => ${yellow} ${DIS}${end}
+${bold}${pink}⠄⠄⠄⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⠙⡅⣿⠚⣡⣴⣿⣿⣿⡆⠄  ${end}${bold}${blue} ${white} KER ${purple} => ${yellow} ${KER}${end}
+${bold}${pink}⠄⠄⣰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⠄⣱⣾⣿⣿⣿⣿⣿⣿⠄  ${end}${bold}${blue}󰏗 ${white} PKG ${purple} => ${yellow} ${PKG}${end}
+${bold}${pink}⠄⢀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢸⣿⣿⣿⣿⣿⣿⣿⣿⠄  ${end}${bold}${blue} ${white} UPT ${purple} => ${yellow} ${UPT}${end}
+${bold}${pink}⠄⣸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠣⣿⣿⣿⣿⣿⣿⣿⣿⣿⠄  ${end}${bold}${blue} ${white} SHL ${purple} => ${yellow} ${SHL}${end}
+${bold}${pink}⠄⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠛⠑⣿⣮⣝⣛⠿⠿⣿⣿⣿⣿⠄  ${end}${bold}${blue} ${white} WMA ${purple} => ${yellow} ${WMA}${end}
+${bold}${pink}⢠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⠄⠄⠄⠄⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⠄  ${end}${bold}${blue} ${white} DSK ${purple} => ${yellow} ${DSK}${end}
+${bold}${pink}⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠇⠄⠄⠄⠄⢹⣿⣿⣿⣿⣿⣿⣿⣿⠁⠄  ${end}${bold}${blue} ${white} MEM ${purple} => ${yellow} ${MEM}${end}
+${bold}${pink}⣸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠏⠄⠄⠄⠄⠄⠸⣿⣿⣿⣿⣿⡿⢟⣣⣀   ${end}${bold}${blue} ${white} CPU ${purple} => ${yellow} ${CPU}${end}
+\n"
+}
+
+function fetch3 (){
+printf '%b' "
+${bold}${pink}⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠘⠹⣶⣿⠷⢃⡆⠻⢈⣿⣿    ${end}
+${bold}${pink}⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⢉⣴⣿⣷⢱⢠⡘⣿⣿    ${end}
+${bold}${pink}⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⣀⣴⣿⠿⣫⣾⢈⣸⣷⠹⣿    ${end}${bold}${blue} ${white} USR ${purple} => ${yellow} ${USR}${end}
+${bold}${pink}⠄⠄⠄⠄⠄⠄⠄⠄⠄⣀⣤⣶⣾⣿⣿⣿⣷⣶⣶⣬⡩⣵⣿⣿⣿⡘⢹⣿⢠⣄    ${end}${bold}${blue} ${white} HST ${purple} => ${yellow} ${HST}${end}
+${bold}${pink}⠄⠄⠄⠄⠄⠄⠄⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣮⢻⣿⣿⣞⡄⢿⣜⣿    ${end}${bold}${blue} ${white} DIS ${purple} => ${yellow} ${DIS}${end}
+${bold}${pink}⠄⠄⠄⠄⠄⢀⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣇⣿⣿⣋⠄⠙⠉⠛    ${end}${bold}${blue} ${white} KER ${purple} => ${yellow} ${KER}${end}
+${bold}${pink}⠄⠄⠄⠄⢀⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢸⣷⠇⠄⠄⠄⠄    ${end}${bold}${blue}󰏗 ${white} PKG ${purple} => ${yellow} ${PKG}${end}
+${bold}${pink}⠄⠄⠄⠄⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⠄⣿⡄⠄⠄⠄⠄    ${end}${bold}${blue} ${white} UPT ${purple} => ${yellow} ${UPT}${end}
+${bold}${pink}⡀⠄⠄⢠⣿⣿⣿⡿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠄⠄⠘⠇⠄⠄⠄⠄    ${end}${bold}${blue} ${white} SHL ${purple} => ${yellow} ${SHL}${end}
+${bold}${pink}⣶⣾⣿⣷⡹⣿⣿⣿⣎⢿⣿⣿⣿⣿⣿⣿⣿⡿⠿⣛⣵⣿⣷⣶⣤⡀⠄⠄⠄⠄    ${end}${bold}${blue} ${white} DSK ${purple} => ${yellow} ${DSK}${end}
+${bold}${pink}⣿⣿⣿⣿⣿⣮⣿⡿⠿⣛⣢⢩⣭⣭⣭⣭⣶⣿⣿⣿⣿⣿⣿⣿⣿⣷⠄⠄⠄⠄    ${end}${bold}${blue} ${white} MEM ${purple} => ${yellow} ${MEM}${end}
+${bold}${pink}⣿⣿⣿⠿⣫⣾⣿⣿⣿⣿⣿⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠄⠄⠄⠄    ${end}${bold}${blue} ${white} CPU ${purple} => ${yellow} ${CPU}${end}
+${bold}${pink}⠿⢟⣭⣾⣿⣿⣿⣿⣿⣿⣿⣮⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠃⠄⠄⠄⠄    ${end}
+${bold}${pink}⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⢛⣁⣀⣀⣀⣀⣀    ${end}
+\n"
+}
+
+function fetch4 (){
+printf '%b' "
+${bold}${pink}⣿⣿⡻⠿⣳⠸⢿⡇⢇⣿⡧⢹⠿⣿⣿⣿⣿⣾⣿⡇⣿⣿⣿⣿⡿⡐⣯⠁ ⠄⠄   ${end}
+${bold}${pink}⠟⣛⣽⡳⠼⠄⠈⣷⡾⣥⣱⠃⠣⣿⣿⣿⣯⣭⠽⡇⣿⣿⣿⣿⣟⢢⠏⠄ ⠄    ${end}
+${bold}${pink}⢠⡿⠶⣮⣝⣿⠄⠄⠈⡥⢭⣥⠅⢌⣽⣿⣻⢶⣭⡿⠿⠜⢿⣿⣿⡿⠁⠄⠄     ${end}
+${bold}${pink}⠄⣼⣧⠤⢌⣭⡇⠄⠄⠄⠭⠭⠭⠯⠴⣚⣉⣛⡢⠭⠵⢶⣾⣦⡍⠁⠄⠄⠄⠄    ${end}${bold}${blue} ${white} USR ${purple} => ${yellow} ${USR}${end}
+${bold}${pink}⠄⣿⣷⣯⣭⡷⠄⠄⢀⣀⠩⠍⢉⣛⣛⠫⢏⣈⣭⣥⣶⣶⣦⣭⣛⠄⠄⠄⠄⠄    ${end}${bold}${blue} ${white} HST ${purple} => ${yellow} ${HST}${end}
+${bold}${pink}⢀⣿⣿⣿⡿⠃⢀⣴⣿⣿⣿⣎⢩⠌⣡⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣆⠄⠄⠄    ${end}${bold}${blue} ${white} DIS ${purple} => ${yellow} ${DIS}${end}
+${bold}${pink}⢸⡿⢟⣽⠎⣰⣿⣿⣿⣿⣿⣿⢀⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⠄⠄    ${end}${bold}${blue} ${white} KER ${purple} => ${yellow} ${KER}${end}
+${bold}${pink}⣰⠯⣾⢅⣼⣿⣿⣿⣿⣿⣿⡇⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡄⠄    ${end}${bold}${blue}󰏗 ${white} PKG ${purple} => ${yellow} ${PKG}${end}
+${bold}${pink}⢰⣄⡉⣼⣿⣿⣿⣿⣿⣿⣿⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⠄    ${end}${bold}${blue} ${white} UPT ${purple} => ${yellow} ${UPT}${end}
+${bold}${pink}⢯⣌⢹⣿⣿⣿⣿⣿⣿⣿⣿⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠄    ${end}${bold}${blue} ${white} SHL ${purple} => ${yellow} ${SHL}${end}
+${bold}${pink}⢸⣇⣽⣿⣿⣿⣿⣿⣿⣿⣿⠸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠄    ${end}${bold}${blue} ${white} DSK ${purple} => ${yellow} ${DSK}${end}
+${bold}${pink}⢸⣟⣧⡻⣿⣿⣿⣿⣿⣿⣿⣧⡻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠄    ${end}${bold}${blue} ${white} MEM ${purple} => ${yellow} ${MEM}${end}
+${bold}${pink}⠈⢹⡧⣿⣸⠿⢿⣿⣿⣿⣿⡿⠗⣈⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠄    ${end}${bold}${blue} ${white} CPU ${purple} => ${yellow} ${CPU}${end}
+${bold}${pink}⠄⠘⢷⡳⣾⣷⣶⣶⣶⣶⣶⣾⣿⣿⢀⣶⣶⣶⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⠇⠄    ${end}
+${bold}${pink}⠄⠄⠈⣵⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠄⠄    ${end}
+${bold}${pink}⠄⠄⠄⠸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠘⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠇⠄⠄    ${end}
+\n"
+}
+
+# RANDOM FETCHING
+list_fetch=("fetch1" "fetch2" "fetch3" "fetch4")
+random_fetch=${list_fetch[$RANDOM % ${#list_fetch[@]}]}
+$random_fetch

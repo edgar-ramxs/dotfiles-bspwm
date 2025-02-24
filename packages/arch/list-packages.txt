@@ -1,0 +1,20 @@
+Lavat
+cmatrix
+tty-clock
+cava
+tmux
+ranger
+z
+ripgrep
+ani-cli
+nautilus
+git
+python3
+ttf-ubuntu-font-family
+gnome-shell-extensions
+gnome-text-editor
+gnome-tweaks
+gnome-shell-extension-desktop-icons-ng
+gnome-shell-extension-arc-menu
+gnome-shell-extension-dash-to-panel
+libxcb xcb-util xcb-util-wm xcb-util-keysyms

@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+DIR=$(pwd)
+DISTRO=$(grep -i '^ID=' /etc/os-release | cut -d= -f2 | tr -d '"' | tr '[:upper:]' '[:lower:]')
+
+case "$DISTRO" in
+    debian|ubuntu|kali|mint|parrot)
+        PACKAGES_FILE="$DIR/packages/debian/list-packages.txt"
+        CHECK_CMD="dpkg -l | grep -qw"
+        AVAILABLE_CMD="apt-cache show"
+        ;;
+    arch|manjaro)
+        PACKAGES_FILE="$DIR/packages/arch/list-packages.txt"
+        CHECK_CMD="pacman -Qq"
+        AVAILABLE_CMD="pacman -Si"
+        ;;
+    fedora|centos|rhel)
+        PACKAGES_FILE="$DIR/packages/fedora/list-packages.txt"
+        CHECK_CMD="rpm -q"
+        AVAILABLE_CMD="dnf info"
+        ;;
+    *)
+        echo "[CANCEL] Unsupported distribution: $DISTRO"
+        exit 1
+        ;;
+esac
+
+if [[ ! -f "$PACKAGES_FILE" ]]; then
+    echo "[CANCEL] There is no file related to your distribution."
+    exit 1
+fi
+
+echo "File detected. Checking package statuses..."
+sleep 0.5
+
+grep -Ev '^#|^$' "$PACKAGES_FILE" | while IFS= read -r package; do
+    if $CHECK_CMD "$package" &>/dev/null; then
+        echo "[INSTALLED] $package"
+        # continue
+    elif $AVAILABLE_CMD "$package" &>/dev/null; then
+        echo "[AVAILABLE] $package"
+        # continue
+    else
+        echo "[NOT AVAILABLE] $package"
+        # continue
+    fi
+done

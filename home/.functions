@@ -1,0 +1,334 @@
+#     ███████╗██╗   ██╗███╗   ██╗ ██████╗████████╗██╗ ██████╗ ███╗   ██╗███████╗
+#     ██╔════╝██║   ██║████╗  ██║██╔════╝╚══██╔══╝██║██╔═══██╗████╗  ██║██╔════╝
+#     █████╗  ██║   ██║██╔██╗ ██║██║        ██║   ██║██║   ██║██╔██╗ ██║███████╗
+#     ██╔══╝  ██║   ██║██║╚██╗██║██║        ██║   ██║██║   ██║██║╚██╗██║╚════██║
+#  ██╗██║     ╚██████╔╝██║ ╚████║╚██████╗   ██║   ██║╚██████╔╝██║ ╚████║███████║
+#  ╚═╝╚═╝      ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝
+
+function hydra() {
+    clear &&
+    echo \
+    "    ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢤⡀⠀⠰⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⣠⣤⣀⣀⣀⣀⡀⠀⢀⣠⠀⠀⠀⠀⠀⠠⠐⠒⣒⣲⣶⣦⣽⣦⣀⢷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠛⠛⢿⣿⣶⣽⣿⣿⣯⣥⣀⡀⠀⠀⠀⣠⣶⣿⣿⣿⠿⠟⠿⢿⣿⣿⣿⣶⣄⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠈⠻⠛⠉⠙⠻⣿⣿⣶⣍⠀⠊⢱⣿⣿⣿⡇⠀⠀⠀⠀⠈⣿⣿⣶⣽⣆⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⣿⣿⣯⡑⠀⢸⣿⣿⣿⣿⡄⠀⠀⠀⢀⠙⠛⠛⠿⣿⣿⣦⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⣿⣿⣿⢷⠀⠘⣏⠻⣿⣿⣿⣦⣤⣀⣈⣲⣤⣀⣀⡀⠛⠃⠀⠀⠀⠀⠀
+⠀⠀⠀⢀⠀⠀⠀⠀⠀⠀⠀⠀⣾⣿⣿⣿⠀⠀⠀⠈⠔⠚⣻⣿⣿⣿⣿⣿⣿⣿⣿⣯⣝⣧⣤⣄⣀⠀⠀⠀
+⠀⠀⠀⢠⣇⣴⣮⣥⣤⡀⠀⢸⣿⣿⡏⠏⠀⠀⠀⣠⣾⣿⣿⡿⠟⢿⣿⣿⣆⠈⢿⣿⠿⠿⠿⠿⣿⠀⠀⠀
+⠀⠀⣠⢿⣿⡿⠿⣿⣿⣷⣅⢸⣿⣿⡇⠀⠀⠀⠔⣹⣿⣿⡏⠀⠀⠈⣿⣿⣿⡀⠀⠠⠄⣀⠀⡆⠀⠀⠀⠀
+⠀⢀⣯⣾⡿⠆⠀⢸⣿⣿⣧⠉⣿⣿⣷⡀⠀⠀⢠⣿⣿⣿⣧⡀⠀⢀⣿⣿⣿⠀⠠⣲⣿⣿⣿⣿⣦⡀⠀⠀
+⠀⣿⡟⠁⠀⠀⠀⣾⣿⣿⠻⠀⠘⢿⣿⣿⣦⡀⠀⢏⠻⣿⣿⣿⣆⣼⣿⣿⣿⢀⣺⣿⣿⠁⠈⣿⣷⣷⡀⠀
+⠀⠀⠀⠀⠀⠀⢸⣿⣿⣇⠁⠀⠀⠀⠙⢿⣿⣿⣷⣮⣄⣹⣿⣿⣿⣿⣿⣿⡿⠀⡿⣿⣿⣄⠀⠀⠈⠹⡿⠀
+⠀⠀⠀⠀⠀⠀⠀⢿⣿⣿⣦⣄⣀⠀⠀⠀⠘⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠃⠀⠘⢹⣿⣿⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠈⠻⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣃⣀⣠⣴⣿⣿⠏⠀⠀⠀⠀⠀⠀
+    ⠀⠀⠀⠀⠀⠀⠀⠀⠲⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣻⠅⠀⠀⠀⠀⠀⠀⠀⠀"
+    tput civis
+    read -n 1
+    tput cnorm
+}
+
+function message() {
+    local signal color
+    local RESETC="\033[0m\e[0m"
+    case "$1" in
+        "-title")       color="\033[0;37m\033[1m";      signal="[$]"; shift; echo -e "${color}${signal} $*${RESETC}";;
+        "-subtitle")    color="\033[0;35m\033[1m";      signal="[*]"; shift; echo -e "${color}${signal} $*${RESETC}";;
+        "-approval")    color="\033[38;5;51m\033[1m";   signal="[?]"; shift; echo -e "${color}${signal} $*${RESETC}";;
+        "-cancel")      color="\033[0;34m\033[1m";      signal="[!]"; shift; echo -e "${color}${signal} $*${RESETC}";;
+        "-success")     color="\033[0;32m\033[1m";      signal="[+]"; shift; echo -e "${color}${signal} $*${RESETC}";;
+        "-warning")     color="\033[0;33m\033[1m";      signal="[&]"; shift; echo -e "${color}${signal} $*${RESETC}";;
+        "-error")       color="\033[0;31m\033[1m";      signal="[-]"; shift; echo -e "${color}${signal} $*${RESETC}";;
+        *)              color="$RESETC";                signal=""; shift; echo -e "${color}${signal} $*${RESETC}";;
+    esac
+}
+
+function man() {
+    local normal='\e[0m'
+    local bold_red='\e[1;31m'
+    local highlight='\e[1;44;33m'
+    local bold_green='\e[1;32m'
+    
+    env \
+    LESS_TERMCAP_mb="$bold_red" \
+    LESS_TERMCAP_md="$bold_red" \
+    LESS_TERMCAP_me="$normal" \
+    LESS_TERMCAP_se="$normal" \
+    LESS_TERMCAP_so="$highlight" \
+    LESS_TERMCAP_ue="$normal" \
+    LESS_TERMCAP_us="$bold_green" \
+    man "$@"
+}
+
+function extract-files() {
+    if [ -f "$1" ]; then
+        case "$1" in
+            *.tar.bz2) tar xvjf "$1" ;;
+            *.tar.gz) tar xvzf "$1" ;;
+            *.bz2) bunzip2 "$1" ;;
+            *.rar) unrar x "$1" ;;
+            *.gz) gunzip "$1" ;;
+            *.tar) tar xvf "$1" ;;
+            *.tbz2) tar xvjf "$1" ;;
+            *.tgz) tar xvzf "$1" ;;
+            *.zip) unzip "$1" ;;
+            *.Z) uncompress "$1" ;;
+            *.7z) 7z x "$1" ;;
+            *) echo "Don't know how to extract '$1'..." ;;
+        esac
+    else
+        echo "'$1' is not a valid file!"
+    fi
+}
+
+
+function cmkdir() {
+    if [ -z "$1" ]; then
+        message -warning "Usage: cmk <directory-name>"
+        return 1
+    fi
+    
+    mkdir "$1"
+    cd "$1"
+}
+
+function rmk() {
+    scrub -p dod $1
+    shred -zun 10 -v $1
+}
+
+function extract-ports() {
+    if [ -z "$1" ]; then
+        message -warning "Usage: extract-ports <filename>"
+        return 1
+    fi
+    
+    if [ ! -f "$1" ]; then
+        message -error "File $1 not found."
+        return 1
+    fi
+    
+    if ! grep -qE '^[^#].*/open/' "$1"; then
+        message -error "Format Invalid: Use -oG <file>, in nmap for a correct format."
+        return 1
+    fi
+    
+    ports="$(cat $1 | grep -oP '\d{1,5}/open' | awk '{print $1}' FS='/' | xargs | tr ' ' ',')"
+    ip_address="$(cat $1 | grep -oP '\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}' | sort -u | head -n 1)"
+    echo -e "\n${GREEN_COLOR}[*] Extracting information...${RESETC}" > extractPorts.tmp
+    echo -e "\t${TURQUOISE_COLOR}[*] IP Address: $ip_address${RESETC}" >> extractPorts.tmp
+    echo -e "\t${TURQUOISE_COLOR}[*] Open ports: $ports${RESETC}\n" >> extractPorts.tmp
+    echo $ports | tr -d '\n' | xclip -selection clipboard
+    echo -e "${GREEN_COLOR}[*] Ports copied to clipboard${RESETC}\n" >> extractPorts.tmp
+    cat extractPorts.tmp
+    rm extractPorts.tmp
+}
+
+function open-file() {
+    local file=$1
+    if [ -z "$EDITOR" ]; then
+        message -warning "La variable EDITOR no está definida."
+    else
+        case "$EDITOR" in
+            code|vim|nano)
+                $EDITOR "$file"
+            ;;
+            *)
+                message -error "Editor no soportado: $EDITOR."
+            ;;
+        esac
+    fi
+}
+
+function create-venv() {
+    local dir_name=$(basename "$(pwd)")
+    local env_name=$(echo "$dir_name" | tr '[:upper:]' '[:lower:]' | iconv -f utf8 -t ascii//TRANSLIT)
+    env_name=".$env_name-env"
+    
+    python3 -m venv "$env_name"
+    if [ $? -ne 0 ]; then
+        message -error "Failed to create virtual environment."
+        return 1
+    fi
+    
+    source "$env_name/bin/activate"
+    if [ $? -ne 0 ]; then
+        message -error "Failed to activate virtual environment."
+        return 1
+    fi
+    
+    message -success "Virtual environment '$env_name' created and activated."
+}
+
+function get-venv-name() {
+    local dir_name=$(basename "$(pwd)")
+    echo -e ".$(echo "$dir_name" | tr '[:upper:]' '[:lower:]' | iconv -f utf8 -t ascii//TRANSLIT)-env"
+}
+
+function settarget(){
+    if [ $# -eq 1 ]; then
+        echo $1 > ~/.config/rofi/htb/mark-name
+        elif [ $# -gt 2 ]; then
+        echo "settarget [IP] [NAME] | settarget [IP]"
+    else
+        echo $1 $2 > ~/.config/rofi/htb/mark-name
+    fi
+}
+
+function fzf-lovely(){
+    if [ "$1" = "h" ]; then
+        fzf -m --reverse --preview-window down:20 --preview '[[ $(file --mime {}) =~ binary ]] &&
+ 	                echo {} is a binary file ||
+	                 (bat --style=numbers --color=always {} ||
+	                  highlight -O ansi -l {} ||
+	                  coderay {} ||
+	                  rougify {} ||
+        cat {}) 2> /dev/null | head -500'
+        
+    else
+        fzf -m --preview '[[ $(file --mime {}) =~ binary ]] &&
+	                         echo {} is a binary file ||
+	                         (bat --style=numbers --color=always {} ||
+	                          highlight -O ansi -l {} ||
+	                         coderay {} ||
+	                          rougify {} ||
+        cat {}) 2> /dev/null | head -500'
+    fi
+}
+
+function cu {
+    local count=$1
+    if [ -z "${count}" ]; then
+        count=1
+    fi
+    local path=""
+    for i in $(seq 1 ${count}); do
+        path="${path}../"
+    done
+    cd $path
+}
+
+function compile-pls() {
+    # Verificar si se proporcionó un archivo
+    if [[ -z "$1" ]]; then
+        message -cancel "Error: Debes proporcionar un archivo."
+        return 1
+    fi
+    
+    # Verificar si el archivo existe
+    if [[ ! -f "$1" ]]; then
+        message -cancel "Error: El archivo '$1' no existe."
+        return 1
+    fi
+    
+    local filename=$(basename "$1")
+    local extension="${filename##*.}"
+    local name_without_ext="${filename%.*}"
+    
+    # Función auxiliar para verificar si un comando está instalado
+    command_exists() {
+        command -v "$1" >/dev/null 2>&1
+    }
+    
+    case "$extension" in
+        "kt")
+            if command_exists kotlinc && command_exists java; then
+                kotlinc "$filename" -include-runtime -d "${name_without_ext}.jar" && java -jar "${name_without_ext}.jar"
+            else
+                message -cancel "Error: Kotlin o Java no están instalados."
+                return 1
+            fi
+        ;;
+        "java")
+            if command_exists javac && command_exists java; then
+                javac "$filename" && java "$name_without_ext"
+            else
+                message -cancel "Error: Java no está instalado."
+                return 1
+            fi
+        ;;
+        "cpp")
+            if command_exists g++; then
+                g++ "$filename" -o "$name_without_ext" && "./$name_without_ext"
+            else
+                message -cancel "Error: g++ no está instalado."
+                return 1
+            fi
+        ;;
+        "c")
+            if command_exists gcc; then
+                gcc "$filename" -o "$name_without_ext" && "./$name_without_ext"
+            else
+                message -cancel "Error: gcc no está instalado."
+                return 1
+            fi
+        ;;
+        "pas")
+            if command_exists fpc; then
+                fpc "$filename" && "./$name_without_ext"
+            else
+                message -cancel "Error: Free Pascal Compiler (fpc) no está instalado."
+                return 1
+            fi
+        ;;
+        *)
+            message -cancel "Error: Extensión de archivo no admitida: .$extension"
+            return 1
+        ;;
+    esac
+}
+
+
+function initialize_git_repo() {
+    local repo_name=""
+    local readme_message="Proyecto inicializado"
+    local remote_url=""
+    local branch="main"
+    local dir="$(pwd)"
+    
+    # Procesar opciones con getopts
+    while getopts "n:m:r:b:" opt; do
+        case "$opt" in
+            n) repo_name="$OPTARG" ;;  # Nombre del repositorio (obligatorio)
+            m) readme_message="$OPTARG" ;;  # Mensaje para el README.md (opcional)
+            r) remote_url="$OPTARG" ;;  # URL del repositorio remoto (opcional)
+            b) branch="$OPTARG" ;;  # Rama a la que se hará push (opcional)
+            \?) echo "Uso: initialize_git_repo -n <repo_name> [-m <readme_message>] [-r <remote_url>] [-b <branch>]"
+            return 1 ;;
+        esac
+    done
+    
+    # Verificar que el nombre del repositorio haya sido proporcionado
+    if [[ -z "$repo_name" ]]; then
+        echo "Error: Debes proporcionar un nombre para el repositorio con -n."
+        return 1
+    fi
+    
+    # Crear la carpeta del repositorio
+    mkdir -p "$repo_name" && cd "$repo_name" || return 1
+    
+    # Inicializar Git
+    git init >/dev/null 2>&1
+    
+    # Crear .gitignore con reglas específicas
+    echo -e ".vscode/" > .gitignore
+    
+    # Crear README.md con el mensaje opcional
+    echo "# $repo_name" > README.md
+    echo "$readme_message" >> README.md
+    
+    # Agregar archivos al repositorio y hacer el primer commit
+    git add .
+    git commit -m "Initial commit" >/dev/null 2>&1
+    
+    # Agregar repositorio remoto si se proporcionó la URL
+    if [[ -n "$remote_url" ]]; then
+        git remote add origin "$remote_url"
+        git branch -M "$branch"
+        git push -u origin "$branch"
+    fi
+    
+    cd $dir
+    
+    echo "Repositorio '$repo_name' inicializado correctamente."
+}

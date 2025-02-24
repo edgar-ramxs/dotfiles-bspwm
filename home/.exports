@@ -1,0 +1,29 @@
+#     ███████╗██╗  ██╗██████╗  ██████╗ ██████╗ ████████╗███████╗
+#     ██╔════╝╚██╗██╔╝██╔══██╗██╔═══██╗██╔══██╗╚══██╔══╝██╔════╝
+#     █████╗   ╚███╔╝ ██████╔╝██║   ██║██████╔╝   ██║   ███████╗
+#     ██╔══╝   ██╔██╗ ██╔═══╝ ██║   ██║██╔══██╗   ██║   ╚════██║
+#  ██╗███████╗██╔╝ ██╗██║     ╚██████╔╝██║  ██║   ██║   ███████║
+#  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝      ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚══════╝
+
+export EDITOR="code"
+export EDITOR2="vim"
+export BROWSER="firefox"
+
+export HISTCONTROL=ignoreboth
+export HISTCONTROL=$HISTCONTROL${HISTCONTROL+,}ignoredups
+export HISTIGNORE="&:clear:ls:cd:[bf]g:exit:[ t\]*"
+export HISTORY_IGNORE="(ls|cd|pwd|exit|sudo reboot|history|cd -|cd ..)"
+
+export MOZ_USE_OMTC=1
+export TF_CPP_MIN_LOG_LEVEL=2
+export _JAVA_AWT_WM_NONREPARENTING=1
+
+export SUDO_PROMPT="[󱕴] Password [󱕴]: "
+export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
+
+export PATH="$HOME/.local/bin:$HOME/bin:$PATH"
+export PATH="/usr/local/bin:/usr/local/go/bin:/usr/bin:/bin:$PATH"
+export PATH="/usr/local/games:/usr/games:/usr/share/games:$PATH"
+export PATH="/usr/local/sbin:/usr/sbin:/sbin:$PATH"
+export PATH="/root/.local/bin:/snap/bin:/usr/sandbox:$PATH"
+export PATH="$HOME/.local/share/flatpak/exports/share/applications:$HOME/.local/share/flatpak/exports/bin/:/var/lib/flatpak/exports/share/applications:$PATH"

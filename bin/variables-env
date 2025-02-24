@@ -1,0 +1,117 @@
+#!/usr/bin/env bash
+
+function message() {
+    local signal color
+    local RESETC="\033[0m\e[0m"
+    case "$1" in
+        "-title")       color="\033[0;37m\033[1m";      signal="[$]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
+        "-subtitle")    color="\033[0;35m\033[1m";      signal="[*]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
+        "-approval")    color="\033[38;5;51m\033[1m";   signal="[?]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
+        "-success")     color="\033[0;32m\033[1m";      signal="[+]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
+        "-warning")     color="\033[0;33m\033[1m";      signal="[&]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
+        "-error")       color="\033[0;31m\033[1m";      signal="[-]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
+        "-cancel")      color="\033[0;34m\033[1m";      signal="[!]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
+        *)              color="$RESETC";                signal=""; shift; echo -e "${color}${signal} $*${RESETC}";;
+    esac
+}
+
+trap ctrl_c INT
+function ctrl_c() {
+    message -cancel "Exiting...\n"
+    exit 1
+}
+
+function check_execution() {
+    if [ $1 != 0 ] && [ $1 != 130 ]; then
+        message -error "Error: $2"
+        sleep 0.5
+    else
+        message -success "Successful: $3"
+        sleep 0.5
+    fi
+}
+
+function add_or_update_variable() {
+    local VAR_NAME="$1"
+    local VAR_VALUE="$2"
+
+    if grep -q "^${VAR_NAME}=" "$ENV_FILE"; then
+        sudo sed -i "s|^${VAR_NAME}=.*|${VAR_NAME}=\"${VAR_VALUE}\"|" "$ENV_FILE"
+        message -success "La variable '$VAR_NAME' fue actualizada con el nuevo valor '$VAR_VALUE'."
+    else
+        echo "${VAR_NAME}=\"${VAR_VALUE}\"" | sudo tee -a "$ENV_FILE" > /dev/null
+        message -success "Variable '$VAR_NAME' añadida con el valor '$VAR_VALUE'."
+    fi
+}
+
+# Archivo de entorno (puedes cambiarlo para pruebas)
+ENV_FILE="/etc/environment"
+
+# Inicializa variables para cada parámetro
+CUSTOM_PATH=""
+EDITOR=""
+BROWSER=""
+WEATHER_KEY=""
+
+# Verifica que grep y sudo existan en el sistema
+if ! command -v grep &> /dev/null || ! command -v sudo &> /dev/null; then
+    message -error "Error: grep y/o sudo no están instalados o no se encuentran en el PATH."
+    exit 1
+fi
+
+# Procesa los argumentos con getopts y valida que no estén vacíos ni contengan otra opción
+while getopts "p:e:b:w:" opt; do
+    case ${opt} in
+        p)
+            if [[ -z "$OPTARG" || "$OPTARG" == -* ]]; then
+                message -error "La opción -p requiere un valor válido."
+                exit 1
+            fi
+            CUSTOM_PATH="${OPTARG}"
+        ;;
+        e)
+            if [[ -z "$OPTARG" || "$OPTARG" == -* ]]; then
+                message -error "La opción -e requiere un valor válido."
+                exit 1
+            fi
+            EDITOR="${OPTARG}"
+        ;;
+        b)
+            if [[ -z "$OPTARG" || "$OPTARG" == -* ]]; then
+                message -error "La opción -b requiere un valor válido."
+                exit 1
+            fi
+            BROWSER="${OPTARG}"
+        ;;
+        w)
+            if [[ -z "$OPTARG" || "$OPTARG" == -* ]]; then
+                message -error "La opción -w requiere un valor válido."
+                exit 1
+            fi
+            WEATHER_KEY="${OPTARG}"
+        ;;
+        \?)
+            message -error "Opción inválida: -$OPTARG"
+            exit 1
+        ;;
+        :)
+            message -error "La opción -$OPTARG requiere un valor."
+            exit 1
+        ;;
+    esac
+done
+
+# Pide la contraseña solo una vez al inicio
+sudo -v
+
+# Agrega o actualiza las variables si se han proporcionado valores válidos
+[ -n "$CUSTOM_PATH" ] && add_or_update_variable "PATH" "$CUSTOM_PATH"
+[ -n "$EDITOR" ] && add_or_update_variable "EDITOR" "$EDITOR"
+[ -n "$BROWSER" ] && add_or_update_variable "BROWSER" "$BROWSER"
+[ -n "$WEATHER_KEY" ] && add_or_update_variable "WEATHER_KEY" "$WEATHER_KEY"
+
+# Si no se proporcionaron opciones, muestra el uso
+if [ "$OPTIND" -eq 1 ]; then
+    message -title "Uso: $0 -p \"custom_path\" -e \"editor\" -b \"browser\" -w \"weather-key\""
+    exit 1
+fi

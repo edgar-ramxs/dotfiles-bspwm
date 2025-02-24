@@ -1,0 +1,80 @@
+#!/usr/bin/python3
+
+import re
+import sys
+import socket 
+import argparse
+import subprocess
+
+RESETC = "\033[0m"
+RED_COLOR = "\033[0;31m\033[1m"
+PURPLE_COLOR = "\033[0;35m\033[1m"
+
+def is_valid_ipv4_address(address: str) -> bool: 
+    try: 
+        socket.inet_pton(socket.AF_INET, address) 
+    except AttributeError:
+        try: 
+            socket.inet_aton(address) 
+        except socket.error: 
+            return False 
+        return address.count('.') == 3 
+    except socket.error:
+        return False 
+    return True 
+
+def is_valid_ipv6_address(address: str) -> bool: 
+    try: 
+        socket.inet_pton(socket.AF_INET6, address) 
+    except socket.error:
+        return False 
+    return True
+
+def get_ttl(ip_address: str):
+    try:
+        result = subprocess.run(['ping', '-c', '1', ip_address], capture_output=True, text=True, timeout=5)
+        output = result.stdout
+        ttl_match = re.search(r"ttl=(\d+)", output, re.IGNORECASE)
+        if ttl_match:
+            ttl_value = int(ttl_match.group(1))
+            return ttl_value
+        else:
+            return None
+    except subprocess.TimeoutExpired:
+        print(f"{RED_COLOR}[!] Timeout al ejecutar ping a {ip_address}. {RESETC}")
+        return None
+    except Exception as e:
+        print(f"{RED_COLOR}[!] Error al ejecutar ping a {ip_address}: {e} {RESETC}")
+        return None
+
+def get_os(ttl):
+    if ttl >= 0 and ttl <= 64:
+        return "Linux"
+    elif ttl >= 65 and ttl <= 128:
+        return "Windows"
+    else:
+        return "Not Found"
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Which System?')
+    parser.add_argument('-ip', '--ip_address', type=str, help='Enter an ip address like 10.10.10.1 here', required=True)
+    args = parser.parse_args()
+    IP = args.ip_address
+
+    if is_valid_ipv4_address(IP) or is_valid_ipv6_address(IP):
+        ttl = get_ttl(IP)
+        os_name = get_os(ttl)
+        if os_name != "Not Found":
+            print(f"{PURPLE_COLOR}[+] OS:\t\t{os_name}{RESETC}")
+            print(f"{PURPLE_COLOR}[+] IP:\t\t{IP}{RESETC}")
+            print(f"{PURPLE_COLOR}[+] TTL:\t{ttl}{RESETC}")
+        else:
+            print(f"{PURPLE_COLOR}[+] OS:\t\tUnidentified{RESETC}")
+            print(f"{PURPLE_COLOR}[+] IP:\t\t{IP}{RESETC}")
+            print(f"{PURPLE_COLOR}[+] TTL:\t{ttl}{RESETC}")
+        sys.exit(0)
+    else:
+        print(f"{RED_COLOR}[!] Ip {IP} address is invalid {RESETC}")
+        sys.exit(1)
+

@@ -1,0 +1,97 @@
+#!/usr/bin/env bash
+
+#  ███████╗ ██████╗ ███╗   ██╗████████╗███████╗
+#  ██╔════╝██╔═══██╗████╗  ██║╚══██╔══╝██╔════╝
+#  █████╗  ██║   ██║██╔██╗ ██║   ██║   ███████╗
+#  ██╔══╝  ██║   ██║██║╚██╗██║   ██║   ╚════██║
+#  ██║     ╚██████╔╝██║ ╚████║   ██║   ███████║
+#  ╚═╝      ╚═════╝ ╚═╝  ╚═══╝   ╚═╝   ╚══════╝
+# LINK: https://github.com/ryanoasis/nerd-fonts/releases/latest/
+
+FONTS=(
+    "0xProto" "3270" "Agave" "AnonymousPro" "Arimo" "AurulentSansMono"
+    "BigBlueTerminal" "BitstreamVeraSansMono" "CascadiaCode" "CascadiaMono"
+    "CodeNewRoman" "ComicShannsMono" "CommitMono" "Cousine" "D2Coding"
+    "DaddyTimeMono" "DejaVuSansMono" "DroidSansMono" "EnvyCodeR"
+    "FantasqueSansMono" "FiraCode" "FiraMono" "GeistMono" "Go-Mono"
+    "Gohu" "Hack" "Hasklig" "HeavyData" "Hermit" "iA-Writer" "IBMPlexMono"
+    "Inconsolata" "InconsolataGo" "InconsolataLGC" "IntelOneMono" "Iosevka"
+    "IosevkaTerm" "IosevkaTermSlab" "JetBrainsMono" "Lekton" "LiberationMono"
+    "Lilex" "MartianMono" "Meslo" "Monaspace" "Monofur" "Monoid" "Mononoki"
+    "MPlus" "NerdFontsSymbolsOnly" "Noto" "OpenDyslexic" "Overpass"
+    "ProFont" "ProggyClean" "Recursive" "RobotoMono" "ShareTechMono"
+    "SourceCodePro" "SpaceMono" "Terminus" "Tinos" "Ubuntu" "UbuntuMono"
+    "UbuntuSans" "VictorMono" "ZedMono"
+)
+
+function message() {
+    local signal color
+    local RESETC="\033[0m\e[0m"
+    case "$1" in
+        "-title")       color="\033[0;37m\033[1m";      signal="[$]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
+        "-subtitle")    color="\033[0;35m\033[1m";      signal="[*]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
+        "-approval")    color="\033[38;5;51m\033[1m";   signal="[?]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
+        "-success")     color="\033[0;32m\033[1m";      signal="[+]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
+        "-warning")     color="\033[0;33m\033[1m";      signal="[&]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
+        "-error")       color="\033[0;31m\033[1m";      signal="[-]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
+        "-cancel")      color="\033[0;34m\033[1m";      signal="[!]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
+        *)              color="$RESETC";                signal=""; shift; echo -e "${color}${signal} $*${RESETC}";;
+    esac
+}
+
+function is_valid_font() {
+    local font_name="$1"
+    for valid_font in "${FONTS[@]}"; do
+        if [[ "$valid_font" == "$font_name" ]]; then
+            return 0
+        fi
+    done
+    return 1
+}
+
+if [ $# -eq 0 ]; then
+    message -error "Error: At least one font must be provided as a parameter."
+    exit 1
+fi
+
+sudo -v
+DIR_TMP="/tmp/fonts_tmp"
+DIR_FONTS="/usr/share/fonts"
+mkdir -p "$DIR_TMP"
+
+for font_name in "$@"; do
+    if is_valid_font "$font_name"; then
+        message -title "Downloading $font_name..."
+        sleep 0.5
+        
+        curl -L "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/${font_name}.tar.xz" -o "$DIR_TMP/${font_name}.tar.xz" >/dev/null 2>&1
+        if [ $? -eq 0 ]; then
+            
+            if [ -d "$DIR_FONTS/${font_name}" ]; then
+                sudo rm -rf "$DIR_FONTS/${font_name}"
+            fi
+            
+            sudo mkdir -p "$DIR_FONTS/${font_name}"
+            sudo tar -xf "$DIR_TMP/${font_name}.tar.xz" -C "$DIR_FONTS/${font_name}" --wildcards "*.ttf" >/dev/null 2>&1
+            
+            if [ $? -eq 0 ]; then
+                message -success "Font $font_name copied to $DIR_FONTS successfully."
+            else
+                message -error "Error copying font $font_name to $DIR_FONTS."
+            fi
+        
+        else
+            message -error "Error downloading font $font_name."
+        fi
+    
+    else
+        message -error "Invalid font: $font_name"
+    fi
+done
+
+
+rm -rf "$DIR_TMP"
+sudo fc-cache -fv >/dev/null 2>&1
+sleep 0.5
+
+exit 0
