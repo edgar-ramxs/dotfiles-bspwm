@@ -40,9 +40,9 @@ fi
 
 
 # Sources
-source ~/.exports
-source ~/.functions
-source ~/.aliases
+source ~/.config/shells/exports
+source ~/.config/shells/functions
+source ~/.config/shells/aliases
 
 
 PROMPT_COMMAND='PS1_CMD1=$(git branch 2>/dev/null | grep '"'"'*'"'"' | colrm 1 2)'

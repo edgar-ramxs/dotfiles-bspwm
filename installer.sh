@@ -53,11 +53,10 @@ function ctrl_c() {
 function check_execution() {
     if [ $1 != 0 ] && [ $1 != 130 ]; then
         message -error "Error: $2"
-        sleep 0.5
     else
         message -success "Successful: $3"
-        sleep 0.5
     fi
+    sleep 0.5
 }
 
 function reboot_system() {
@@ -69,7 +68,6 @@ function reboot_system() {
         message -approval "Do you want to restart the system now? (yes|y|no|n)"
         read -r REPLY
         REPLY=${REPLY,,}
-        
         case "$REPLY" in
             yes|y)
                 message -cancel "Restarting the system..."
@@ -113,7 +111,6 @@ function updating_packages() {
             sudo apt upgrade -y >/dev/null 2>&1
             check_execution $? "Failed to upgrade packages." "Packages upgraded successfully."
         ;;
-        
         arch|manjaro)
             message -subtitle "Updating package list..."
             sudo pacman -Sy --noconfirm >/dev/null 2>&1
@@ -123,29 +120,11 @@ function updating_packages() {
             sudo pacman -Syu --noconfirm >/dev/null 2>&1
             check_execution $? "Failed to upgrade packages." "Packages upgraded successfully."
         ;;
-        
         fedora)
             message -subtitle "Updating and upgrading packages..."
             sudo dnf upgrade --refresh -y >/dev/null 2>&1
             check_execution $? "Failed to update packages." "Packages upgraded successfully."
         ;;
-        
-        opensuse*)
-            message -subtitle "Updating package list..."
-            sudo zypper refresh >/dev/null 2>&1
-            check_execution $? "Failed to refresh repositories." "Repositories refreshed successfully."
-            
-            message -subtitle "Upgrading installed packages..."
-            sudo zypper update -y >/dev/null 2>&1
-            check_execution $? "Failed to upgrade packages." "Packages upgraded successfully."
-        ;;
-        
-        alpine)
-            message -subtitle "Updating and upgrading packages..."
-            sudo apk update >/dev/null 2>&1 && sudo apk upgrade >/dev/null 2>&1
-            check_execution $? "Failed to upgrade packages." "Packages upgraded successfully."
-        ;;
-        
         *)
             message -error "Package manager not supported for this distribution: $DISTRO"
             return 1
@@ -192,7 +171,6 @@ function install_packages() {
                 fi
             done
         ;;
-        
         arch|manjaro)
             message -subtitle "Checking and installing packages for Pacman-based systems..."
             local PACKAGES_FILE="$DIR/packages/arch/list-packages.txt"
@@ -217,7 +195,6 @@ function install_packages() {
                 fi
             done
         ;;
-        
         fedora)
             message -subtitle "Checking and installing packages for DNF-based systems..."
             local PACKAGES_FILE="$DIR/packages/fedora/list-packages.txt"
@@ -242,57 +219,6 @@ function install_packages() {
                 fi
             done
         ;;
-        
-        opensuse*)
-            message -subtitle "Checking and installing packages for Zypper-based systems..."
-            local PACKAGES_FILE="$DIR/packages/opensuse/list-packages.txt"
-            if [[ ! -f "$PACKAGES_FILE" ]]; then
-                message -cancel "There is no file related to your distribution."
-                exit 1
-            fi
-            
-            message -subtitle "File detected. Starting package installation..."
-            sleep 0.5
-            
-            grep -Ev '^#|^$' "$PACKAGES_FILE" | while IFS= read -r package; do
-                if zypper info "$package" &>/dev/null; then
-                    sudo zypper install -y "$package" >/dev/null 2>&1
-                    if [[ $? -eq 0 ]]; then
-                        message -success "(installed) $package"
-                    else
-                        message -error "(failed to install) $package"
-                    fi
-                else
-                    message -error "(not available) $package"
-                fi
-            done
-        ;;
-        
-        alpine)
-            message -subtitle "Checking and installing packages for APK-based systems..."
-            local PACKAGES_FILE="$DIR/packages/alpine/list-packages.txt"
-            if [[ ! -f "$PACKAGES_FILE" ]]; then
-                message -cancel "There is no file related to your distribution."
-                exit 1
-            fi
-            
-            message -subtitle "File detected. Starting package installation..."
-            sleep 0.5
-            
-            grep -Ev '^#|^$' "$PACKAGES_FILE" | while IFS= read -r package; do
-                if apk info "$package" &>/dev/null; then
-                    sudo apk add "$package" >/dev/null 2>&1
-                    if [[ $? -eq 0 ]]; then
-                        message -success "(installed) $package"
-                    else
-                        message -error "(failed to install) $package"
-                    fi
-                else
-                    message -error "(not available) $package"
-                fi
-            done
-        ;;
-        
         *)
             message -error "Package manager not supported for this distribution: $DISTRO"
             return 1
@@ -304,11 +230,9 @@ function install_packages() {
 
 function install_fonts(){
     local FONTS=("FiraCode" "CascadiaCode" "Iosevka" "Hack" "JetBrainsMono" "Meslo" "Mononoki" "Inconsolata" "RobotoMono" "0xProto") 
-
     local DIR_FONTS="/usr/share/fonts"
     local DIR_DOWNLOADS="/tmp/fonts_tmp"
     mkdir -p "$DIR_DOWNLOADS"
-    sleep 0.5
     
     if ! command -v curl &>/dev/null || ! command -v tar &>/dev/null; then
         message -error "Dependencies missing: curl and tar are required. Please install them first."
@@ -350,13 +274,11 @@ function install_fonts(){
     done
     
     rm -rf "$DIR_DOWNLOADS"
-    
+
     message -subtitle "Reloading font cache..."
     sudo fc-cache -fv >/dev/null 2>&1
-    sleep 1
-    
+    sleep 0.5
     message -success "Nerd Fonts installation complete!"
-    
 }
 
 function install_pywal() {
@@ -485,7 +407,7 @@ function setter_homefiles() {
     sleep 0.5
 
     shopt -s dotglob
-    for file in .aliases .exports .functions .profile; do
+    for file in .profile; do
         if [[ -f "$DIR/home/$file" ]]; then
             cp -rf --preserve=mode,ownership "$DIR/home/$file" "$HOME/"
             message -success "Copied $file to $HOME."
@@ -635,7 +557,6 @@ function setter_display_manager(){
             sudo systemctl is-active --quiet lightdm && sudo systemctl is-enabled --quiet lightdm >/dev/null 2>&1
             check_execution $? "Failed" "Successfully"
         ;;
-
         gdm3)
             message -subtitle "Installing minimal GDM3..."
 
@@ -648,7 +569,6 @@ function setter_display_manager(){
             sudo systemctl is-active --quiet gdm && sudo systemctl is-enabled --quiet gdm >/dev/null 2>&1
             check_execution $? "Failed" "Successfully"
         ;;
-
         sddm)
             message -subtitle "Installing minimal SDDM..."
 
@@ -661,7 +581,6 @@ function setter_display_manager(){
             sudo systemctl is-active --quiet sddm && sudo systemctl is-enabled --quiet sddm >/dev/null 2>&1
             check_execution $? "Failed" "Successfully"
         ;;
-
         lxdm)
             message -subtitle "Installing LXDM..."
 
@@ -674,7 +593,6 @@ function setter_display_manager(){
             sudo systemctl is-active --quiet lxdm && sudo systemctl is-enabled --quiet lxdm >/dev/null 2>&1
             check_execution $? "Failed" "Successfully"
         ;;
-
         slim)
             message -subtitle "Installing SLiM..."
 
@@ -687,7 +605,6 @@ function setter_display_manager(){
             sudo systemctl is-active --quiet slim && sudo systemctl is-enabled --quiet slim >/dev/null 2>&1
             check_execution $? "Failed" "Successfully"
         ;;
-
         *)
             message -error "Display manager not supported for this distribution: $DISTRO"
             continue
@@ -732,9 +649,6 @@ while getopts ":s:r:" opt; do
         r) P_RESOLUTION="$OPTARG"
             [[ "$P_RESOLUTION" =~ ^(1920x1080|1366x768)$ ]] || usage
         ;;
-        # p) P_PACKAGES="$OPTARG"
-        #     [[ "$P_PACKAGES" =~ ^(all|dev|hack|games)$ ]] || usage
-        # ;;
         # t) P_THEME="$OPTARG"
         #     [[ "$P_THEME" =~ ^(a|b|c)$ ]] || usage
         # ;;
@@ -742,17 +656,14 @@ while getopts ":s:r:" opt; do
     esac
 done
 
-
 if [[ -z "$P_SHELL" || -z "$P_RESOLUTION" ]]; then
     usage
 fi
-
 
 if [ "$UID" -eq 0 ]; then
     message -error "You should not run the script as the root user!"
     exit 1
 fi
-
 
 sudo -v
 
@@ -768,7 +679,7 @@ setter_configs
 setter_permissions
 setter_shell
 setter_homefiles
-setter_symbolic_links
+# setter_symbolic_links
 setter_services
 setter_display_manager
 

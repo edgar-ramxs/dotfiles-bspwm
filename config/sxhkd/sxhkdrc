@@ -184,3 +184,67 @@ alt + {Left,Down,Up,Right}
 # # swap the current node and the biggest node
 # super + c
 # 	bspc node -s biggest
+
+# ; # Basic binds
+# ; super + q
+# ; 	bspc node -c
+# ; super + Return
+# ;   alacritty
+# ; super + w
+# ;   $BROWSER
+# ; super + d
+# ; 	$HOME/.config/rofi/launchers/colorful/launcher.sh
+# ; super + s
+# ;   $HOME/.config/rofi/applets/android/screenshot.sh
+# ; super + shift + r
+# ; 	bspc wm -r
+# ; super + Escape
+# ;   pkill -USR1 -x sxhkd
+# ; super + x
+# ;   $HOME/.config/rofi/applets/android/powermenu.sh
+# ; super + n
+# ;   $TERMINAL -e newsboat
+# ; super + m
+# ;   $HOME/.config/rofi/applets/android/mpd.sh
+# ; super + shift + m
+# ;   pulsemixer --toggle-mute
+
+# ; # bspwm
+# ; super + {h,j,k,l}
+# ; 	bspc node -f {west,south,north,east}
+# ; # Swap window with direction
+# ; super + shift + {h,j,k,l}
+# ; 	bspc node -s {west,south,north,east}
+# ; # Toggle floating
+# ; super + o
+# ; 	bspc node focused.tiled -t floating || bspc node focused.floating -t tiled
+# ; # Focus on desktop
+# ; super + {0-9}
+# ; 	bspc desktop -f ^{0-9}
+# ; # Send window to desktop
+# ; super + shift + {0-9}
+# ; 	bspc node -d ^{0-9}
+# ; # Expand a window by moving one of its side outward
+# ; alt + {h,j,k,l}
+# ; 	bspc node -z {left -30 0,bottom 0 30,top 0 -30,right 30 0}
+# ; # Contract a window by moving one of its side inward
+# ; alt + shift + {h,j,k,l}
+# ; 	bspc node -z {right -30 0,top 0 30,bottom 0 -30,left 30 0}
+# ; # Move a floating window
+# ; alt + {y,u,i,o}
+# ; 	xdo move {-x -30,-y +30,-y -30,-x +30}
+
+
+# ; # media key
+# ; super + {equal,plus}
+# ;   pulsemixer --change-volume +{5,15}
+# ; super + {_,shift +} + minus
+# ;   pulsemixer --change-volume -{5,15}
+# ; super + p
+# ;   mpc toggle
+# ; alt + p
+# ;   scrot $HOME/screenshot/pic-full-$(date '+%Y-%m-%d-%H-%M-%S').png && notify-send "Saved Screenshot as pic-full-$(date '+%Y-%m-%d-%H-%M-%S').png"
+# ; alt + shift + p
+# ;   scrot -s $HOME/screenshot/pic-selected-$(date '+%Y-%m-%d-%H-%M-%S').png && notify-send "Saved Screenshot as pic-selected-$(date '+%Y-%m-%d-%H-%M-%S').png"
+# ; ctrl + alt + p
+# ;   scrot -u $HOME/screenshot/pic-window-$(date '+%Y-%m-%d-%H-%M-%S').png && notify-send "Saved Screenshot as pic-window-$(date '+%Y-%m-%d-%H-%M-%S').png"

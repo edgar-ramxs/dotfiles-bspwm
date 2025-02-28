@@ -17,7 +17,6 @@ xdotool
 xbindkeys
 xbacklight
 xdg-user-dirs
-xdg-user-dirs-gtk
 
 # Graphic Environment
 bspwm

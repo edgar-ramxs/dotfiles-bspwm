@@ -184,9 +184,9 @@ fi
 # bindkey "^M" kill-line                  # (Ctrl + M) Eliminar desde el final hasta el cursor
 
 # Sources
-source ~/.exports
-source ~/.functions
-source ~/.aliases
+source ~/.config/shells/exports
+source ~/.config/shells/functions
+source ~/.config/shells/aliases
 
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.

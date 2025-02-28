@@ -50,6 +50,12 @@ alias sys-ena="sudo systemctl enable"
 alias sys-dis="sudo systemctl disable"
 alias sys-res="sudo systemctl restart"
 
+# status | start | stop
+alias ser-mys="sudo service mysql"
+alias ser-mgd="sudo service mongod"
+alias ser-pos="sudo service postgresql"
+alias ser-rds="sudo service redis-server"
+
 alias rcfg-zshrc="$EDITOR $HOME/.zshrc"
 alias rcfg-bashrc="$EDITOR $HOME/.bashrc"
 alias rcfg-aliases="$EDITOR $HOME/.aliases"
