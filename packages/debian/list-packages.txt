@@ -9,7 +9,6 @@
 xorg
 xserver-xorg
 xinit
-xterm
 xclip
 xvkbd
 xinput
@@ -28,8 +27,8 @@ dunst
 rofi
 zsh
 suckless-tools
-conky
-wmname
+conky-all
+libnotify-bin
 
 # Audio Manager
 pulseaudio
@@ -47,8 +46,8 @@ network-manager-gnome
 # Bluetooth Manager
 bluetooth
 bluez
-bluez-utils
 blueman
+bluez-utils
 blueman-manager
 
 # Energy Manager
@@ -67,9 +66,9 @@ system-config-printer
 arandr
 nitrogen
 lxappearance
-betterlockscreen
 papirus-icon-theme
 gtk2-engines-murrine
+betterlockscreen
 
 # Fonts
 fonts-cantarell
@@ -82,7 +81,6 @@ pcmanfm
 dosfstools
 avahi-daemon
 gvfs-backends
-libnotify-bin
 openssh-client
 policykit-1-gnome
 
@@ -102,7 +100,6 @@ meson
 jq
 bat
 lsd
-exa
 zip
 tar
 rar
@@ -138,4 +135,3 @@ zathura
 mousepad
 micro
 vlc
-maim

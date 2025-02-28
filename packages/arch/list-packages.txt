@@ -4,7 +4,6 @@ tty-clock
 cava
 tmux
 ranger
-z
 ripgrep
 ani-cli
 nautilus

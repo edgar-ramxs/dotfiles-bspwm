@@ -7,10 +7,6 @@
 #  ██║  ██║╚██████╔╝   ██║   ╚██████╔╝███████║   ██║   ██║  ██║██║  ██║   ██║   
 #  ╚═╝  ╚═╝ ╚═════╝    ╚═╝    ╚═════╝ ╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   
 
-## Graphics problems with Java applications in certain window managers
-# wmname LG3D &
-# vmware-user-suid-wrapper &
-
 ## Set the keyboard layout to Latin American Spanish
 setxkbmap -layout latam &
 

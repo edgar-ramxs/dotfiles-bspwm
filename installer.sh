@@ -62,7 +62,7 @@ function check_execution() {
 function reboot_system() {
     local attempts=0
     local max_attempts=3
-    
+
     message -title "Reboot: It's necessary to restart the system."
     while (( attempts < max_attempts )); do
         message -approval "Do you want to restart the system now? (yes|y|no|n)"
@@ -89,18 +89,12 @@ function reboot_system() {
             ;;
         esac
     done
-}
+} 
 
 function updating_packages() {
     message -title "Operating System Package Updates ($DISTRO)"
     sleep 0.5
-    
-    message -subtitle "Requesting sudo permissions..."
-    if ! sudo -v; then
-        message -error "Failed to authenticate sudo. Please check your password."
-        exit 1
-    fi
-    
+
     case "$DISTRO" in
         debian|ubuntu|kali|mint|parrot)
             message -subtitle "Updating package list..."
@@ -132,6 +126,24 @@ function updating_packages() {
     esac
     
     message -success "All packages are up to date."
+    sleep 0.5
+}
+
+function copy_configs() {
+    local DIR_SOURCE="$1"
+    local DIR_DEST="$2"
+    local TITLE="$3"
+    
+    message -subtitle "$TITLE"
+    sleep 0.5
+
+    if [ ! -d "$DIR_DEST" ]; then
+        mkdir -p "$DIR_DEST"
+        message -warning "Target directory $DIR_DEST was created."
+    fi
+    
+    cp -rf "$DIR_SOURCE"/* "$DIR_DEST"
+    message -success "Configurations successfully copied to $DIR_DEST"
     sleep 0.5
 }
 
@@ -277,8 +289,8 @@ function install_fonts(){
 
     message -subtitle "Reloading font cache..."
     sudo fc-cache -fv >/dev/null 2>&1
-    sleep 0.5
     message -success "Nerd Fonts installation complete!"
+    sleep 0.5
 }
 
 function install_pywal() {
@@ -363,22 +375,6 @@ function install_oh_my_zsh() {
 #  ███████║███████╗   ██║      ██║   ██║██║ ╚████║╚██████╔╝███████║
 #  ╚══════╝╚══════╝   ╚═╝      ╚═╝   ╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚══════╝
 
-function copy_configs() {
-    local DIR_SOURCE="$1"
-    local DIR_DEST="$2"
-    local TITLE="$3"
-    
-    message -subtitle "$TITLE"
-    if [ ! -d "$DIR_DEST" ]; then
-        mkdir -p "$DIR_DEST"
-        message -warning "Target directory $DIR_DEST was created."
-    fi
-    
-    cp -rf "$DIR_SOURCE"/* "$DIR_DEST"
-    message -success "Configurations successfully copied to $DIR_DEST"
-    sleep 0.5
-}
-
 function setter_configs() {
     message -title "Installing Configuration"
     copy_configs "$DIR/config" "$HOME/.config" "Setting up .config directory..."
@@ -407,7 +403,7 @@ function setter_homefiles() {
     sleep 0.5
 
     shopt -s dotglob
-    for file in .profile; do
+    for file in .profile .functions .exports .aliases; do
         if [[ -f "$DIR/home/$file" ]]; then
             cp -rf --preserve=mode,ownership "$DIR/home/$file" "$HOME/"
             message -success "Copied $file to $HOME."
@@ -484,6 +480,7 @@ function setter_permissions() {
         else
             message -warning "Directory not found: $dir"
         fi
+        sleep 0.5
     done
     
     message -success "Execution permissions have been set for all specified file types in the directories."
@@ -536,82 +533,6 @@ function setter_symbolic_links() {
     sleep 0.5
 }
 
-function setter_display_manager(){
-    # lightdm | gdm3 | sddm | lxdm | slim
-    local display_manager="sddm"
-
-    message -title "Installing the display manager"
-    sleep 0.5
-
-    case $display_manager in 
-        lightdm)
-            message -subtitle "Installing LightDM..."
-            
-            sudo apt install -y lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings >/dev/null 2>&1
-            check_execution $? "Failed" "Successfully"
-
-            sudo systemctl enable lightdm >/dev/null 2>&1
-            check_execution $? "Failed" "Successfully"
-
-            # echo "LightDM has been installed and enabled."
-            sudo systemctl is-active --quiet lightdm && sudo systemctl is-enabled --quiet lightdm >/dev/null 2>&1
-            check_execution $? "Failed" "Successfully"
-        ;;
-        gdm3)
-            message -subtitle "Installing minimal GDM3..."
-
-            sudo apt install -y --no-install-recommends gdm3 >/dev/null 2>&1
-            check_execution $? "Failed" "Successfully"
-
-            sudo systemctl enable gdm3 >/dev/null 2>&1
-            check_execution $? "Failed" "Successfully"
-
-            sudo systemctl is-active --quiet gdm && sudo systemctl is-enabled --quiet gdm >/dev/null 2>&1
-            check_execution $? "Failed" "Successfully"
-        ;;
-        sddm)
-            message -subtitle "Installing minimal SDDM..."
-
-            sudo apt install -y --no-install-recommends sddm >/dev/null 2>&1
-            check_execution $? "Failed" "Successfully"
-
-            sudo systemctl enable sddm
-            check_execution $? "Failed" "Successfully"
-
-            sudo systemctl is-active --quiet sddm && sudo systemctl is-enabled --quiet sddm >/dev/null 2>&1
-            check_execution $? "Failed" "Successfully"
-        ;;
-        lxdm)
-            message -subtitle "Installing LXDM..."
-
-            sudo apt install -y --no-install-recommends lxdm >/dev/null 2>&1
-            check_execution $? "Failed" "Successfully"
-
-            sudo systemctl enable lxdm >/dev/null 2>&1
-            check_execution $? "Failed" "Successfully"
-
-            sudo systemctl is-active --quiet lxdm && sudo systemctl is-enabled --quiet lxdm >/dev/null 2>&1
-            check_execution $? "Failed" "Successfully"
-        ;;
-        slim)
-            message -subtitle "Installing SLiM..."
-
-            sudo apt install -y slim >/dev/null 2>&1
-            check_execution $? "Failed" "Successfully"
-
-            sudo systemctl enable slim >/dev/null 2>&1
-            check_execution $? "Failed" "Successfully"
-
-            sudo systemctl is-active --quiet slim && sudo systemctl is-enabled --quiet slim >/dev/null 2>&1
-            check_execution $? "Failed" "Successfully"
-        ;;
-        *)
-            message -error "Display manager not supported for this distribution: $DISTRO"
-            continue
-        ;;
-    esac
-}
-
 function setter_services() {
     message -title "Activate services in the system"
     sleep 0.5
@@ -633,6 +554,76 @@ function setter_services() {
     check_execution $? "Failed" "Successfully"
     
 }
+
+function setter_display_manager(){
+    local display_manager="sddm"
+
+    message -title "Installing the display manager"
+    sleep 0.5
+
+    case $display_manager in 
+        lightdm)
+            message -subtitle "Installing LightDM..."
+            sudo apt install -y lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings >/dev/null 2>&1
+            check_execution $? "Failed" "Successfully"
+
+            sudo systemctl enable lightdm >/dev/null 2>&1
+            check_execution $? "Failed" "Successfully"
+
+            sudo systemctl is-active --quiet lightdm && sudo systemctl is-enabled --quiet lightdm >/dev/null 2>&1
+            check_execution $? "Failed" "Successfully"
+        ;;
+        gdm3)
+            message -subtitle "Installing minimal GDM3..."
+            sudo apt install -y --no-install-recommends gdm3 >/dev/null 2>&1
+            check_execution $? "Failed" "Successfully"
+
+            sudo systemctl enable gdm3 >/dev/null 2>&1
+            check_execution $? "Failed" "Successfully"
+
+            sudo systemctl is-active --quiet gdm && sudo systemctl is-enabled --quiet gdm >/dev/null 2>&1
+            check_execution $? "Failed" "Successfully"
+        ;;
+        sddm)
+            message -subtitle "Installing minimal SDDM..."
+            sudo apt install -y --no-install-recommends sddm >/dev/null 2>&1
+            check_execution $? "Failed" "Successfully"
+
+            sudo systemctl enable sddm
+            check_execution $? "Failed" "Successfully"
+
+            sudo systemctl is-active --quiet sddm && sudo systemctl is-enabled --quiet sddm >/dev/null 2>&1
+            check_execution $? "Failed" "Successfully"
+        ;;
+        lxdm)
+            message -subtitle "Installing LXDM..."
+            sudo apt install -y --no-install-recommends lxdm >/dev/null 2>&1
+            check_execution $? "Failed" "Successfully"
+
+            sudo systemctl enable lxdm >/dev/null 2>&1
+            check_execution $? "Failed" "Successfully"
+
+            sudo systemctl is-active --quiet lxdm && sudo systemctl is-enabled --quiet lxdm >/dev/null 2>&1
+            check_execution $? "Failed" "Successfully"
+        ;;
+        slim)
+            message -subtitle "Installing SLiM..."
+            sudo apt install -y slim >/dev/null 2>&1
+            check_execution $? "Failed" "Successfully"
+
+            sudo systemctl enable slim >/dev/null 2>&1
+            check_execution $? "Failed" "Successfully"
+
+            sudo systemctl is-active --quiet slim && sudo systemctl is-enabled --quiet slim >/dev/null 2>&1
+            check_execution $? "Failed" "Successfully"
+        ;;
+        *)
+            message -error "Display manager not supported for this distribution: $DISTRO"
+            continue
+        ;;
+    esac
+}
+
 
 #  ███╗   ███╗ █████╗ ██╗███╗   ██╗
 #  ████╗ ████║██╔══██╗██║████╗  ██║
@@ -679,7 +670,7 @@ setter_configs
 setter_permissions
 setter_shell
 setter_homefiles
-# setter_symbolic_links
+setter_symbolic_links
 setter_services
 setter_display_manager
 
