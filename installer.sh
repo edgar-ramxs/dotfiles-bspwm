@@ -65,7 +65,7 @@ function reboot_system() {
 
     message -title "Reboot: It's necessary to restart the system."
     while (( attempts < max_attempts )); do
-        message -approval "Do you want to restart the system now? (yes|y|no|n)"
+        message -approval "Do you want to restart the system now? [yes|y] or [no|n]"
         read -r REPLY
         REPLY=${REPLY,,}
         case "$REPLY" in
@@ -160,16 +160,15 @@ function install_packages() {
     
     case "$DISTRO" in
         debian|ubuntu|kali|mint|parrot)
-            message -subtitle "Checking and installing packages for APT-based systems..."
             local PACKAGES_FILE="$DIR/packages/debian/list-packages.txt"
+            
+            message -subtitle "Checking and installing packages for APT-based systems..."
             if [[ ! -f "$PACKAGES_FILE" ]]; then
                 message -cancel "There is no file related to your distribution."
                 exit 1
             fi
             
             message -subtitle "File detected. Starting package installation..."
-            sleep 0.5
-            
             grep -Ev '^#|^$' "$PACKAGES_FILE" | while IFS= read -r package; do
                 if apt-cache show "$package" &>/dev/null; then
                     sudo apt install -y "$package" >/dev/null 2>&1
@@ -184,16 +183,15 @@ function install_packages() {
             done
         ;;
         arch|manjaro)
-            message -subtitle "Checking and installing packages for Pacman-based systems..."
             local PACKAGES_FILE="$DIR/packages/arch/list-packages.txt"
+            
+            message -subtitle "Checking and installing packages for Pacman-based systems..."
             if [[ ! -f "$PACKAGES_FILE" ]]; then
                 message -cancel "There is no file related to your distribution."
                 exit 1
             fi
             
             message -subtitle "File detected. Starting package installation..."
-            sleep 0.5
-            
             grep -Ev '^#|^$' "$PACKAGES_FILE" | while IFS= read -r package; do
                 if pacman -Si "$package" &>/dev/null; then
                     sudo pacman -S --noconfirm "$package" >/dev/null 2>&1
@@ -208,16 +206,15 @@ function install_packages() {
             done
         ;;
         fedora)
-            message -subtitle "Checking and installing packages for DNF-based systems..."
             local PACKAGES_FILE="$DIR/packages/fedora/list-packages.txt"
+            
+            message -subtitle "Checking and installing packages for DNF-based systems..."
             if [[ ! -f "$PACKAGES_FILE" ]]; then
                 message -cancel "There is no file related to your distribution."
                 exit 1
             fi
             
             message -subtitle "File detected. Starting package installation..."
-            sleep 0.5
-            
             grep -Ev '^#|^$' "$PACKAGES_FILE" | while IFS= read -r package; do
                 if dnf info "$package" &>/dev/null; then
                     sudo dnf install -y "$package" >/dev/null 2>&1
@@ -238,10 +235,11 @@ function install_packages() {
     esac
     
     message -warning "Package installation completed for $DISTRO."
+    sleep 0.5
 }
 
 function install_fonts(){
-    local FONTS=("FiraCode" "CascadiaCode" "Iosevka" "Hack" "JetBrainsMono" "Meslo" "Mononoki" "Inconsolata" "RobotoMono" "0xProto") 
+    local FONTS=("FiraCode" "CascadiaCode" "Iosevka" "Hack" "JetBrainsMono" "Meslo" "Mononoki" "RobotoMono" "0xProto") 
     local DIR_FONTS="/usr/share/fonts"
     local DIR_DOWNLOADS="/tmp/fonts_tmp"
     mkdir -p "$DIR_DOWNLOADS"
@@ -300,7 +298,7 @@ function install_pywal() {
     local PIP_CMD=""
     if command -v pip3 &>/dev/null; then
         PIP_CMD="pip3"
-        elif command -v pip &>/dev/null; then
+    elif command -v pip &>/dev/null; then
         PIP_CMD="pip"
     else
         message -error "Neither pip3 nor pip is installed. Please install pip3 or pip before proceeding."
@@ -379,11 +377,11 @@ function setter_configs() {
     message -title "Installing Configuration"
     copy_configs "$DIR/config" "$HOME/.config" "Setting up .config directory..."
     
-    message -title "Installing Binaries"
-    copy_configs "$DIR/bin" "$HOME/.local/bin" "Setting up personal binaries..."
+    message -title "Installing Local Files"
+    copy_configs "$DIR/local" "$HOME/.local" "Setting up personal files in local..."
     
     message -title "Installing Wallpapers"
-    copy_configs "$DIR/wallpapers/$P_RESOLUTION" "$HOME/.config/wallpapers" "Copying wallpapers to $USER's profile..."
+    copy_configs "$DIR/wallpapers/$P_RESOLUTION" "$HOME/.local/wallpapers" "Copying wallpapers to $USER's profile..."
     
     # # ICONS
     # copy_configs "$DIR_RESOURCES/icons" "/usr/share/icons" "Copying icons to the system"
@@ -403,7 +401,7 @@ function setter_homefiles() {
     sleep 0.5
 
     shopt -s dotglob
-    for file in .profile .functions .exports .aliases; do
+    for file in .profile .dmrc .xsessionrc; do
         if [[ -f "$DIR/home/$file" ]]; then
             cp -rf --preserve=mode,ownership "$DIR/home/$file" "$HOME/"
             message -success "Copied $file to $HOME."
@@ -463,6 +461,7 @@ function setter_permissions() {
         "$HOME/.config/rofi/htb"
         "$HOME/.config/rofi/scripts"
         "$HOME/.local/bin"
+        "$HOME/.local/colorscripts"
     )
 
     message -title "Setting execution permissions to specified file types"
@@ -480,17 +479,38 @@ function setter_permissions() {
         else
             message -warning "Directory not found: $dir"
         fi
-        sleep 0.5
+        sleep 1
     done
     
     message -success "Execution permissions have been set for all specified file types in the directories."
     sleep 0.5
 }
 
+function setter_services() {
+    message -title "Activate services in the system"
+    sleep 0.5
+    
+    message -subtitle "Service [avahi-daemon]"
+    sudo systemctl enable avahi-daemon >/dev/null 2>&1
+    check_execution $? "Service Activation Failed" "Service Activated Successfully"
+
+    message -subtitle "Service [acpid]"
+    sudo systemctl enable acpid >/dev/null 2>&1
+    check_execution $? "Service Activation Failed" "Service Activated Successfully"
+
+    message -subtitle "Service [bluetooth]"
+    sudo systemctl enable bluetooth >/dev/null 2>&1
+    check_execution $? "Service Activation Failed" "Service Activated Successfully"
+
+    message -subtitle "Service [cups]"
+    sudo systemctl enable cups.service >/dev/null 2>&1
+    check_execution $? "Service Activation Failed" "Service Activated Successfully"
+}
+
 function setter_symbolic_links() {
     local ROOT_HOME="/root"
     local CURRENT_SHELL=$(basename "$SHELL")
-    local COMMON_FILES=(".profile" ".aliases" ".exports" ".functions")
+    local COMMON_FILES=(".profile")
 
     message -title "Creating symbolic links in root user directory"
     sleep 0.5
@@ -533,97 +553,64 @@ function setter_symbolic_links() {
     sleep 0.5
 }
 
-function setter_services() {
-    message -title "Activate services in the system"
-    sleep 0.5
-    
-    message -subtitle "avahi-daemon"
-    sudo systemctl enable avahi-daemon >/dev/null 2>&1
-    check_execution $? "Failed" "Successfully"
-
-    message -subtitle "acpid"
-    sudo systemctl enable acpid >/dev/null 2>&1
-    check_execution $? "Failed" "Successfully"
-
-    message -subtitle "bluetooth"
-    sudo systemctl enable bluetooth >/dev/null 2>&1
-    check_execution $? "Failed" "Successfully"
-
-    message -subtitle "cups"
-    sudo systemctl enable cups.service >/dev/null 2>&1
-    check_execution $? "Failed" "Successfully"
-    
-}
-
 function setter_display_manager(){
     local display_manager="sddm"
+    local old_display_manager=""
 
-    message -title "Installing the display manager"
+    message -title "Setting up the display manager"
     sleep 0.5
 
     case $display_manager in 
         lightdm)
             message -subtitle "Installing LightDM..."
-            sudo apt install -y lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings >/dev/null 2>&1
-            check_execution $? "Failed" "Successfully"
-
-            sudo systemctl enable lightdm >/dev/null 2>&1
-            check_execution $? "Failed" "Successfully"
-
-            sudo systemctl is-active --quiet lightdm && sudo systemctl is-enabled --quiet lightdm >/dev/null 2>&1
-            check_execution $? "Failed" "Successfully"
+            sleep 0.5
+            sudo DEBIAN_FRONTEND=noninteractive apt install -y lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings >/dev/null 2>&1
+            check_execution $? "Failed to install LightDM on system" "LightDM installed on the system"
         ;;
         gdm3)
             message -subtitle "Installing minimal GDM3..."
-            sudo apt install -y --no-install-recommends gdm3 >/dev/null 2>&1
-            check_execution $? "Failed" "Successfully"
-
-            sudo systemctl enable gdm3 >/dev/null 2>&1
-            check_execution $? "Failed" "Successfully"
-
-            sudo systemctl is-active --quiet gdm && sudo systemctl is-enabled --quiet gdm >/dev/null 2>&1
-            check_execution $? "Failed" "Successfully"
+            sleep 0.5
+            sudo DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends gdm3 >/dev/null 2>&1
+            check_execution $? "Failed to install GDM3 on system" "GDM3 installed on the system"
         ;;
         sddm)
             message -subtitle "Installing minimal SDDM..."
-            sudo apt install -y --no-install-recommends sddm >/dev/null 2>&1
-            check_execution $? "Failed" "Successfully"
-
-            sudo systemctl enable sddm
-            check_execution $? "Failed" "Successfully"
-
-            sudo systemctl is-active --quiet sddm && sudo systemctl is-enabled --quiet sddm >/dev/null 2>&1
-            check_execution $? "Failed" "Successfully"
+            sleep 0.5
+            sudo DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends sddm >/dev/null 2>&1
+            check_execution $? "Failed to install SDDM on system" "SDDM installed on the system"
         ;;
         lxdm)
             message -subtitle "Installing LXDM..."
-            sudo apt install -y --no-install-recommends lxdm >/dev/null 2>&1
-            check_execution $? "Failed" "Successfully"
-
-            sudo systemctl enable lxdm >/dev/null 2>&1
-            check_execution $? "Failed" "Successfully"
-
-            sudo systemctl is-active --quiet lxdm && sudo systemctl is-enabled --quiet lxdm >/dev/null 2>&1
-            check_execution $? "Failed" "Successfully"
+            sleep 0.5
+            sudo DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends lxdm >/dev/null 2>&1
+            check_execution $? "Failed to install LXDM on system" "LXDM installed on the system"
         ;;
         slim)
             message -subtitle "Installing SLiM..."
-            sudo apt install -y slim >/dev/null 2>&1
-            check_execution $? "Failed" "Successfully"
-
-            sudo systemctl enable slim >/dev/null 2>&1
-            check_execution $? "Failed" "Successfully"
-
-            sudo systemctl is-active --quiet slim && sudo systemctl is-enabled --quiet slim >/dev/null 2>&1
-            check_execution $? "Failed" "Successfully"
+            sleep 0.5
+            sudo DEBIAN_FRONTEND=noninteractive apt install -y slim >/dev/null 2>&1
+            check_execution $? "Failed to install SLiM on system" "SLiM installed on the system"
         ;;
         *)
             message -error "Display manager not supported for this distribution: $DISTRO"
-            continue
+            return 1
         ;;
     esac
-}
 
+    if [ -f /etc/X11/default-display-manager ]; then
+        message -subtitle "Replace $old_display_manager with $display_manager as default display manager..."
+        sleep 0.5
+        old_display_manager="$(cat /etc/X11/default-display-manager | awk -F "/" '{print $4}')"
+        sudo systemctl stop "$old_display_manager"
+        sudo systemctl disable "$old_display_manager"
+        sudo dpkg-reconfigure "$display_manager"
+    else
+        message -subtitle "Enabling the $display_manager service as the default display manager..."
+        sleep 0.5
+        sudo systemctl enable "$display_manager"
+        continue
+    fi
+}
 
 #  ███╗   ███╗ █████╗ ██╗███╗   ██╗
 #  ████╗ ████║██╔══██╗██║████╗  ██║
@@ -667,11 +654,11 @@ install_pywal
 xdg-user-dirs-update
 
 setter_configs
-setter_permissions
-setter_shell
 setter_homefiles
-setter_symbolic_links
+setter_shell
+setter_permissions
 setter_services
+# setter_symbolic_links
 setter_display_manager
 
 reboot_system

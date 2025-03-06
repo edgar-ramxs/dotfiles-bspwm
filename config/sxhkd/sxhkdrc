@@ -1,48 +1,26 @@
-
-#  ██╗   ██╗ ██████╗ ██╗     ██╗   ██╗███╗   ███╗███████╗
-#  ██║   ██║██╔═══██╗██║     ██║   ██║████╗ ████║██╔════╝
-#  ██║   ██║██║   ██║██║     ██║   ██║██╔████╔██║█████╗  
-#  ╚██╗ ██╔╝██║   ██║██║     ██║   ██║██║╚██╔╝██║██╔══╝  
-#   ╚████╔╝ ╚██████╔╝███████╗╚██████╔╝██║ ╚═╝ ██║███████╗
-#    ╚═══╝   ╚═════╝ ╚══════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝
-
-# Adjust the audio volume down by 5%
+# [VOLUME] Adjust the audio volume down by 5%
 XF86AudioLowerVolume
 	pactl set-sink-volume 0 -5% 
 
-# Adjust the audio volume up by 5%
+# [VOLUME] Adjust the audio volume up by 5%
 XF86AudioRaiseVolume
 	pactl set-sink-volume 0 +5% 
 
-# Toggles audio mute state
+# [VOLUME] Toggles audio mute state
 XF86AudioMute
 	pactl set-sink-mute 0 toggle
 
-#  ██████╗ ██████╗ ██╗ ██████╗ ██╗  ██╗████████╗███╗   ██╗███████╗███████╗███████╗
-#  ██╔══██╗██╔══██╗██║██╔════╝ ██║  ██║╚══██╔══╝████╗  ██║██╔════╝██╔════╝██╔════╝
-#  ██████╔╝██████╔╝██║██║  ███╗███████║   ██║   ██╔██╗ ██║█████╗  ███████╗███████╗
-#  ██╔══██╗██╔══██╗██║██║   ██║██╔══██║   ██║   ██║╚██╗██║██╔══╝  ╚════██║╚════██║
-#  ██████╔╝██║  ██║██║╚██████╔╝██║  ██║   ██║   ██║ ╚████║███████╗███████║███████║
-#  ╚═════╝ ╚═╝  ╚═╝╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═══╝╚══════╝╚══════╝╚══════╝
-
-# Reduce screen brightness by 5%
+# [BRIGHTNESS] Reduce screen brightness by 5%
 XF86MonBrightnessDown
 	brightnessctl set 5%-
 
-# Increase screen brightness by 5%
+# [BRIGHTNESS] Increase screen brightness by 5%
 XF86MonBrightnessUp
 	brightnessctl set +5%
 
-#  ███████╗██╗  ██╗ ██████╗ ██████╗ ████████╗ ██████╗██╗   ██╗████████╗███████╗
-#  ██╔════╝██║  ██║██╔═══██╗██╔══██╗╚══██╔══╝██╔════╝██║   ██║╚══██╔══╝██╔════╝
-#  ███████╗███████║██║   ██║██████╔╝   ██║   ██║     ██║   ██║   ██║   ███████╗
-#  ╚════██║██╔══██║██║   ██║██╔══██╗   ██║   ██║     ██║   ██║   ██║   ╚════██║
-#  ███████║██║  ██║╚██████╔╝██║  ██║   ██║   ╚██████╗╚██████╔╝   ██║   ███████║
-#  ╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝    ╚═════╝ ╚═════╝    ╚═╝   ╚══════╝
-
 # Reload sxhkd (Super Key Handler Daemon) configuration
 super + Escape
-	pkill -USR1 -x sxhkd
+	pkill -USR1 -x sxhkd; notify-send "sxhkd reloaded"
 
 # Opens the rofi program launcher with the specified theme
 super + Return
@@ -66,11 +44,7 @@ super + {1-9,0}
 
 # Open menu with wifi connections (rofi)
 super + w
-	~/.config/polybar/menu/wifi_menu.sh
-
-# Open network connections menu (rofi)
-super + e
-	~/.config/polybar/menu/networks.sh
+	~/.config/rofi/scripts/wifi-menu.sh
 
 # Open Visual Studio Code
 super + r
@@ -92,9 +66,15 @@ super + u
 super + i
 	nitrogen
 
+# Focus the older or newer node in the focus history
+super + {o,p}
+	bspc wm -h off; \
+	bspc node {older,newer} -f; \
+	bspc wm -h on
+
 # Open a st terminal and run btop to monitor system performance
-super + o
-	st -e btop &
+super + b
+	kitty -c btop &
 
 # Switch between tiled window layout and monocle layout
 super + z
@@ -106,7 +86,7 @@ super + x
 
 # Restart bspwm
 super + ctrl + Escape
-	bspc wm -r
+	bspc wm -r; notify-send "bspwm reloaded"
 
 # Preset the direction to move the node
 super + ctrl + {Left,Down,Up,Right}
@@ -156,95 +136,14 @@ super + alt + {Left,Down,Up,Right}
 alt + {Left,Down,Up,Right}
     ~/.config/bspwm/scripts/bspwm-resize.sh {west,south,north,east}
 
-#   ██████╗ ██████╗ ███╗   ███╗███╗   ███╗███████╗███╗   ██╗████████╗███████╗
-#  ██╔════╝██╔═══██╗████╗ ████║████╗ ████║██╔════╝████╗  ██║╚══██╔══╝██╔════╝
-#  ██║     ██║   ██║██╔████╔██║██╔████╔██║█████╗  ██╔██╗ ██║   ██║   ███████╗
-#  ██║     ██║   ██║██║╚██╔╝██║██║╚██╔╝██║██╔══╝  ██║╚██╗██║   ██║   ╚════██║
-#  ╚██████╗╚██████╔╝██║ ╚═╝ ██║██║ ╚═╝ ██║███████╗██║ ╚████║   ██║   ███████║
-#   ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝     ╚═╝╚══════╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝
+# # i3lock 
+# shift + l
+# 	/usr/bin/i3lock-everblush
 
-# # focus the last node/desktop
-# super + {grave,Tab}
-# 	bspc {node,desktop} -f last
+# # 
+# super + q
+# 	~/.config/rofi/
 
-# # focus the node for the given path jump
-# super + {p,b,comma,period}
-# 	bspc node -f @{parent,brother,first,second}
-
-# # focus the older or newer node in the focus history
-# super + {o,p}
-# 	bspc wm -h off; \
-# 	bspc node {older,newer} -f; \
-# 	bspc wm -h on
-
-# # send the newest marked node to the newest preselected node
-# super + x
-# 	bspc node newest.marked.local -n newest.!automatic.local
-
-# # swap the current node and the biggest node
-# super + c
-# 	bspc node -s biggest
-
-# ; # Basic binds
-# ; super + q
-# ; 	bspc node -c
-# ; super + Return
-# ;   alacritty
-# ; super + w
-# ;   $BROWSER
-# ; super + d
-# ; 	$HOME/.config/rofi/launchers/colorful/launcher.sh
-# ; super + s
-# ;   $HOME/.config/rofi/applets/android/screenshot.sh
-# ; super + shift + r
-# ; 	bspc wm -r
-# ; super + Escape
-# ;   pkill -USR1 -x sxhkd
-# ; super + x
-# ;   $HOME/.config/rofi/applets/android/powermenu.sh
-# ; super + n
-# ;   $TERMINAL -e newsboat
-# ; super + m
-# ;   $HOME/.config/rofi/applets/android/mpd.sh
-# ; super + shift + m
-# ;   pulsemixer --toggle-mute
-
-# ; # bspwm
-# ; super + {h,j,k,l}
-# ; 	bspc node -f {west,south,north,east}
-# ; # Swap window with direction
-# ; super + shift + {h,j,k,l}
-# ; 	bspc node -s {west,south,north,east}
-# ; # Toggle floating
-# ; super + o
-# ; 	bspc node focused.tiled -t floating || bspc node focused.floating -t tiled
-# ; # Focus on desktop
-# ; super + {0-9}
-# ; 	bspc desktop -f ^{0-9}
-# ; # Send window to desktop
-# ; super + shift + {0-9}
-# ; 	bspc node -d ^{0-9}
-# ; # Expand a window by moving one of its side outward
-# ; alt + {h,j,k,l}
-# ; 	bspc node -z {left -30 0,bottom 0 30,top 0 -30,right 30 0}
-# ; # Contract a window by moving one of its side inward
-# ; alt + shift + {h,j,k,l}
-# ; 	bspc node -z {right -30 0,top 0 30,bottom 0 -30,left 30 0}
-# ; # Move a floating window
-# ; alt + {y,u,i,o}
-# ; 	xdo move {-x -30,-y +30,-y -30,-x +30}
-
-
-# ; # media key
-# ; super + {equal,plus}
-# ;   pulsemixer --change-volume +{5,15}
-# ; super + {_,shift +} + minus
-# ;   pulsemixer --change-volume -{5,15}
-# ; super + p
-# ;   mpc toggle
-# ; alt + p
-# ;   scrot $HOME/screenshot/pic-full-$(date '+%Y-%m-%d-%H-%M-%S').png && notify-send "Saved Screenshot as pic-full-$(date '+%Y-%m-%d-%H-%M-%S').png"
-# ; alt + shift + p
-# ;   scrot -s $HOME/screenshot/pic-selected-$(date '+%Y-%m-%d-%H-%M-%S').png && notify-send "Saved Screenshot as pic-selected-$(date '+%Y-%m-%d-%H-%M-%S').png"
-# ; ctrl + alt + p
-# ;   scrot -u $HOME/screenshot/pic-window-$(date '+%Y-%m-%d-%H-%M-%S').png && notify-send "Saved Screenshot as pic-window-$(date '+%Y-%m-%d-%H-%M-%S').png"
+# # 
+# super + e
+# 	~/.config/

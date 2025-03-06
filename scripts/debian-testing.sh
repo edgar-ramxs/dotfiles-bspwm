@@ -7,12 +7,6 @@
 #  ██████╔╝███████╗██████╔╝██║██║  ██║██║ ╚████║       ██║   ███████╗███████║   ██║   ██║██║ ╚████║╚██████╔╝
 #  ╚═════╝ ╚══════╝╚═════╝ ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝       ╚═╝   ╚══════╝╚══════╝   ╚═╝   ╚═╝╚═╝  ╚═══╝ ╚═════╝ 
 
-set -e
-sudo -v
-
-SOURCE_LIST="/etc/apt/sources.list"
-BACKUP_FILE="${SOURCE_LIST}.bak"
-
 function message() {
     local signal color
     local RESETC="\033[0m\e[0m"
@@ -27,6 +21,44 @@ function message() {
         *)              color="$RESETC";                signal=""; shift; echo -e "${color}${signal} $*${RESETC}";;
     esac
 }
+
+function usage() {
+    message -title "Usage: $0 [-d] [-v] [-b]"
+    message -warning "Target    Description"
+    message -success "-b        Install Brave Browser"
+    message -success "-d        Download and install Discord"
+    message -success "-v        Download and install Visual Studio Code"
+    echo ""
+    exit 1
+}
+
+trap ctrl_c INT
+function ctrl_c() {
+    message -cancel "Exiting...\n"
+    exit 1
+}
+
+function check_execution() {
+    if [ $1 != 0 ] && [ $1 != 130 ]; then
+        message -error "Error: $2"
+    else
+        message -success "Successful: $3"
+    fi
+    sleep 0.5
+}
+
+
+
+
+
+
+
+set -e
+sudo -v
+
+SOURCE_LIST="/etc/apt/sources.list"
+BACKUP_FILE="${SOURCE_LIST}.bak"
+
 
 message -title "Updating the current system..."
 sleep 0.5

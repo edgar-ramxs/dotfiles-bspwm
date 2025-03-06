@@ -12,21 +12,21 @@
 > 🧑‍💻 These dotfiles have been tested on the following distributions: `Debian`, `Kali Linux`.
 
 <div align="center">
-  
-  |     | Component                 | Package                                                     |
-  | --- | ------------------------- | ----------------------------------------------------------- |
-  | 💻 | **Window Manager**         |  [Bspwm](https://github.com/baskerville/bspwm)              |
-  | 🐱 | **Terminal**               |  [Kitty](https://sw.kovidgoyal.net/kitty/)                  |
-  | 🦊 | **Shell**                  |  [Zsh](https://ohmyz.sh/)                                   |
-  | 🎼 | **Compositor**             |  [Picom](https://github.com/yshui/picom)                    |
-  | 💈 | **Bar**                    |  [Polybar](https://github.com/polybar/polybar)              |
-  | 🔍 | **Menu Launcher**          |  [Rofi](https://github.com/davatorium/rofi)                 |
-  | 🔔 | **Notify Daemon**          |  [Dunst](https://github.com/dunst-project/dunst)            |
-  | 📝 | **Editor**                 |  [Visual studio code](https://code.visualstudio.com/)       |
-  | 🚀 | **Browser**                |  [Firefox](https://www.mozilla.org/)                        |
-  | 📂 | **File Manager**           |  [Thunar](https://wiki.archlinux.org/title/Thunar)          |
-  | 🎨 | **Wallpaper Manager**      |  [Nitrogen](https://wiki.archlinux.org/title/Nitrogen)      |
-  | 🍉 | **Colors**                 |  [Pywal](https://github.com/dylanaraps/pywal)               |
+
+  |     | Component               | Package                                                     |
+  |-----|-------------------------|-------------------------------------------------------------|
+  |💻| **Window Manager**         |  [Bspwm](https://github.com/baskerville/bspwm)              |
+  |🐱| **Terminal**               |  [Kitty](https://sw.kovidgoyal.net/kitty/)                  |
+  |🦊| **Shell**                  |  [Zsh](https://ohmyz.sh/)                                   |
+  |🎼| **Compositor**             |  [Picom](https://github.com/yshui/picom)                    |
+  |💈| **Bar**                    |  [Polybar](https://github.com/polybar/polybar)              |
+  |🔍| **Menu Launcher**          |  [Rofi](https://github.com/davatorium/rofi)                 |
+  |🔔| **Notify Daemon**          |  [Dunst](https://github.com/dunst-project/dunst)            |
+  |📝| **Editor**                 |  [Visual studio code](https://code.visualstudio.com/)       |
+  |🚀| **Browser**                |  [Firefox](https://www.mozilla.org/)                        |
+  |📂| **File Manager**           |  [Thunar](https://wiki.archlinux.org/title/Thunar)          |
+  |🎨| **Wallpaper Manager**      |  [Nitrogen](https://wiki.archlinux.org/title/Nitrogen)      |
+  |🍉| **Colors**                 |  [Pywal](https://github.com/dylanaraps/pywal)               |
 </div>
 
 
@@ -77,5 +77,11 @@ chmod +x installer.sh
 
 
 ## To Do
-- [x] boeeeeeeh!
-
+- [ ] Adding themes to Grub
+- [ ] Accommodate the function of symbolic links
+- [ ] Finishing the Picom configuration with its animations
+- [ ] Add GTK themes and set the option to choose in the installer
+- [ ] Set up a development branch for the repository
+- [ ] Test on Ubuntu and Mint
+- [ ] Adapt environment and self-installation for Arch and Fedora
+- [x] Scratch my balls

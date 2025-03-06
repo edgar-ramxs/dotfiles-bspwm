@@ -30,21 +30,11 @@ sleep 0.5
 $HOME/.config/bspwm/scripts/bspwm-polybar.sh &
 sleep 0.5
 
-## Enable authenticator for rofi
 /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &
-
-## Block cursor in polybar zones
 xsetroot -cursor_name left_ptr &
-
-## Enable xfce battery manager
 xfce4-power-manager &
-
-## Enable network manager
 nm-applet &
-
-## Enable bluetooth manager
 blueman-applet &
-
-dunst &
+dunst -conf $HOME/.config/dunst/dunstrc &
 
 sleep 0.5

@@ -14,21 +14,37 @@ function message() {
         "-title")       color="\033[0;37m\033[1m";      signal="[$]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
         "-subtitle")    color="\033[0;35m\033[1m";      signal="[*]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
         "-approval")    color="\033[38;5;51m\033[1m";   signal="[?]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
+        "-cancel")      color="\033[0;34m\033[1m";      signal="[!]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
         "-success")     color="\033[0;32m\033[1m";      signal="[+]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
         "-warning")     color="\033[0;33m\033[1m";      signal="[&]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
         "-error")       color="\033[0;31m\033[1m";      signal="[-]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
-        "-cancel")      color="\033[0;34m\033[1m";      signal="[!]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
         *)              color="$RESETC";                signal=""; shift; echo -e "${color}${signal} $*${RESETC}";;
     esac
 }
 
+function usage() {
+    message -title "Usage: $0 [-d] [-v] [-b]"
+    message -warning "Target    Description"
+    message -success "-b        Install Brave Browser"
+    message -success "-d        Download and install Discord"
+    message -success "-v        Download and install Visual Studio Code"
+    echo ""
+    exit 1
+}
+
+trap ctrl_c INT
+function ctrl_c() {
+    message -cancel "Exiting...\n"
+    exit 1
+}
+
 function check_execution() {
-    if [[ $1 -ne 0 ]]; then
-        message -error "$2"
-        exit 1
+    if [ $1 != 0 ] && [ $1 != 130 ]; then
+        message -error "Error: $2"
     else
-        message -success "$3"
+        message -success "Successful: $3"
     fi
+    sleep 0.5
 }
 
 function ensure_flatpak() {

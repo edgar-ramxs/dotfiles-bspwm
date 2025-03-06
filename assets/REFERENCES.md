@@ -29,6 +29,8 @@ https://github.com/drewgrif/bookworm-scripts
 https://github.com/ZLCube/KaliBspwm
 https://github.com/thegoodhackertv/hackerpwm
 https://github.com/ghuSet/bspwm
+https://github.com/windelicato/dotfiles
+https://github.com/sayanta01/dotfiles
 ```
 
 # Configs
@@ -41,3 +43,29 @@ https://github.com/radstevee/dotfiles
 https://github.com/GhilesLarbi/dotfiles
 https://github.com/justleoo/dotfiles
 ```
+<!--
+- [x] Α (Alpha)
+- [x] Β (Beta)
+- [ ] Γ (Gamma)
+- [ ] Δ (Delta)
+- [ ] Ε (Epsilon)
+- [ ] Ζ (Zeta)
+- [ ] Η (Eta)
+- [ ] Θ (Theta)
+- [ ] Ι (Iota)
+- [ ] Κ (Kappa)
+- [ ] Λ (Lambda)
+- [ ] Μ (Mu)
+- [ ] Ν (Nu)
+- [ ] Ξ (Xi)
+- [ ] Ο (Omicron)
+- [ ] Π (Pi)
+- [ ] Ρ (Rho)
+- [ ] Σ (Sigma)
+- [ ] Τ (Tau)
+- [ ] Υ (Upsilon)
+- [ ] Φ (Phi)
+- [ ] Χ (Chi)
+- [ ] Ψ (Psi)
+- [ ] Ω (Omega)
+-->

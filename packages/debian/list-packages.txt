@@ -26,8 +26,10 @@ thunar
 dunst
 rofi
 zsh
-suckless-tools
+i3lock
+ranger
 conky-all
+suckless-tools
 libnotify-bin
 
 # Audio Manager
@@ -124,6 +126,7 @@ p7zip-full
 imagemagick
 
 # Applications
+vlc
 kitty
 evolution
 flameshot
@@ -133,5 +136,4 @@ font-manager
 synaptic
 zathura
 mousepad
-micro
-vlc
+firejail
