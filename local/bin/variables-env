@@ -7,12 +7,18 @@ function message() {
         "-title")       color="\033[0;37m\033[1m";      signal="[$]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
         "-subtitle")    color="\033[0;35m\033[1m";      signal="[*]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
         "-approval")    color="\033[38;5;51m\033[1m";   signal="[?]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
+        "-cancel")      color="\033[0;34m\033[1m";      signal="[!]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
         "-success")     color="\033[0;32m\033[1m";      signal="[+]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
         "-warning")     color="\033[0;33m\033[1m";      signal="[&]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
         "-error")       color="\033[0;31m\033[1m";      signal="[-]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
-        "-cancel")      color="\033[0;34m\033[1m";      signal="[!]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
         *)              color="$RESETC";                signal=""; shift; echo -e "${color}${signal} $*${RESETC}";;
     esac
+}
+
+function usage() {
+    message -title "Usage: $0 [option]"
+    echo ""
+    exit 1
 }
 
 trap ctrl_c INT
@@ -24,11 +30,10 @@ function ctrl_c() {
 function check_execution() {
     if [ $1 != 0 ] && [ $1 != 130 ]; then
         message -error "Error: $2"
-        sleep 0.5
     else
         message -success "Successful: $3"
-        sleep 0.5
     fi
+    sleep 0.5
 }
 
 function add_or_update_variable() {
@@ -48,9 +53,9 @@ function add_or_update_variable() {
 ENV_FILE="/etc/environment"
 
 # Inicializa variables para cada parámetro
-CUSTOM_PATH=""
 EDITOR=""
 BROWSER=""
+CUSTOM_PATH=""
 WEATHER_KEY=""
 
 # Verifica que grep y sudo existan en el sistema

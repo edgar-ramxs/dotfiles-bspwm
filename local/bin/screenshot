@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-output=~/ScreenShots/%Y-%m-%d-%T-screenshot.png
+output="~/screenshots/%Y-%m-%d-%T-screenshot.png"
 
 case "$1" in
 	"select") scrot -s -q 100 -l mode=classic "$output" || exit ;;

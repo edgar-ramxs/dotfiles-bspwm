@@ -1,0 +1,131 @@
+#!/usr/bin/env bash
+
+function message() {
+    local signal color
+    local RESETC="\033[0m\e[0m"
+    case "$1" in
+        "-title")       color="\033[0;37m\033[1m";      signal="[$]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
+        "-subtitle")    color="\033[0;35m\033[1m";      signal="[*]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
+        "-approval")    color="\033[38;5;51m\033[1m";   signal="[?]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
+        "-cancel")      color="\033[0;34m\033[1m";      signal="[!]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
+        "-success")     color="\033[0;32m\033[1m";      signal="[+]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
+        "-warning")     color="\033[0;33m\033[1m";      signal="[&]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
+        "-error")       color="\033[0;31m\033[1m";      signal="[-]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
+        *)              color="$RESETC";                signal=""; shift; echo -e "${color}${signal} $*${RESETC}";;
+    esac
+}
+
+function usage() {
+    message -title "Usage: $0 -d [option]"
+    message -warning "Parameter     Target  Options                 Description"
+    message -success "directory     -d      ~/dotfiles-bspwm        Set default shell"
+    echo ""
+    exit 1
+}
+
+trap ctrl_c INT
+function ctrl_c() {
+    message -cancel "Exiting...\n"
+    exit 1
+}
+
+function check_execution() {
+    if [ $1 != 0 ] && [ $1 != 130 ]; then
+        message -error "Error: $2"
+    else
+        message -success "Successful: $3"
+    fi
+    sleep 0.5
+}
+
+#  ███╗   ███╗ █████╗ ██╗███╗   ██╗
+#  ████╗ ████║██╔══██╗██║████╗  ██║
+#  ██╔████╔██║███████║██║██╔██╗ ██║
+#  ██║╚██╔╝██║██╔══██║██║██║╚██╗██║
+#  ██║ ╚═╝ ██║██║  ██║██║██║ ╚████║
+#  ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝
+
+DEFAULT_DIR="$HOME/dotfiles-bspwm"
+DOTFILES_DIR=""
+
+OPTERR=0
+while getopts "d:" opt; do
+    case ${opt} in
+        d) DOTFILES_DIR="${OPTARG}";;
+        *) usage ;;
+    esac
+done
+
+DOTFILES_DIR="${DOTFILES_DIR:-$DEFAULT_DIR}"
+
+[ ! -d "$DOTFILES_DIR" ] && mkdir -p "$DOTFILES_DIR" && message -subtitle "El directorio '$DOTFILES_DIR' ha sido creado"
+message -subtitle "El directorio '$DOTFILES_DIR' establecido"
+sleep 1
+
+declare -A DOTFILES_DIRS
+DOTFILES_DIRS=(
+    ["$HOME/.config/bspwm"]="$DOTFILES_DIR/config"
+    ["$HOME/.config/btop"]="$DOTFILES_DIR/config"
+    ["$HOME/.config/cava"]="$DOTFILES_DIR/config"
+    ["$HOME/.config/dunst"]="$DOTFILES_DIR/config"
+    ["$HOME/.config/fastfetch"]="$DOTFILES_DIR/config"
+    ["$HOME/.config/git"]="$DOTFILES_DIR/config"
+    ["$HOME/.config/gtk-3.0"]="$DOTFILES_DIR/config"
+    ["$HOME/.config/htop"]="$DOTFILES_DIR/config"
+    ["$HOME/.config/kitty"]="$DOTFILES_DIR/config"
+    ["$HOME/.config/neofetch"]="$DOTFILES_DIR/config"
+    ["$HOME/.config/nitrogen"]="$DOTFILES_DIR/config"
+    ["$HOME/.config/picom"]="$DOTFILES_DIR/config"
+    ["$HOME/.config/polybar"]="$DOTFILES_DIR/config"
+    ["$HOME/.config/rofi"]="$DOTFILES_DIR/config"
+    ["$HOME/.config/shell"]="$DOTFILES_DIR/config"
+    ["$HOME/.config/sxhkd"]="$DOTFILES_DIR/config"
+    ["$HOME/.config/wget"]="$DOTFILES_DIR/config"
+    ["$HOME/.config/zathura"]="$DOTFILES_DIR/config"
+    ["$HOME/.local/ascii"]="$DOTFILES_DIR/local"
+    ["$HOME/.local/bin"]="$DOTFILES_DIR/local"
+    ["$HOME/.local/themes"]="$DOTFILES_DIR/local"
+)
+
+declare -A DOTFILES_FILES
+DOTFILES_FILES=(
+    ["$HOME/.dmrc"]="$DOTFILES_DIR/home/.dmrc"
+    ["$HOME/.profile"]="$DOTFILES_DIR/home/.profile"
+    ["$HOME/.xsessionrc"]="$DOTFILES_DIR/home/.xsessionrc"
+    ["$HOME/.bashrc"]="$DOTFILES_DIR/home/bash/.bashrc"
+    ["$HOME/.bash_logout"]="$DOTFILES_DIR/home/bash/.bash_logout"
+    ["$HOME/.zshrc"]="$DOTFILES_DIR/home/zsh/.zshrc"
+    ["$HOME/.p10k.zsh"]="$DOTFILES_DIR/home/bash/.p10k.zsh"
+    ["$HOME/.config/user-dirs.dirs"]="$DOTFILES_DIR/config/user-dirs.dirs"
+    ["$HOME/.config/user-dirs.locale"]="$DOTFILES_DIR/config/user-dirs.locale"
+)
+
+for dire in "${!DOTFILES_DIRS[@]}"; do
+    dest="${DOTFILES_DIRS[$dire]}"
+    if [ ! -d "$dest" ]; then
+        mkdir -p "$dest"
+    fi
+    if [ -d "$dire" ]; then
+        cp -r "$dire" "$dest" >/dev/null 2>&1
+        check_execution $? "no copio => [$dire] " "existo, ya copio => [$dire]"
+    fi
+    sleep 0.5
+done
+
+[ ! -d "$DOTFILES_DIR/home" ] && mkdir -p "$DOTFILES_DIR/home"
+[ ! -d "$DOTFILES_DIR/home/bash" ] && mkdir -p "$DOTFILES_DIR/home/bash"
+[ ! -d "$DOTFILES_DIR/home/zsh" ] && mkdir -p "$DOTFILES_DIR/home/zsh"
+
+for file in "${!DOTFILES_FILES[@]}"; do
+    dest="${DOTFILES_FILES[$file]}"
+    if [ -e "$file" ]; then
+        cp "$file" "$dest" >/dev/null 2>&1
+        check_execution $? "no copio => [$file]" "existo, ya copio => [$file]"
+    else
+        continue
+    fi
+    sleep 0.5
+done
+
+message -title "Backup completado en $DOTFILES_DIR"
+exit 0

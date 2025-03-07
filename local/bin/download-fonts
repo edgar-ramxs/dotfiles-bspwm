@@ -31,12 +31,27 @@ function message() {
         "-title")       color="\033[0;37m\033[1m";      signal="[$]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
         "-subtitle")    color="\033[0;35m\033[1m";      signal="[*]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
         "-approval")    color="\033[38;5;51m\033[1m";   signal="[?]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
+        "-cancel")      color="\033[0;34m\033[1m";      signal="[!]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
         "-success")     color="\033[0;32m\033[1m";      signal="[+]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
         "-warning")     color="\033[0;33m\033[1m";      signal="[&]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
         "-error")       color="\033[0;31m\033[1m";      signal="[-]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
-        "-cancel")      color="\033[0;34m\033[1m";      signal="[!]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
         *)              color="$RESETC";                signal=""; shift; echo -e "${color}${signal} $*${RESETC}";;
     esac
+}
+
+trap ctrl_c INT
+function ctrl_c() {
+    message -cancel "Exiting...\n"
+    exit 1
+}
+
+function check_execution() {
+    if [ $1 != 0 ] && [ $1 != 130 ]; then
+        message -error "Error: $2"
+    else
+        message -success "Successful: $3"
+    fi
+    sleep 0.5
 }
 
 function is_valid_font() {
@@ -49,44 +64,48 @@ function is_valid_font() {
     return 1
 }
 
+#  ███╗   ███╗ █████╗ ██╗███╗   ██╗
+#  ████╗ ████║██╔══██╗██║████╗  ██║
+#  ██╔████╔██║███████║██║██╔██╗ ██║
+#  ██║╚██╔╝██║██╔══██║██║██║╚██╗██║
+#  ██║ ╚═╝ ██║██║  ██║██║██║ ╚████║
+#  ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝
+
 if [ $# -eq 0 ]; then
-    message -error "Error: At least one font must be provided as a parameter."
+    message -cancel "Error: At least one font must be provided as a parameter."
     exit 1
 fi
 
+set -e
 sudo -v
-DIR_TMP="/tmp/fonts_tmp"
+
+DIR_TMP=$(mktemp -d)
 DIR_FONTS="/usr/share/fonts"
+
 mkdir -p "$DIR_TMP"
+
+message -title "Downloading $font_name..."
+sleep 0.5
 
 for font_name in "$@"; do
     if is_valid_font "$font_name"; then
-        message -title "Downloading $font_name..."
+        message -subtitle "Downloading $font_name..."
         sleep 0.5
-        
         curl -L "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/${font_name}.tar.xz" -o "$DIR_TMP/${font_name}.tar.xz" >/dev/null 2>&1
         if [ $? -eq 0 ]; then
-            
             if [ -d "$DIR_FONTS/${font_name}" ]; then
                 sudo rm -rf "$DIR_FONTS/${font_name}"
             fi
-            
             sudo mkdir -p "$DIR_FONTS/${font_name}"
             sudo tar -xf "$DIR_TMP/${font_name}.tar.xz" -C "$DIR_FONTS/${font_name}" --wildcards "*.ttf" >/dev/null 2>&1
-            
-            if [ $? -eq 0 ]; then
-                message -success "Font $font_name copied to $DIR_FONTS successfully."
-            else
-                message -error "Error copying font $font_name to $DIR_FONTS."
-            fi
-        
+            check_execution $? "Error copying font $font_name to $DIR_FONTS." "Font $font_name copied to $DIR_FONTS successfully."
         else
             message -error "Error downloading font $font_name."
         fi
-    
     else
         message -error "Invalid font: $font_name"
     fi
+    sleep 0.5
 done
 
 

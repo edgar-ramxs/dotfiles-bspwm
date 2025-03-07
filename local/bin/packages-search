@@ -1,47 +1,120 @@
 #!/usr/bin/env bash
 
-DIR=$(pwd)
+function message() {
+    local signal color
+    local RESETC="\033[0m\e[0m"
+    case "$1" in
+        "-title")       color="\033[0;37m\033[1m";      signal="[$]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
+        "-subtitle")    color="\033[0;35m\033[1m";      signal="[*]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
+        "-approval")    color="\033[38;5;51m\033[1m";   signal="[?]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
+        "-cancel")      color="\033[0;34m\033[1m";      signal="[!]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
+        "-success")     color="\033[0;32m\033[1m";      signal="[+]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
+        "-warning")     color="\033[0;33m\033[1m";      signal="[&]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
+        "-error")       color="\033[0;31m\033[1m";      signal="[-]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
+        *)              color="$RESETC";                signal=""; shift; echo -e "${color}${signal} $*${RESETC}";;
+    esac
+}
+
+function usage() {
+    message -title "Usage: "
+    message -warning "Flags         Example"
+    message -success "-f [file]     $0 -f packages.txt"
+    message -success "[no-flag]     $0 <packages-1> <packages-2> <packages-N>"
+    echo ""
+    exit 1
+}
+
+trap ctrl_c INT
+function ctrl_c() {
+    message -cancel "Exiting...\n"
+    exit 1
+}
+
+function check_execution() {
+    if [ $1 != 0 ] && [ $1 != 130 ]; then
+        message -error "Error: $2"
+    else
+        message -success "Successful: $3"
+    fi
+    sleep 0.5
+}
+
+#  ███╗   ███╗ █████╗ ██╗███╗   ██╗
+#  ████╗ ████║██╔══██╗██║████╗  ██║
+#  ██╔████╔██║███████║██║██╔██╗ ██║
+#  ██║╚██╔╝██║██╔══██║██║██║╚██╗██║
+#  ██║ ╚═╝ ██║██║  ██║██║██║ ╚████║
+#  ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝
+
 DISTRO=$(grep -i '^ID=' /etc/os-release | cut -d= -f2 | tr -d '"' | tr '[:upper:]' '[:lower:]')
+TEXT=""
+FILE=""
+CHECK_CMD=""
+AVAILABLE_CMD=""
+
+OPTERR=0
+while getopts ":f:" opt; do
+    case ${opt} in
+        f)
+            FILE="$OPTARG"
+            if [[ -z "$FILE" ]]; then
+                message -error "La opción -f requiere un valor válido."
+                exit 1
+            fi
+            ;;
+        \?)
+            usage
+            ;;
+    esac
+done
+
+shift $((OPTIND - 1))
+
+if [ -z "$FILE" ] && [ $# -eq 0 ]; then
+    message -error "Se requiere al menos un argumento o la opción '-f' con un valor."
+    usage
+fi
+
+if [ -z "$FILE" ] && [ $# -gt 0 ]; then
+    # echo "Usando argumentos adicionales: $@"
+    PACKAGES=("$@")
+fi
+
+if [ -n "$FILE" ]; then
+    echo "Archivo recibido: $FILE"
+    if [[ ! -f "$FILE" ]]; then
+        message -error "El archivo no existe: $FILE"
+        exit 1
+    fi
+    PACKAGES=$(grep -Ev '^#|^$' "$FILE")
+fi
 
 case "$DISTRO" in
     debian|ubuntu|kali|mint|parrot)
-        PACKAGES_FILE="$DIR/packages/debian/list-packages.txt"
         CHECK_CMD="dpkg -l | grep -qw"
         AVAILABLE_CMD="apt-cache show"
-        ;;
+    ;;
     arch|manjaro)
-        PACKAGES_FILE="$DIR/packages/arch/list-packages.txt"
-        CHECK_CMD="pacman -Qq"
+        CHECK_CMD="pacman -Qq | grep -w"
         AVAILABLE_CMD="pacman -Si"
-        ;;
+    ;;
     fedora|centos|rhel)
-        PACKAGES_FILE="$DIR/packages/fedora/list-packages.txt"
         CHECK_CMD="rpm -q"
         AVAILABLE_CMD="dnf info"
-        ;;
+    ;;
     *)
-        echo "[CANCEL] Unsupported distribution: $DISTRO"
+        message -cancel "Distribución no soportada: $DISTRO"
         exit 1
-        ;;
+    ;;
 esac
 
-if [[ ! -f "$PACKAGES_FILE" ]]; then
-    echo "[CANCEL] There is no file related to your distribution."
-    exit 1
-fi
-
-echo "File detected. Checking package statuses..."
-sleep 0.5
-
-grep -Ev '^#|^$' "$PACKAGES_FILE" | while IFS= read -r package; do
+for package in ${PACKAGES[@]}; do
+    # CHECK_CMD NO FUNCIONA (TEST CON UBUNTU)
     if $CHECK_CMD "$package" &>/dev/null; then
-        echo "[INSTALLED] $package"
-        # continue
+        message -success "[INSTALADO] $package"
     elif $AVAILABLE_CMD "$package" &>/dev/null; then
-        echo "[AVAILABLE] $package"
-        # continue
+        message -warning "[DISPONIBLE] $package"
     else
-        echo "[NOT AVAILABLE] $package"
-        # continue
+        message -error "[NO DISPONIBLE] $package"
     fi
 done

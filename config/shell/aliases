@@ -6,14 +6,6 @@
 #  ██╗██║  ██║███████╗██║██║  ██║███████║███████╗███████║
 #  ╚═╝╚═╝  ╚═╝╚══════╝╚═╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝
 
-if command -v neofetch &>/dev/null; then
-	alias fetch="neofetch"
-elif command -v fastfetch &>/dev/null; then
-    alias fetch="fastfetch"
-else
-    alias fetch="fetching"
-fi
-
 alias ls="lsd --group-dirs=first"
 alias la="lsd -a --group-dirs=first"
 alias ll="lsd -lh --group-dirs=first"
