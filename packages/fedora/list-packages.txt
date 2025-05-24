@@ -1,0 +1,21 @@
+
+#  ███████╗███████╗██████╗  ██████╗ ██████╗  █████╗ 
+#  ██╔════╝██╔════╝██╔══██╗██╔═══██╗██╔══██╗██╔══██╗
+#  █████╗  █████╗  ██║  ██║██║   ██║██████╔╝███████║
+#  ██╔══╝  ██╔══╝  ██║  ██║██║   ██║██╔══██╗██╔══██║
+#  ██║     ███████╗██████╔╝╚██████╔╝██║  ██║██║  ██║
+#  ╚═╝     ╚══════╝╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
+
+# Graphical Server
+# Graphic Environment
+# Audio Manager
+# Network Manager
+# Bluetooth Manager
+# Energy Manager
+# Printer
+# Appearance
+# Fonts
+# System Utilities
+# Development
+# Essential Tools
+# Applications

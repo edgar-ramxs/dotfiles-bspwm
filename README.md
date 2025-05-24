@@ -9,7 +9,7 @@
 ⛳ Initially, I decided to create these dotfiles for use in minimal environments of Debian-based distributions such as Kali Linux, Parrot, Ubuntu, and others. 🫰 However, I am going to prepare the setup and automatic installation for other popular distributions such as Arch, Fedora, etc.
 
 > [!NOTE]  
-> 🧑‍💻 These dotfiles have been tested on the following distributions: `Debian`, `Kali Linux`.
+> 🧑‍💻 These dotfiles have been tested on the following distributions: `Debian`, `Kali Linux`, `Ubuntu`, `Linux Mint`.
 
 <div align="center">
 
@@ -37,12 +37,12 @@
 ├── installer.sh
 ├── README.md
 ├── assets          # photos, documents, etc. to view the environment
-├── bin             # binaries or scripts for use within the environment
 ├── config          # Configuring applications, managers and tools
 ├── home            # Shell configuration and others
+├── local           # binaries or scripts for use within the environment
 ├── packages        # List of packages to be installed
 ├── scripts         # scripts to install or update tools
-└── wallpapers      # wallpapers for the environment
+└── wallpapers      # wallpapers for the environment    
 ```
 > [!TIP]
 > There are automated scripts to install, configure and download some tools for the custom environment inside the `scripts/` directory. 📭 For example, there is a script called `debian_testing.sh` that upgrades to the debian testing branch, where it can be used at the beginning or end of the automated installation, if you want to switch to the testing branch.
@@ -50,14 +50,10 @@
 
 ## Installation
 ```bash
-sudo apt install -y git vim fastfetch # or neofetch
-
+sudo apt install -y git vim
 git clone https://github.com/edgar-ramxs/dotfiles-bspwm.git ~/dotfiles-bspwm
-
 cd ~/dotfiles-bspwm
-
 chmod +x installer.sh
-
 ./installer.sh -s [bash|zsh] -r [1920x1080|1366x768]
 ```
 
@@ -82,6 +78,7 @@ chmod +x installer.sh
 - [ ] Finishing the Picom configuration with its animations
 - [ ] Add GTK themes and set the option to choose in the installer
 - [ ] Set up a development branch for the repository
-- [ ] Test on Ubuntu and Mint
 - [ ] Adapt environment and self-installation for Arch and Fedora
+- [ ] Linux mintm problemas con dunst in polybar
+- [ ] Colorsscripts error directory
 - [x] Scratch my balls

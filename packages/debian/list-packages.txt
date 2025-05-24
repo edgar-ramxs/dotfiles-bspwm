@@ -121,6 +121,8 @@ locate
 lolcat
 cbonsai
 cmatrix
+neofetch
+fastfetch
 tty-clock
 p7zip-full
 imagemagick

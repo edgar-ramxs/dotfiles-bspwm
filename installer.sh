@@ -96,7 +96,7 @@ function updating_packages() {
     sleep 0.5
 
     case "$DISTRO" in
-        debian|ubuntu|kali|mint|parrot)
+        debian|ubuntu|kali|linuxmint|parrot)
             message -subtitle "Updating package list..."
             sudo apt update -y >/dev/null 2>&1
             check_execution $? "Failed to update package list." "Package list updated successfully."
@@ -159,7 +159,7 @@ function install_packages() {
     sleep 0.5
     
     case "$DISTRO" in
-        debian|ubuntu|kali|mint|parrot)
+        debian|ubuntu|kali|linuxmint|parrot)
             local PACKAGES_FILE="$DIR/packages/debian/list-packages.txt"
             
             message -subtitle "Checking and installing packages for APT-based systems..."
@@ -366,6 +366,64 @@ function install_oh_my_zsh() {
     check_execution $? "Error installing" "installed correctly."
 }
 
+function install_display_manager(){
+    local display_manager="sddm"
+    local old_display_manager=""
+
+    message -title "Setting up the display manager"
+    sleep 0.5
+    case $display_manager in 
+        lightdm)
+            message -subtitle "Installing LightDM..."
+            sleep 0.5
+            sudo DEBIAN_FRONTEND=noninteractive apt install -y lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings >/dev/null 2>&1
+            check_execution $? "Failed to install LightDM on system" "LightDM installed on the system"
+        ;;
+        gdm3)
+            message -subtitle "Installing minimal GDM3..."
+            sleep 0.5
+            sudo DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends gdm3 >/dev/null 2>&1
+            check_execution $? "Failed to install GDM3 on system" "GDM3 installed on the system"
+        ;;
+        sddm)
+            message -subtitle "Installing minimal SDDM..."
+            sleep 0.5
+            sudo DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends sddm >/dev/null 2>&1
+            check_execution $? "Failed to install SDDM on system" "SDDM installed on the system"
+        ;;
+        lxdm)
+            message -subtitle "Installing LXDM..."
+            sleep 0.5
+            sudo DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends lxdm >/dev/null 2>&1
+            check_execution $? "Failed to install LXDM on system" "LXDM installed on the system"
+        ;;
+        slim)
+            message -subtitle "Installing SLiM..."
+            sleep 0.5
+            sudo DEBIAN_FRONTEND=noninteractive apt install -y slim >/dev/null 2>&1
+            check_execution $? "Failed to install SLiM on system" "SLiM installed on the system"
+        ;;
+        *)
+            message -error "Display manager not supported for this distribution: $DISTRO"
+            return 1
+        ;;
+    esac
+
+    if [ -f /etc/X11/default-display-manager ]; then
+        message -subtitle "Replace $old_display_manager with $display_manager as default display manager..."
+        sleep 0.5
+        old_display_manager="$(cat /etc/X11/default-display-manager | awk -F "/" '{print $4}')"
+        sudo systemctl stop "$old_display_manager"
+        sudo systemctl disable "$old_display_manager"
+        sudo dpkg-reconfigure "$display_manager"
+    else
+        message -subtitle "Enabling the $display_manager service as the default display manager..."
+        sleep 0.5
+        sudo systemctl enable "$display_manager"
+        continue
+    fi
+}
+
 #  ███████╗███████╗████████╗████████╗██╗███╗   ██╗ ██████╗ ███████╗
 #  ██╔════╝██╔════╝╚══██╔══╝╚══██╔══╝██║████╗  ██║██╔════╝ ██╔════╝
 #  ███████╗█████╗     ██║      ██║   ██║██╔██╗ ██║██║  ███╗███████╗
@@ -553,65 +611,6 @@ function setter_symbolic_links() {
     sleep 0.5
 }
 
-function setter_display_manager(){
-    local display_manager="sddm"
-    local old_display_manager=""
-
-    message -title "Setting up the display manager"
-    sleep 0.5
-
-    case $display_manager in 
-        lightdm)
-            message -subtitle "Installing LightDM..."
-            sleep 0.5
-            sudo DEBIAN_FRONTEND=noninteractive apt install -y lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings >/dev/null 2>&1
-            check_execution $? "Failed to install LightDM on system" "LightDM installed on the system"
-        ;;
-        gdm3)
-            message -subtitle "Installing minimal GDM3..."
-            sleep 0.5
-            sudo DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends gdm3 >/dev/null 2>&1
-            check_execution $? "Failed to install GDM3 on system" "GDM3 installed on the system"
-        ;;
-        sddm)
-            message -subtitle "Installing minimal SDDM..."
-            sleep 0.5
-            sudo DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends sddm >/dev/null 2>&1
-            check_execution $? "Failed to install SDDM on system" "SDDM installed on the system"
-        ;;
-        lxdm)
-            message -subtitle "Installing LXDM..."
-            sleep 0.5
-            sudo DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends lxdm >/dev/null 2>&1
-            check_execution $? "Failed to install LXDM on system" "LXDM installed on the system"
-        ;;
-        slim)
-            message -subtitle "Installing SLiM..."
-            sleep 0.5
-            sudo DEBIAN_FRONTEND=noninteractive apt install -y slim >/dev/null 2>&1
-            check_execution $? "Failed to install SLiM on system" "SLiM installed on the system"
-        ;;
-        *)
-            message -error "Display manager not supported for this distribution: $DISTRO"
-            return 1
-        ;;
-    esac
-
-    if [ -f /etc/X11/default-display-manager ]; then
-        message -subtitle "Replace $old_display_manager with $display_manager as default display manager..."
-        sleep 0.5
-        old_display_manager="$(cat /etc/X11/default-display-manager | awk -F "/" '{print $4}')"
-        sudo systemctl stop "$old_display_manager"
-        sudo systemctl disable "$old_display_manager"
-        sudo dpkg-reconfigure "$display_manager"
-    else
-        message -subtitle "Enabling the $display_manager service as the default display manager..."
-        sleep 0.5
-        sudo systemctl enable "$display_manager"
-        continue
-    fi
-}
-
 #  ███╗   ███╗ █████╗ ██╗███╗   ██╗
 #  ████╗ ████║██╔══██╗██║████╗  ██║
 #  ██╔████╔██║███████║██║██╔██╗ ██║
@@ -629,6 +628,9 @@ while getopts ":s:r:" opt; do
         ;;
         # t) P_THEME="$OPTARG"
         #     [[ "$P_THEME" =~ ^(a|b|c)$ ]] || usage
+        # ;;
+        # i) P_INSTALL="$OPTARG"
+        #     [[ "$P_INSTALL" =~ ^(native|virtual)$ ]] || usage
         # ;;
         *) usage ;;
     esac
@@ -650,6 +652,7 @@ updating_packages
 install_packages
 install_fonts
 install_pywal
+install_display_manager
 
 xdg-user-dirs-update
 
@@ -659,6 +662,5 @@ setter_shell
 setter_permissions
 setter_services
 # setter_symbolic_links
-setter_display_manager
 
 reboot_system
