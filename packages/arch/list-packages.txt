@@ -6,104 +6,111 @@
 #  ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝    ╚══════╝╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚═╝  ╚═╝
 
 # Graphical Server
-# Graphic Environment
-# Audio Manager
-# Network Manager
-# Bluetooth Manager
-# Energy Manager
-# Printer
-# Appearance
-# Fonts
-# System Utilities
-# Development
-# Essential Tools
-# Applications
+xorg-server
+xorg-xinit
+xorg-xsetroot
+xorg-xwininfo
 
-neofetch
+# Graphic Environment
+bspwm
+lxappearance
+polybar
+qt5ct
+rofi
+sxhkd
+
+# Audio Manager
+pavucontrol
+
+# Network Manager
+network-manager-applet
+
+# Bluetooth Manager
+blueman
+bluez-utils
+
+# Fonts
+noto-fonts
+noto-fonts-cjk
+noto-fonts-emoji
+ttf-font-awesome
+ttf-joypixels
+ttf-ubuntu-font-family
+
+# System Utilities
 fastfetch
-cmatrix
-tty-clock
-cava
-tmux
-ranger
+htop
+neofetch
+p7zip
 ripgrep
-ani-cli
-nautilus
+rsync
+unzip
+
+# Development
 git
 python3
-ttf-ubuntu-font-family
-gnome-shell-extensions
-gnome-text-editor
-gnome-tweaks
-gnome-shell-extension-desktop-icons-ng
-gnome-shell-extension-arc-menu
-gnome-shell-extension-dash-to-panel
-libxcb
-xcb-util
-xcb-util-wm
-xcb-util-keysyms
-ttf-joypixels
-ttf-font-awesome
-noto-fonts
-noto-fonts-emoji
-noto-fonts-cjk
-fzf 
-htop 
-bash-completion 
-kitty
+
+# Essential Tools
+bash-completion
 neovim
 zsh
 zsh-autosuggestions
-zsh-syntax-highlighting
 zsh-completions
-bspwm
-sxhkd
-polybar
-rofi
-slock
-dunst
-qt5ct
-lxappearance
-xcape
-pass
+zsh-syntax-highlighting
+
+# Applications
 mpv
-nsxiv
-maim
-xwallpaper
-pavucontrol
-playerctl
-net-tools
-network-manager-applet
-rsync 
-aria2 
-jq 
-socat
-lf 
-mediainfo 
-ffmpegthumbnailer
-unzip 
-p7zip 
-file-roller
-gvfs-mtp 
-thunar 
-thunar-archive-plugin 
-thunar-media-tags-plugin
-zathura 
+zathura
 zathura-pdf-mupdf
-xdg-utils 
-xdg-user-dirs
-pacman-contrib
+
+# Unclassified
+ani-cli
+aria2
+cava
+cmatrix
+dunst
 exfatprogs
-xclip 
-xdotool
-wmname
-xorg-xinit
-xorg-server
-xorg-xwininfo
-xorg-xsetroot
+ffmpegthumbnailer
+file-roller
+fzf
+gnome-shell-extension-arc-menu
+gnome-shell-extension-dash-to-panel
+gnome-shell-extension-desktop-icons-ng
+gnome-shell-extensions
+gnome-text-editor
+gnome-tweaks
+gvfs-mtp
+jq
 kdeconnect
-scrcpy
+kitty
+lf
+libxcb
+maim
+mediainfo
 meld
+nautilus
+net-tools
+nsxiv
 ntfs-3g
-blueman
-bluez-utils
+pacman-contrib
+pass
+playerctl
+ranger
+scrcpy
+slock
+socat
+thunar
+thunar-archive-plugin
+thunar-media-tags-plugin
+tmux
+tty-clock
+wmname
+xcape
+xcb-util
+xcb-util-keysyms
+xcb-util-wm
+xclip
+xdg-user-dirs
+xdg-utils
+xdotool
+xwallpaper

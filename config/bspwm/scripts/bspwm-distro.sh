@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 DISTRO=$(grep -i '^ID=' /etc/os-release | cut -d= -f2 | tr -d '""')
-
 case "$DISTRO" in
     kali)           echo " ";;
     arch)           echo " ";;
@@ -12,5 +11,4 @@ case "$DISTRO" in
     linuxmint)      echo " ";;
     *)              echo " ";;
 esac
-
 exit 0
