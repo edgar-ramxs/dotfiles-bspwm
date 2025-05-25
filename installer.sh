@@ -595,5 +595,5 @@ setter_homefiles
 setter_shell
 setter_permissions
 setter_services
-# setter_symbolic_links
+setter_symbolic_links
 reboot_system
