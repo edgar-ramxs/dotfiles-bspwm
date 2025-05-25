@@ -329,61 +329,42 @@ function install_oh_my_zsh() {
     check_execution $? "Error installing" "installed correctly."
 }
 
-function install_display_manager(){
-    local display_manager="sddm"
-    local old_display_manager=""
-    message -title "Setting up the display manager"
-    sleep 0.5
-    case $display_manager in 
-        lightdm)
-            message -subtitle "Installing LightDM..."
-            sleep 0.5
-            sudo DEBIAN_FRONTEND=noninteractive apt install -y lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings >/dev/null 2>&1
-            check_execution $? "Failed to install LightDM on system" "LightDM installed on the system"
+function install_display_manager() {
+    local DM="lightdm" # lightdm | gdm3 | sddm | lxdm | slim
+    message -subtitle "Preparing to set display manager: $DM"
+    case "$DISTRO" in
+        debian|ubuntu|kali|linuxmint|parrot)
+            if ! dpkg -s "$DM" &>/dev/null; then
+                sudo DEBIAN_FRONTEND=noninteractive apt install -y "$DM"
+            fi
         ;;
-        gdm3)
-            message -subtitle "Installing minimal GDM3..."
-            sleep 0.5
-            sudo DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends gdm3 >/dev/null 2>&1
-            check_execution $? "Failed to install GDM3 on system" "GDM3 installed on the system"
+        arch|manjaro|endeavouros)
+            if ! pacman -Q "$DM" &>/dev/null; then
+                sudo pacman -S --noconfirm "$DM"
+            fi
         ;;
-        sddm)
-            message -subtitle "Installing minimal SDDM..."
-            sleep 0.5
-            sudo DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends sddm >/dev/null 2>&1
-            check_execution $? "Failed to install SDDM on system" "SDDM installed on the system"
-        ;;
-        lxdm)
-            message -subtitle "Installing LXDM..."
-            sleep 0.5
-            sudo DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends lxdm >/dev/null 2>&1
-            check_execution $? "Failed to install LXDM on system" "LXDM installed on the system"
-        ;;
-        slim)
-            message -subtitle "Installing SLiM..."
-            sleep 0.5
-            sudo DEBIAN_FRONTEND=noninteractive apt install -y slim >/dev/null 2>&1
-            check_execution $? "Failed to install SLiM on system" "SLiM installed on the system"
+        fedora)
+            if ! rpm -q "$DM" &>/dev/null; then
+                sudo dnf install -y "$DM"
+            fi
         ;;
         *)
-            message -error "Display manager not supported for this distribution: $DISTRO"
+            message -cancel "Unsupported distribution: $DISTRO"
             return 1
         ;;
     esac
 
-    if [ -f /etc/X11/default-display-manager ]; then
-        message -subtitle "Replace $old_display_manager with $display_manager as default display manager..."
+    local CURRENT_DM=$(systemctl get-default | grep graphical.target &>/dev/null && systemctl status display-manager.service 2>/dev/null | grep Loaded | grep -oP '(?<=/)[^/]+(?=\.\w+$)')
+    if [[ -n "$CURRENT_DM" && "$CURRENT_DM" != "$DM" ]]; then
+        message -subtitle "Disabling current display manager: $CURRENT_DM"
+        sudo systemctl disable "$CURRENT_DM" &>/dev/null || true
         sleep 0.5
-        old_display_manager="$(cat /etc/X11/default-display-manager | awk -F "/" '{print $4}')"
-        sudo systemctl stop "$old_display_manager"
-        sudo systemctl disable "$old_display_manager"
-        sudo dpkg-reconfigure "$display_manager"
-    else
-        message -subtitle "Enabling the $display_manager service as the default display manager..."
-        sleep 0.5
-        sudo systemctl enable "$display_manager"
-        continue
     fi
+    sudo systemctl enable "$DM" &>/dev/null
+    sudo systemctl set-default graphical.target
+    sudo systemctl restart "$DM" || sudo systemctl start "$DM"
+    sleep 0.5
+    message -success "$DM has been set as the default display manager."
 }
 
 #  ███████╗███████╗████████╗████████╗██╗███╗   ██╗ ██████╗ ███████╗
@@ -414,7 +395,7 @@ function setter_homefiles() {
     message -subtitle "Copying Home Files..."
     sleep 0.5
     shopt -s dotglob
-    for file in .profile .dmrc .xsessionrc; do
+    for file in .profile; do
         if [[ -f "$DIR/home/$file" ]]; then
             cp -rf --preserve=mode,ownership "$DIR/home/$file" "$HOME/"
             message -success "Copied $file to $HOME."
@@ -436,9 +417,7 @@ function setter_shell(){
             sudo chsh -s "$(which bash)" "$USER"
             sudo chsh -s "$(which bash)" "root"
             message -success "bash is now the default shell."
-
             echo -e "shell bash" > ~/.config/kitty/shell.conf
-
             shopt -s dotglob 
             copy_configs "$DIR/home/bash" "$HOME" "Copying Bash configuration..."
             shopt -u dotglob 
@@ -448,11 +427,8 @@ function setter_shell(){
             sudo chsh -s "$(which zsh)" "$USER"
             sudo chsh -s "$(which zsh)" "root"
             message -success "Zsh is now the default shell."
-            
             install_oh_my_zsh
-
             echo -e "shell zsh" > ~/.config/kitty/shell.conf
-
             shopt -s dotglob 
             copy_configs "$DIR/home/zsh" "$HOME" "Copying Zsh configuration..."
             shopt -u dotglob 
@@ -472,25 +448,35 @@ function setter_permissions() {
         "$HOME/.config/rofi/htb"
         "$HOME/.config/rofi/scripts"
         "$HOME/.local/bin"
-        "$HOME/.local/colorscripts"
+        "$HOME/.local/ascii/animations"
+        "$HOME/.local/ascii/asciiarts"
+        "$HOME/.local/ascii/colorsscripts"
+        "$HOME/.local/ascii/fetchinfo"
     )
     message -title "Setting execution permissions to specified file types"
     sleep 0.5
     for dir in "${DIRECTORIES[@]}"; do
         if [[ -d "$dir" ]]; then
             message -subtitle "Processing directory: $dir"
-            for ext in "${EXTENSIONS[@]}"; do
+            if [[ "$dir" == "$HOME/.local/bin" ]]; then
                 while IFS= read -r file; do
                     chmod +x "$file"
-                    message -success "Execution permission set: $file"
-                done < <(find "$dir" -type f -name "$ext")
-            done
+                    message -success "Execution permission set (bin): $file"
+                done < <(find "$dir" -type f)
+            else
+                for ext in "${EXTENSIONS[@]}"; do
+                    while IFS= read -r file; do
+                        chmod +x "$file"
+                        message -success "Execution permission set: $file"
+                    done < <(find "$dir" -type f -name "$ext")
+                done
+            fi
         else
             message -warning "Directory not found: $dir"
         fi
         sleep 1
     done
-    message -success "Execution permissions have been set for all specified file types in the directories."
+    message -success "Execution permissions have been set for all specified files."
     sleep 0.5
 }
 
@@ -515,13 +501,15 @@ function setter_symbolic_links() {
     local ROOT_HOME="/root"
     local CURRENT_SHELL=$(basename "$SHELL")
     local COMMON_FILES=(".profile")
+    local CONFIG_SHELL_DIR="$HOME/.config/shell"
+
     message -title "Creating symbolic links in root user directory"
     sleep 0.5
     declare -A SHELL_FILES=(
         ["zsh"]=".zshrc .p10k.zsh"
         ["bash"]=".bashrc .bash_logout"
     )
-    
+
     message -subtitle "Linking common files..."
     sleep 0.5
     for file in "${COMMON_FILES[@]}"; do
@@ -532,9 +520,10 @@ function setter_symbolic_links() {
             message -warning "$file not found in $HOME. Skipping."
         fi
     done
+
     case "$CURRENT_SHELL" in
         zsh|bash)
-            message -subtitle "Linking [$CURRENT_SHELL] configuration..."
+            message -subtitle "Linking [$CURRENT_SHELL] configuration files..."
             sleep 0.5
             for file in ${SHELL_FILES[$CURRENT_SHELL]}; do
                 if [[ -f "$HOME/$file" ]]; then
@@ -544,6 +533,14 @@ function setter_symbolic_links() {
                     message -warning "$file not found in $HOME. Skipping."
                 fi
             done
+
+            if [[ -d "$CONFIG_SHELL_DIR" ]]; then
+                sudo mkdir -p "$ROOT_HOME/.config"
+                sudo ln -sfv "$CONFIG_SHELL_DIR" "$ROOT_HOME/.config/shell" >/dev/null 2>&1
+                message -success "Linked $CONFIG_SHELL_DIR to $ROOT_HOME/.config/shell"
+            else
+                message -warning "$CONFIG_SHELL_DIR not found. Skipping config shell directory."
+            fi
         ;;
         *)
             message -error "Unknown shell: $CURRENT_SHELL. No shell-specific files were linked."
@@ -551,6 +548,7 @@ function setter_symbolic_links() {
     esac
     sleep 0.5
 }
+
 
 #  ███╗   ███╗ █████╗ ██╗███╗   ██╗
 #  ████╗ ████║██╔══██╗██║████╗  ██║
@@ -570,9 +568,9 @@ while getopts ":s:r:" opt; do
         # t) P_THEME="$OPTARG"
         #     [[ "$P_THEME" =~ ^(a|b|c)$ ]] || usage
         # ;;
-        i) P_INSTALLATION="$OPTARG"
-            [[ "$P_INSTALLATION" =~ ^(native|virtual)$ ]] || usage
-        ;;
+        # i) P_INSTALLATION="$OPTARG"
+        #     [[ "$P_INSTALLATION" =~ ^(native|virtual)$ ]] || usage
+        # ;;
         *) usage ;;
     esac
 done
