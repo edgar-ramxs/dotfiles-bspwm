@@ -571,7 +571,7 @@ if [ "$UID" -eq 0 ]; then
     exit 1
 fi
 
-while getopts ":s:r:" opt; do
+while getopts ":s:r:i:" opt; do
     case ${opt} in
         s) P_SHELL="$OPTARG"
             [[ "$P_SHELL" =~ ^(bash|zsh)$ ]] || usage
