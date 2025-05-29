@@ -1,0 +1,3 @@
+#!/bin/sh
+background_default=$(cat ~/.config/feh/background)
+feh --no-fehbg --bg-scale "$background_default"

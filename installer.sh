@@ -64,6 +64,15 @@ function check_execution() {
 function reboot_system() {
     local attempts=0
     local max_attempts=3
+    local reboot_cmd=""
+    
+    case "$DISTRO" in
+        debian|ubuntu|kali|linuxmint|parrot)    reboot_cmd="sudo reboot";;
+        arch|manjaro)                           reboot_cmd="systemctl reboot";;
+        fedora)                                 reboot_cmd="systemctl reboot";;
+        *)                                      reboot_cmd="sudo reboot";;
+    esac
+
     message -title "Reboot: It's necessary to restart the system."
     while (( attempts < max_attempts )); do
         message -approval "Do you want to restart the system now? [yes|y] or [no|n]"
@@ -73,7 +82,7 @@ function reboot_system() {
             yes|y)
                 message -cancel "Restarting the system..."
                 sleep 1
-                sudo reboot
+                eval "$reboot_cmd"
             ;;
             no|n)
                 message -warning "Remember to restart the system as the environment will fail to reload all configurations."
@@ -118,8 +127,8 @@ function updating_packages() {
             check_execution $? "Failed to update packages." "Packages upgraded successfully."
         ;;
         *)
-            message -error "Package manager not supported for this distribution: $DISTRO"
-            return 1
+            message -cancel "Package manager not supported for this distribution: $DISTRO"
+            ctrl_c
         ;;
     esac
     message -success "All packages are up to date."
@@ -153,11 +162,11 @@ function install_packages() {
     sleep 0.5
     case "$DISTRO" in
         debian|ubuntu|kali|linuxmint|parrot)
-            local PACKAGES_FILE="$DIR/packages/debian/list-packages.txt"
+            local PACKAGES_FILE="$DIR/packages/debian.txt"
             message -subtitle "Checking and installing packages for APT-based systems..."
             if [[ ! -f "$PACKAGES_FILE" ]]; then
                 message -cancel "There is no file related to your distribution."
-                exit 1
+                ctrl_c
             fi
             message -subtitle "File detected. Starting package installation..."
             grep -Ev '^#|^$' "$PACKAGES_FILE" | while IFS= read -r package; do
@@ -174,11 +183,11 @@ function install_packages() {
             done
         ;;
         arch|manjaro)
-            local PACKAGES_FILE="$DIR/packages/arch/list-packages.txt"
+            local PACKAGES_FILE="$DIR/packages/arch.txt"
             message -subtitle "Checking and installing packages for Pacman-based systems..."
             if [[ ! -f "$PACKAGES_FILE" ]]; then
                 message -cancel "There is no file related to your distribution."
-                exit 1
+                ctrl_c
             fi
             message -subtitle "File detected. Starting package installation..."
             grep -Ev '^#|^$' "$PACKAGES_FILE" | while IFS= read -r package; do
@@ -195,11 +204,11 @@ function install_packages() {
             done
         ;;
         fedora)
-            local PACKAGES_FILE="$DIR/packages/fedora/list-packages.txt"
+            local PACKAGES_FILE="$DIR/packages/fedora.txt"
             message -subtitle "Checking and installing packages for DNF-based systems..."
             if [[ ! -f "$PACKAGES_FILE" ]]; then
                 message -cancel "There is no file related to your distribution."
-                exit 1
+                ctrl_c
             fi
             message -subtitle "File detected. Starting package installation..."
             grep -Ev '^#|^$' "$PACKAGES_FILE" | while IFS= read -r package; do
@@ -216,8 +225,8 @@ function install_packages() {
             done
         ;;
         *)
-            message -error "Package manager not supported for this distribution: $DISTRO"
-            return 1
+            message -cancel "Package manager not supported for this distribution: $DISTRO"
+            ctrl_c
         ;;
     esac
     message -warning "Package installation completed for $DISTRO."
@@ -230,8 +239,8 @@ function install_fonts(){
     local DIR_DOWNLOADS="/tmp/fonts_tmp"
     mkdir -p "$DIR_DOWNLOADS"
     if ! command -v curl &>/dev/null || ! command -v tar &>/dev/null; then
-        message -error "Dependencies missing: curl and tar are required. Please install them first."
-        exit 1
+        message -cancel "Dependencies missing: curl and tar are required. Please install them first."
+        ctrl_c
     fi
     message -title "Installing and downloading Nerd Fonts."
     sleep 0.5
@@ -277,8 +286,8 @@ function install_pywal() {
     elif command -v pip &>/dev/null; then
         PIP_CMD="pip"
     else
-        message -error "Neither pip3 nor pip is installed. Please install pip3 or pip before proceeding."
-        exit 1
+        message -cancel "Neither pip3 nor pip is installed. Please install pip3 or pip before proceeding."
+        ctrl_c
     fi
     message -subtitle "Using $PIP_CMD for installation."
     sleep 0.5
@@ -291,8 +300,8 @@ function install_pywal() {
     if command -v wal &>/dev/null; then
         message -warning "Pywal is installed and ready to use."
     else
-        message -error "Pywal installation completed, but the 'wal' command is not found. Check your PATH."
-        exit 1
+        message -cancel "Pywal installation completed, but the 'wal' command is not found. Check your PATH."
+        ctrl_c
     fi
 }
 
@@ -350,7 +359,7 @@ function install_display_manager() {
         ;;
         *)
             message -cancel "Unsupported distribution: $DISTRO"
-            return 1
+            ctrl_c
         ;;
     esac
 
@@ -474,7 +483,7 @@ function setter_permissions() {
         else
             message -warning "Directory not found: $dir"
         fi
-        sleep 1
+        sleep 0.5
     done
     message -success "Execution permissions have been set for all specified files."
     sleep 0.5
@@ -557,6 +566,11 @@ function setter_symbolic_links() {
 #  ██║ ╚═╝ ██║██║  ██║██║██║ ╚████║
 #  ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝
 
+if [ "$UID" -eq 0 ]; then
+    message -error "You should not run the script as the root user!"
+    exit 1
+fi
+
 while getopts ":s:r:" opt; do
     case ${opt} in
         s) P_SHELL="$OPTARG"
@@ -565,22 +579,15 @@ while getopts ":s:r:" opt; do
         r) P_RESOLUTION="$OPTARG"
             [[ "$P_RESOLUTION" =~ ^(1920x1080|1366x768)$ ]] || usage
         ;;
-        # t) P_THEME="$OPTARG"
-        #     [[ "$P_THEME" =~ ^(a|b|c)$ ]] || usage
-        # ;;
-        # i) P_INSTALLATION="$OPTARG"
-        #     [[ "$P_INSTALLATION" =~ ^(native|virtual)$ ]] || usage
-        # ;;
+        i) P_INSTALLATION="$OPTARG"
+            [[ "$P_INSTALLATION" =~ ^(native|virtual)$ ]] || usage
+        ;;
         *) usage ;;
     esac
 done
 
-if [[ -z "$P_SHELL" || -z "$P_RESOLUTION" ]]; then
+if [[ -z "$P_SHELL" || -z "$P_RESOLUTION" || -z "$P_INSTALLATION" ]]; then
     usage
-fi
-if [ "$UID" -eq 0 ]; then
-    message -error "You should not run the script as the root user!"
-    exit 1
 fi
 
 sudo -v
@@ -588,12 +595,12 @@ updating_packages
 install_packages
 install_fonts
 install_pywal
-install_display_manager
+# install_display_manager
 xdg-user-dirs-update
 setter_configs
 setter_homefiles
 setter_shell
 setter_permissions
-setter_services
+# setter_services
 setter_symbolic_links
 reboot_system

@@ -11,4 +11,3 @@ case "$DISTRO" in
     linuxmint)      echo " ";;
     *)              echo " ";;
 esac
-exit 0

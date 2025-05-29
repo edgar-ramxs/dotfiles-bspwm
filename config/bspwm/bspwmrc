@@ -10,7 +10,7 @@
 pgrep -x sxhkd > /dev/null || sxhkd &
 
 ## autostart
-$HOME/.config/bspwm/scripts/bspwm-autostart.sh
+$HOME/.config/bspwm/scripts/bspwm-autostart.sh &
 
 ## pywal
 . "${HOME}/.cache/wal/colors.sh"

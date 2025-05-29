@@ -27,8 +27,8 @@ $HOME/.config/bspwm/scripts/bspwm-pywal.sh &
 sleep 0.5
 
 ## Execute taskbars
-$HOME/.config/bspwm/scripts/bspwm-polybar.sh &
-sleep 0.5
+# $HOME/.config/bspwm/scripts/bspwm-polybar.sh &
+# sleep 0.5
 
 ## Enable toolkits and applications
 /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &
@@ -36,5 +36,5 @@ xsetroot -cursor_name left_ptr &
 xfce4-power-manager &
 nm-applet &
 blueman-applet &
-dunst -conf $HOME/.config/dunst/dunstrc &
+dunst &
 sleep 0.5
