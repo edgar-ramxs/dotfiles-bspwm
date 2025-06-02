@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 theme="$HOME/.config/rofi/views/applets.rasi"
-icono=$(~/.config/bspwm/scripts/bspwm-distro.sh)
+icono=$(~/.config/bspwm/scripts/distro.sh)
 prompt='Music'
 list_col='6'
 list_row='1'

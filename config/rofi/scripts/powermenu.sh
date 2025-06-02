@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-icono=$(~/.config/bspwm/scripts/bspwm-distro.sh)
+icono=$(~/.config/bspwm/scripts/distro.sh)
 theme="$HOME/.config/rofi/views/powermenu.rasi"
 uptime="`uptime -p | sed -e 's/up //g'`"
 host=`hostname`

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-icono=$(~/.config/bspwm/scripts/bspwm-distro.sh)
+icono=$(~/.config/bspwm/scripts/distro.sh)
 theme="$HOME/.config/rofi/views/applets.rasi"
 browser='Firefox'
 prompt='Quick Links'

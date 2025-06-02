@@ -2,7 +2,7 @@
 
 host=`hostname`
 uptime="`uptime -p | sed -e 's/up //g'`"
-icono=$(~/.config/bspwm/scripts/bspwm-distro.sh)
+icono=$(~/.config/bspwm/scripts/distro.sh)
 theme="$HOME/.config/rofi/views/powermenu.rasi"
 list_col='3'
 list_row='1'

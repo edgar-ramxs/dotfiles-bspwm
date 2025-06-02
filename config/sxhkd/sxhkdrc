@@ -134,7 +134,7 @@ super + alt + {Left,Down,Up,Right}
 
 # Resize floating window using custom script
 alt + {Left,Down,Up,Right}
-    ~/.config/bspwm/scripts/bspwm-resize.sh {west,south,north,east}
+    ~/.config/bspwm/scripts/resize-window.sh {west,south,north,east}
 
 # # i3lock 
 # shift + l

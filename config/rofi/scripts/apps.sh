@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-icono=$(~/.config/bspwm/scripts/bspwm-distro.sh)
+icono=$(~/.config/bspwm/scripts/distro.sh)
 theme="$HOME/.config/rofi/views/applets.rasi"
 mesg="Installed Packages => `apt list --installed 2>/dev/null | grep -v 'Listing' | wc -l` (apt)"
 prompt="Applications"

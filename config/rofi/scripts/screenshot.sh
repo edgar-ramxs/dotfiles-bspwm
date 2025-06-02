@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-icono=$(~/.config/bspwm/scripts/bspwm-distro.sh)
+icono=$(~/.config/bspwm/scripts/distro.sh)
 theme="$HOME/.config/rofi/views/applets.rasi"
 mesg="DIR: `xdg-user-dir PICTURES`/Screenshots"
 prompt='Screenshot'

@@ -23,11 +23,11 @@ picom --config $HOME/.config/picom/picom.conf &
 sleep 0.5
 
 ## Reset Pywal color palette
-$HOME/.config/bspwm/scripts/bspwm-pywal.sh &
+$HOME/.config/bspwm/scripts/pywal.sh &
 sleep 0.5
 
 ## Execute taskbars
-# $HOME/.config/bspwm/scripts/bspwm-polybar.sh &
+# $HOME/.config/bspwm/scripts/polybar.sh &
 # sleep 0.5
 
 ## Enable toolkits and applications
