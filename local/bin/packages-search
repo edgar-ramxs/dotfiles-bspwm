@@ -1,116 +1,101 @@
 #!/usr/bin/env bash
 
+# 🎨 Colored message function
 function message() {
-    local signal color
-    local RESETC="\033[0m\e[0m"
-    case "$1" in
-        "-title")       color="\033[0;37m\033[1m";      signal="[$]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
-        "-subtitle")    color="\033[0;35m\033[1m";      signal="[*]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
-        "-approval")    color="\033[38;5;51m\033[1m";   signal="[?]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
-        "-cancel")      color="\033[0;34m\033[1m";      signal="[!]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
-        "-success")     color="\033[0;32m\033[1m";      signal="[+]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
-        "-warning")     color="\033[0;33m\033[1m";      signal="[&]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
-        "-error")       color="\033[0;31m\033[1m";      signal="[-]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
-        *)              color="$RESETC";                signal=""; shift; echo -e "${color}${signal} $*${RESETC}";;
-    esac
+    local RESET="\033[0m\e[0m"
+    local styles=(
+        ["-title"]="\033[0;37m\033[1m [$]"
+        ["-subtitle"]="\033[0;35m\033[1m [*]"
+        ["-approval"]="\033[38;5;51m\033[1m [?]"
+        ["-cancel"]="\033[0;34m\033[1m [!]"
+        ["-success"]="\033[0;32m\033[1m [+]"
+        ["-warning"]="\033[0;33m\033[1m [&]"
+        ["-error"]="\033[0;31m\033[1m [-]"
+    )
+    local style="${styles[$1]}"
+    shift
+    [[ "$style" =~ \[\$\]|\[\*\]|\[\?\]|\[\!\] ]] && echo -e "\n${style} $*${RESET}" || echo -e "\t${style} $*${RESET}"
 }
 
+# 📖 Usage/help
 function usage() {
-    message -title "Usage: "
+    message -title "Usage:"
     message -warning "Flags         Example"
     message -success "-f [file]     $0 -f packages.txt"
-    message -success "[no-flag]     $0 <packages-1> <packages-2> <packages-N>"
+    message -success "[no-flag]     $0 package1 package2 ..."
     echo ""
     exit 1
 }
 
-trap ctrl_c INT
-function ctrl_c() {
-    message -cancel "Exiting...\n"
-    exit 1
-}
+# 🚫 Ctrl+C handler
+trap 'message -cancel "Exiting..."; exit 1' INT
 
+# ✅ Execution result checker
 function check_execution() {
-    if [ $1 != 0 ] && [ $1 != 130 ]; then
-        message -error "Error: $2"
+    local code="$1" error="$2" success="$3"
+    if [[ "$code" != 0 && "$code" != 130 ]]; then
+        message -error "$error"
     else
-        message -success "Successful: $3"
+        message -success "$success"
     fi
     sleep 0.5
 }
 
-#  ███╗   ███╗ █████╗ ██╗███╗   ██╗
-#  ████╗ ████║██╔══██╗██║████╗  ██║
-#  ██╔████╔██║███████║██║██╔██╗ ██║
-#  ██║╚██╔╝██║██╔══██║██║██║╚██╗██║
-#  ██║ ╚═╝ ██║██║  ██║██║██║ ╚████║
-#  ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝
-
+# 📦 Detect distro
 DISTRO=$(grep -i '^ID=' /etc/os-release | cut -d= -f2 | tr -d '"' | tr '[:upper:]' '[:lower:]')
-TEXT=""
-FILE=""
-CHECK_CMD=""
-AVAILABLE_CMD=""
 
-OPTERR=0
+# 📥 Input handling
+FILE=""
+PACKAGES=()
+
 while getopts ":f:" opt; do
-    case ${opt} in
+    case "$opt" in
         f)
             FILE="$OPTARG"
-            if [[ -z "$FILE" ]]; then
-                message -error "La opción -f requiere un valor válido."
-                exit 1
-            fi
+            [[ -z "$FILE" ]] && message -error "La opción -f requiere un valor." && exit 1
             ;;
         \?)
-            usage
-            ;;
+            usage ;;
     esac
 done
-
 shift $((OPTIND - 1))
 
-if [ -z "$FILE" ] && [ $# -eq 0 ]; then
-    message -error "Se requiere al menos un argumento o la opción '-f' con un valor."
+if [[ -z "$FILE" && $# -eq 0 ]]; then
+    message -error "Debes especificar paquetes como argumentos o con -f archivo."
     usage
 fi
 
-if [ -z "$FILE" ] && [ $# -gt 0 ]; then
-    # echo "Usando argumentos adicionales: $@"
+# 🗂️ Leer archivo o argumentos
+if [[ -n "$FILE" ]]; then
+    [[ ! -f "$FILE" ]] && message -error "El archivo no existe: $FILE" && exit 1
+    readarray -t PACKAGES < <(grep -Ev '^\s*#|^\s*$' "$FILE")
+else
     PACKAGES=("$@")
 fi
 
-if [ -n "$FILE" ]; then
-    echo "Archivo recibido: $FILE"
-    if [[ ! -f "$FILE" ]]; then
-        message -error "El archivo no existe: $FILE"
-        exit 1
-    fi
-    PACKAGES=$(grep -Ev '^#|^$' "$FILE")
-fi
-
+# 🧠 Detectar comandos según distro
 case "$DISTRO" in
     debian|ubuntu|kali|mint|parrot)
-        CHECK_CMD="dpkg -l | grep -qw"
+        CHECK_CMD="dpkg -l"
         AVAILABLE_CMD="apt-cache show"
-    ;;
+        ;;
     arch|manjaro)
-        CHECK_CMD="pacman -Qq | grep -w"
+        CHECK_CMD="pacman -Qq"
         AVAILABLE_CMD="pacman -Si"
-    ;;
+        ;;
     fedora|centos|rhel)
         CHECK_CMD="rpm -q"
         AVAILABLE_CMD="dnf info"
-    ;;
+        ;;
     *)
         message -cancel "Distribución no soportada: $DISTRO"
         exit 1
-    ;;
+        ;;
 esac
 
-for package in ${PACKAGES[@]}; do
-    # CHECK_CMD NO FUNCIONA (TEST CON UBUNTU)
-    if $CHECK_CMD "$package" &>/dev/null; then
+# 🔍 Verificar cada paquete
+for package in "${PACKAGES[@]}"; do
+    if eval "$CHECK_CMD" | grep -qw "$package"; then
         message -success "[INSTALADO] $package"
     elif $AVAILABLE_CMD "$package" &>/dev/null; then
         message -warning "[DISPONIBLE] $package"

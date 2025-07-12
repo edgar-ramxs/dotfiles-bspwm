@@ -18,33 +18,81 @@ XF86MonBrightnessDown
 XF86MonBrightnessUp
 	brightnessctl set +5%
 
-# Reload sxhkd (Super Key Handler Daemon) configuration
-super + Escape
-	pkill -USR1 -x sxhkd; notify-send "sxhkd reloaded"
-
 # Opens the rofi program launcher with the specified theme
 super + Return
-	rofi -show drun -theme "~/.config/rofi/views/launcher.rasi"
-
-# Closes the current node (window)
-super + BackSpace
-	bspc node -c
+	~/.config/rofi/scripts/launcher.sh
 
 # Capture a screenshot using flameshot
 super + Insert
 	flameshot gui
 
+# Open session menu (rofi)
+super + Escape
+	~/.config/rofi/scripts/powermenu.sh
+
+# Reload sxhkd (Super Key Handler Daemon) configuration
+super + ctrl + Escape
+	pkill -USR1 -x sxhkd; notify-send "sxhkd reloaded"
+
+# Restart bspwm
+super + shift + Escape
+	bspc wm -r; notify-send "bspwm reloaded"
+
+# Closes the current node (window)
+super + BackSpace
+	bspc node -c
+
+# Closes and kills the current node (window)
+super + shift + BackSpace
+	bspc node -k
+
+# #
+# super + space
+# 	~/.config/
+
+# Cancel the preselection of the focused node
+super + ctrl + space
+    bspc node -p cancel
+
+# Cancel the preselection for the focused desktop
+super + shift + space
+    bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
+
 # Focuses the node in the specified direction
 super + {Left,Down,Up,Right}
 	bspc node -f {west,south,north,east}
+
+# Preset the direction to move the node
+super + ctrl + {Left,Down,Up,Right}
+	bspc node -p {west,south,north,east}
+
+# Resize floating window using custom script
+super + shift + {Left,Down,Up,Right}
+    ~/.config/bspwm/scripts/resize-window.sh {west,south,north,east}
 
 # Focus or send to the specified desktop
 super + {1-9,0}
 	bspc desktop -f '^{1-9,10}'
 
+# Preselect the node split ratio
+super + ctrl + {1-9}
+	bspc node -o 0.{1-9}
+
+# Moves the current node to the specified desktop
+super + shift + {1-9,0}
+	bspc node -d '^{1-9,10}'
+
+# Open Keybinds Search (rofi)
+super + q 
+	~/.config/rofi/scripts/keybind-help.sh
+
 # Open menu with wifi connections (rofi)
 super + w
 	~/.config/rofi/scripts/wifi-menu.sh
+
+# Open nitrogen to manage wallpapers
+super + e
+	nitrogen
 
 # Open Visual Studio Code
 super + r
@@ -62,88 +110,159 @@ super + y
 super + u
 	thunar
 
-# Open nitrogen to manage wallpapers
-super + i
-	nitrogen
+# #
+# super + i
+# 	~/.config/
+
+# Moves the floating window 20 pixels up
+super + ctrl + i
+	bspc node -v 0 -20
+
+# Sends the current window to the node above
+super + shift + i
+	bspc node -s north
 
 # Focus the older or newer node in the focus history
-super + {o,p}
+super + o
 	bspc wm -h off; \
-	bspc node {older,newer} -f; \
+	bspc node older -f; \
 	bspc wm -h on
 
-# Open a st terminal and run btop to monitor system performance
-super + b
-	kitty -c btop &
+# Focus the older or newer node in the focus history
+super + p
+	bspc wm -h off; \
+	bspc node newer -f; \
+	bspc wm -h on
 
-# Switch between tiled window layout and monocle layout
-super + z
+# # 
+# super + a
+# 	~/.config/
+
+# Alternate between the tiled and monocle layout
+super + ctrl + a
 	bspc desktop -l next
 
-# Focus the next node on the current desktop
-super + x
-	bspc node -f next.local
-
-# Restart bspwm
-super + ctrl + Escape
-	bspc wm -r; notify-send "bspwm reloaded"
-
-# Preset the direction to move the node
-super + ctrl + {Left,Down,Up,Right}
-	bspc node -p {west,south,north,east}
-
-# Preselect the node split ratio
-super + ctrl + {1-9}
-	bspc node -o 0.{1-9}
-
-# Cancels the preselection of the focused node
-super + ctrl + n
-	bspc node -p cancel
-
-# Cancel the preset of the focused desktop
-super + ctrl + m
-	bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
-
-# Closes and kills the current node (window)
-super + shift + BackSpace
-	bspc node -k
-
-# Switches the window type of the current node between the specified types (tiled, pseudo_tiled, floating, fullscreen)
-super + shift + {f,g,h,j}
-	bspc node -t {tiled,pseudo_tiled,floating,fullscreen}
-
-# Moves the current node to the specified address
-super + shift + {Left,Down,Up,Right}
-	bspc node -s {west,south,north,east}
-
-# Focuses the previous node on the current desktop
-super + shift + v
-	bspc node -f prev.local
-
-# Moves the current node to the specified desktop
-super + shift + {1-9,0}
-	bspc node -d '^{1-9,10}'
-
-# Open session menu (rofi)
-super + alt + Escape
-	~/.config/polybar/menu/powermenu.sh
-
-# Moves the floating window in the specified direction
-super + alt + {Left,Down,Up,Right}
-	bspc node -v {-20 0,0 20,0 -20,20 0}
-
-# Resize floating window using custom script
-alt + {Left,Down,Up,Right}
-    ~/.config/bspwm/scripts/resize-window.sh {west,south,north,east}
-
-# # i3lock 
-# shift + l
-# 	/usr/bin/i3lock-everblush
-
 # # 
-# super + q
-# 	~/.config/rofi/
-
-# # 
-# super + e
+# super + s
 # 	~/.config/
+
+# Send the newest marked node to the newest preselected node
+super + ctrl + s
+	bspc node newest.marked.local -n newest.!automatic.local
+
+# # 
+# super + d
+# 	~/.config/
+
+# Swap the current node and the biggest window
+super + ctrl + d
+	bspc node -s biggest.window
+
+# # 
+# super + f
+# 	~/.config/
+
+# # 
+# super + g
+# 	~/.config/
+
+# # 
+# super + h
+# 	~/.config/
+
+# # 
+# super + j
+# 	~/.config/
+
+
+# Moves the floating window 20 pixels to the left
+super + ctrl + j
+	bspc node -v -20 0
+
+# Sends the current window to the node on the left
+super + shift + j
+	bspc node -s west
+
+# # 
+# super + k
+# 	~/.config/
+
+# Moves the floating window 20 pixels down
+super + ctrl + k
+	bspc node -v 0 20
+
+# Sends the current window to the node below
+super + shift + k
+	bspc node -s south
+
+# # 
+# super + l
+# 	~/.config/
+
+# Moves the floating window 20 pixels to the right
+super + ctrl + l
+	bspc node -v 20 0
+
+# Sends the current window to the node on the right
+super + shift + l
+	bspc node -s east
+
+# # 
+# super + z
+# 	~/.config/
+
+# Focus the previous desktop on the same monitor
+super + ctrl + z
+    bspc desktop -f prev.local
+
+# Focus the last focused node
+super + shift + z
+    bspc node -f last
+
+# Focus the next desktop on the same monitor
+super + ctrl + x
+    bspc desktop -f next.local
+
+# Focus the last focused desktop
+super + shift + x
+    bspc desktop -f last
+
+# Focus the next visible window (excluding hidden ones)
+super + ctrl + c
+    bspc node -f next.local.!hidden.window
+
+# Focus the previous visible window (excluding hidden ones)
+super + shift + c
+    bspc node -f prev.local.!hidden.window
+
+# Set the current window to tiled mode
+super + v
+    bspc node -t tiled
+
+# Toggle the marked state of the current window
+super + ctrl + v
+    bspc node -g marked
+
+# Set the current window to pseudo_tiled mode
+super + b
+    bspc node -t pseudo_tiled
+
+# Toggle the locked state of the current window
+super + ctrl + b
+    bspc node -g locked
+
+# Set the current window to floating mode
+super + n
+    bspc node -t floating
+
+# Toggle the sticky state of the current window
+super + ctrl + n
+    bspc node -g sticky
+
+# Set the current window to fullscreen mode
+super + m
+    bspc node -t fullscreen
+
+# Toggle the private state of the current window
+super + ctrl + m
+    bspc node -g private

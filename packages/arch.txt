@@ -6,8 +6,9 @@
 #  ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝    ╚══════╝╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚═╝  ╚═╝
 
 # Graphical Server
-xorg-server
+xorg
 xorg-xinit
+xorg-server
 xorg-xsetroot
 xorg-xwininfo
 

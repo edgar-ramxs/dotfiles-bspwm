@@ -64,9 +64,9 @@ chmod +x installer.sh
 
 
 ## Visuals
-<img src="assets/img/a1.png"/>
-<img src="assets/img/a2.png"/>
-<img src="assets/img/a3.png"/>
+<img src="assets/images/a1.png"/>
+<img src="assets/images/a2.png"/>
+<img src="assets/images/a3.png"/>
 
 > [!TIP]
 > Some of the best repositories for bspwm configurations, themes, and other stuff are listed in the [REFERENCES.md](assets/REFERENCES.md) file.

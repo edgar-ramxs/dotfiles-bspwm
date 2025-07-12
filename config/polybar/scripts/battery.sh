@@ -1,15 +1,6 @@
 #!/usr/bin/env bash
 
-acpi_output=$(acpi -b)
-if [[ -z "$acpi_output" ]]; then
-  echo "%{T2}󱟩 %{T-} %{T1}0%%{T-}"
-  exit 1
-fi
-
-state=$(echo "$acpi_output" | awk -F': ' '{print $2}' | awk -F', ' '{print $1}')
-percentage=$(echo "$acpi_output" | awk -F', ' '{print $2}' | tr -d '%')
-
-get_icon() {
+function get_icon() {
   local perc=$1
   local state=$2
 
@@ -60,5 +51,14 @@ get_icon() {
   fi
 }
 
+
+acpi_output=$(acpi -b)
+if [[ -z "$acpi_output" ]]; then
+  echo "%{T2}󱟩 %{T-}%{T1}0%%{T-}"
+fi
+
+state=$(echo "$acpi_output" | awk -F': ' '{print $2}' | awk -F', ' '{print $1}')
+percentage=$(echo "$acpi_output" | awk -F', ' '{print $2}' | tr -d '%')
 icon=$(get_icon "$percentage" "$state")
+
 echo "%{T2}$icon%{T-} %{T1}$percentage%%{T-}" 

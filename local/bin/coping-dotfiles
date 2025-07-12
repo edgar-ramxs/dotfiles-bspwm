@@ -47,8 +47,8 @@ function check_execution() {
 
 DEFAULT_DIR="$HOME/dotfiles-bspwm"
 DOTFILES_DIR=""
-
 OPTERR=0
+
 while getopts "d:" opt; do
     case ${opt} in
         d) DOTFILES_DIR="${OPTARG}";;

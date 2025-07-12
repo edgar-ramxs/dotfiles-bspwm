@@ -7,12 +7,12 @@
 #   ╚████╔╝ ██║  ██║██║  ██║██║██║  ██║██████╔╝███████╗███████╗███████║
 #    ╚═══╝  ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═╝╚═════╝ ╚══════╝╚══════╝╚══════╝
 
-DIR=$(pwd)
-USER=$(whoami)
-DISTRO=$(grep -i '^ID=' /etc/os-release | cut -d= -f2 | tr -d '"' | tr '[:upper:]' '[:lower:]')
-P_SHELL=""
-P_RESOLUTION=""
-P_INSTALLATION=""
+DOT_DIR=$(pwd)
+DOT_USER=$(whoami)
+DOT_SHELL=""
+DOT_DISTRO=$(grep -i '^ID=' /etc/os-release | cut -d= -f2 | tr -d '"' | tr '[:upper:]' '[:lower:]')
+DOT_RESOLUTION=""
+DOT_INSTALLATION=""
 
 #  ███████╗██╗   ██╗███╗   ██╗ ██████╗████████╗██╗ ██████╗ ███╗   ██╗███████╗
 #  ██╔════╝██║   ██║████╗  ██║██╔════╝╚══██╔══╝██║██╔═══██╗████╗  ██║██╔════╝
@@ -22,55 +22,63 @@ P_INSTALLATION=""
 #  ╚═╝      ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝
 
 function message() {
-    local signal color
     local RESETC="\033[0m\e[0m"
-    case "$1" in
-        "-title")       color="\033[0;37m\033[1m";      signal="[$]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
-        "-subtitle")    color="\033[0;35m\033[1m";      signal="[*]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
-        "-approval")    color="\033[38;5;51m\033[1m";   signal="[?]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
-        "-cancel")      color="\033[0;34m\033[1m";      signal="[!]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
-        "-success")     color="\033[0;32m\033[1m";      signal="[+]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
-        "-warning")     color="\033[0;33m\033[1m";      signal="[&]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
-        "-error")       color="\033[0;31m\033[1m";      signal="[-]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
-        *)              color="$RESETC";                signal=""; shift; echo -e "${color}${signal} $*${RESETC}";;
-    esac
+    local BOLD="\033[1m"
+    declare -A MESSAGE_MAP=(
+        [-title]="\033[0;37m${BOLD} [$]"
+        [-subtitle]="\033[0;35m${BOLD} [*]"
+        [-approval]="\033[38;5;51m${BOLD} [?]"
+        [-cancel]="\033[0;34m${BOLD} [!]"
+        [-success]="\033[0;32m${BOLD} [+]"
+        [-warning]="\033[0;33m${BOLD} [&]"
+        [-error]="\033[0;31m${BOLD} [-]"
+    )
+
+    local key="$1"
+    shift
+    local color_msg="${MESSAGE_MAP[$key]}"
+
+    if [[ -n "$color_msg" ]]; then
+        local prefix="\n"
+        [[ "$key" == "-success" || "$key" == "-warning" || "$key" == "-error" ]] && prefix="\t"
+        echo -e "${prefix}${color_msg} $*${RESETC}"
+        case "$key" in
+            -title) sleep 0.5 ;;
+            -subtitle) sleep 0.3 ;;
+            -cancel) sleep 0.5 ;;
+        esac
+    else
+        echo -e "${RESETC}$key $*${RESETC}"
+    fi
 }
 
 function usage() {
-    message -title "Usage: $0 -s [option] -r [option]"
-    message -warning "Parameter     Target  Options                 Description"
-    message -success "Shell         -s      [bash|zsh]              Set default shell"
-    message -success "Resolution    -r      [1920x1080|1366x768]    Set default screen resolution for wallpapers"
-    message -success "Installation  -i      [virtual|native]        Set the default installation level"
+    message -title "Usage: $0 -s [option] -r [option] -i [option]"
+    message -warning "Parameter         Target      Options                 Description"
+    message -success "Shell             -s          [bash|zsh]              Set default shell"
+    message -success "Resolution        -r          [1920x1080|1366x768]    Set default screen resolution for wallpapers"
+    message -success "Installation      -i          [virtual|native]        Set the default installation level"
     echo ""
-    exit 1
+    exit 0
 }
 
-trap ctrl_c INT
-function ctrl_c() {
+trap exiting_script INT
+function exiting_script() {
     message -cancel "Exiting...\n"
     exit 1
 }
 
 function check_execution() {
-    if [ $1 != 0 ] && [ $1 != 130 ]; then
-        message -error "Error: $2"
-    else
-        message -success "Successful: $3"
-    fi
+    [[ $1 -ne 0 && $1 -ne 130 ]] && message -error "Error: $2" || message -success "Successful: $3"
     sleep 0.5
 }
 
 function reboot_system() {
-    local attempts=0
-    local max_attempts=3
-    local reboot_cmd=""
-    
-    case "$DISTRO" in
-        debian|ubuntu|kali|linuxmint|parrot)    reboot_cmd="sudo reboot";;
-        arch|manjaro)                           reboot_cmd="systemctl reboot";;
-        fedora)                                 reboot_cmd="systemctl reboot";;
-        *)                                      reboot_cmd="sudo reboot";;
+    local attempts=0 max_attempts=3 reboot_cmd
+    case "$DOT_DISTRO" in
+        debian|ubuntu|kali|linuxmint|parrot) reboot_cmd="sudo reboot";;
+        arch|manjaro|fedora) reboot_cmd="systemctl reboot";;
+        *) reboot_cmd="sudo reboot";;
     esac
 
     message -title "Reboot: It's necessary to restart the system."
@@ -83,12 +91,13 @@ function reboot_system() {
                 message -cancel "Restarting the system..."
                 sleep 1
                 eval "$reboot_cmd"
-            ;;
+                break
+                ;;
             no|n)
                 message -warning "Remember to restart the system as the environment will fail to reload all configurations."
-                message -cancel "Exiting...\n"
+                message -cancel "Finished!\n"
                 exit 0
-            ;;
+                ;;
             *)
                 message -error "Invalid response. Please enter 'yes', 'y', 'no', or 'n'."
                 ((attempts++))
@@ -96,58 +105,68 @@ function reboot_system() {
                     message -cancel "Too many invalid attempts. Exiting...\n"
                     exit 1
                 fi
-            ;;
+                ;;
         esac
     done
-} 
+}
 
 function updating_packages() {
-    message -title "Operating System Package Updates ($DISTRO)"
-    sleep 0.5
-    case "$DISTRO" in
+    message -title "Operating System Package Updates ($DOT_DISTRO)"
+    case "$DOT_DISTRO" in
         debian|ubuntu|kali|linuxmint|parrot)
-            message -subtitle "Updating package list..."
-            sudo apt update -y >/dev/null 2>&1
-            check_execution $? "Failed to update package list." "Package list updated successfully."
-            message -subtitle "Upgrading installed packages..."
-            sudo apt upgrade -y >/dev/null 2>&1
-            check_execution $? "Failed to upgrade packages." "Packages upgraded successfully."
-        ;;
+            for step in "apt update -y" "apt upgrade -y"; do
+                local msg="Updating package list..."
+                [[ "$step" == *upgrade* ]] && msg="Upgrading installed packages..."
+                message -subtitle "$msg"
+                sudo $step >/dev/null 2>&1
+                check_execution $? "Failed to run '$step'." "'$step' completed successfully."
+            done
+            ;;
         arch|manjaro)
-            message -subtitle "Updating package list..."
-            sudo pacman -Sy --noconfirm >/dev/null 2>&1
-            check_execution $? "Failed to update package list." "Package list updated successfully."
-            message -subtitle "Upgrading installed packages..."
-            sudo pacman -Syu --noconfirm >/dev/null 2>&1
-            check_execution $? "Failed to upgrade packages." "Packages upgraded successfully."
-        ;;
+            for step in "pacman -Sy --noconfirm" "pacman -Syu --noconfirm"; do
+                local msg="Updating package list..."
+                [[ "$step" == *Syu* ]] && msg="Upgrading installed packages..."
+                message -subtitle "$msg"
+                sudo $step >/dev/null 2>&1
+                check_execution $? "Failed to run '$step'." "'$step' completed successfully."
+            done
+            ;;
         fedora)
             message -subtitle "Updating and upgrading packages..."
             sudo dnf upgrade --refresh -y >/dev/null 2>&1
             check_execution $? "Failed to update packages." "Packages upgraded successfully."
-        ;;
+            ;;
         *)
-            message -cancel "Package manager not supported for this distribution: $DISTRO"
-            ctrl_c
-        ;;
+            message -cancel "Package manager not supported for this distribution: $DOT_DISTRO"
+            exiting_script
+            ;;
     esac
     message -success "All packages are up to date."
-    sleep 0.5
 }
 
 function copy_configs() {
     local DIR_SOURCE="$1"
     local DIR_DEST="$2"
-    local TITLE="$3"
-    message -subtitle "$TITLE"
-    sleep 0.5
-    if [ ! -d "$DIR_DEST" ]; then
+    local SUBTITLE="$3"
+
+    message -subtitle "$SUBTITLE"
+    if [[ ! -d "$DIR_SOURCE" ]]; then
+        message -error "Source directory $DIR_SOURCE does not exist."
+        exiting_script
+    fi
+
+    if [[ ! -d "$DIR_DEST" ]]; then
         mkdir -p "$DIR_DEST"
         message -warning "Target directory $DIR_DEST was created."
     fi
-    cp -rf "$DIR_SOURCE"/* "$DIR_DEST"
-    message -success "Configurations successfully copied to $DIR_DEST"
-    sleep 0.5
+
+    if command -v rsync &>/dev/null; then
+        rsync -a --delete "$DIR_SOURCE"/ "$DIR_DEST"/
+        check_execution $? "Failed to sync configs to $DIR_DEST" "Configurations synced to $DIR_DEST"
+    else
+        cp -arf "$DIR_SOURCE"/* "$DIR_DEST"/
+        check_execution $? "Failed to copy configs to $DIR_DEST" "Configurations copied to $DIR_DEST"
+    fi
 }
 
 #  ██╗███╗   ██╗███████╗████████╗ █████╗ ██╗     ██╗     ███████╗██████╗ ███████╗
@@ -158,15 +177,14 @@ function copy_configs() {
 #  ╚═╝╚═╝  ╚═══╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝╚═╝  ╚═╝╚══════╝
 
 function install_packages() {
-    message -title "Installation of packages for $DISTRO distribution"
-    sleep 0.5
-    case "$DISTRO" in
+    message -title "Installation of packages for $DOT_DISTRO distribution"
+    case "$DOT_DISTRO" in
         debian|ubuntu|kali|linuxmint|parrot)
             local PACKAGES_FILE="$DIR/packages/debian.txt"
             message -subtitle "Checking and installing packages for APT-based systems..."
             if [[ ! -f "$PACKAGES_FILE" ]]; then
                 message -cancel "There is no file related to your distribution."
-                ctrl_c
+                exiting_script
             fi
             message -subtitle "File detected. Starting package installation..."
             grep -Ev '^#|^$' "$PACKAGES_FILE" | while IFS= read -r package; do
@@ -187,7 +205,7 @@ function install_packages() {
             message -subtitle "Checking and installing packages for Pacman-based systems..."
             if [[ ! -f "$PACKAGES_FILE" ]]; then
                 message -cancel "There is no file related to your distribution."
-                ctrl_c
+                exiting_script
             fi
             message -subtitle "File detected. Starting package installation..."
             grep -Ev '^#|^$' "$PACKAGES_FILE" | while IFS= read -r package; do
@@ -208,7 +226,7 @@ function install_packages() {
             message -subtitle "Checking and installing packages for DNF-based systems..."
             if [[ ! -f "$PACKAGES_FILE" ]]; then
                 message -cancel "There is no file related to your distribution."
-                ctrl_c
+                exiting_script
             fi
             message -subtitle "File detected. Starting package installation..."
             grep -Ev '^#|^$' "$PACKAGES_FILE" | while IFS= read -r package; do
@@ -225,25 +243,25 @@ function install_packages() {
             done
         ;;
         *)
-            message -cancel "Package manager not supported for this distribution: $DISTRO"
-            ctrl_c
+            message -cancel "Package manager not supported for this distribution: $DOT_DISTRO"
+            exiting_script
         ;;
     esac
-    message -warning "Package installation completed for $DISTRO."
-    sleep 0.5
+    message -warning "Package installation completed for $DOT_DISTRO."
 }
 
 function install_fonts(){
     local FONTS=("FiraCode" "CascadiaCode" "Iosevka" "Hack" "JetBrainsMono" "Meslo" "Mononoki" "RobotoMono" "0xProto") 
     local DIR_FONTS="/usr/share/fonts"
     local DIR_DOWNLOADS="/tmp/fonts_tmp"
+    
     mkdir -p "$DIR_DOWNLOADS"
     if ! command -v curl &>/dev/null || ! command -v tar &>/dev/null; then
         message -cancel "Dependencies missing: curl and tar are required. Please install them first."
-        ctrl_c
+        exiting_script
     fi
+    
     message -title "Installing and downloading Nerd Fonts."
-    sleep 0.5
     for font in "${FONTS[@]}"; do
         local FONT_DIR="$DIR_FONTS/${font}"
         local FONT_URL="https://github.com/ryanoasis/nerd-fonts/releases/latest/download/${font}.tar.xz"
@@ -270,61 +288,60 @@ function install_fonts(){
             message -error "Error: Failed to extract ${font}."
         fi
     done
+    
     rm -rf "$DIR_DOWNLOADS"
     message -subtitle "Reloading font cache..."
     sudo fc-cache -fv >/dev/null 2>&1
     message -success "Nerd Fonts installation complete!"
-    sleep 0.5
 }
 
 function install_pywal() {
     message -title "Pywal Installation"
-    sleep 0.5
+    
     local PIP_CMD=""
-    if command -v pip3 &>/dev/null; then
-        PIP_CMD="pip3"
-    elif command -v pip &>/dev/null; then
+    if command -v pip &>/dev/null; then
         PIP_CMD="pip"
+    elif command -v pip3 &>/dev/null; then
+        PIP_CMD="pip3"
     else
         message -cancel "Neither pip3 nor pip is installed. Please install pip3 or pip before proceeding."
-        ctrl_c
+        exiting_script
     fi
+
     message -subtitle "Using $PIP_CMD for installation."
-    sleep 0.5
     sudo $PIP_CMD install setuptools --break-system-packages >/dev/null 2>&1
     check_execution $? "Failed to install setuptools. Please check your Python environment." "Setuptools installed successfully."
-    sleep 0.5
+    
     sudo $PIP_CMD install pywal --break-system-packages >/dev/null 2>&1
     check_execution $? "Failed to install pywal. Please check your Python environment." "Pywal installed successfully."
-    sleep 0.5
+
     if command -v wal &>/dev/null; then
         message -warning "Pywal is installed and ready to use."
     else
         message -cancel "Pywal installation completed, but the 'wal' command is not found. Check your PATH."
-        ctrl_c
+        exiting_script
     fi
 }
 
 function install_oh_my_zsh() {
     message -title "Installing Oh My Zsh"
-    sleep 0.5
     local plugins=(
         "https://github.com/zsh-users/zsh-syntax-highlighting.git"
         "https://github.com/zsh-users/zsh-autosuggestions.git"
     )
+
     message -subtitle "Checking that there is no .oh-my-zsh directory..."
-    sleep 0.5
     if [ -d "$HOME/.oh-my-zsh" ]; then
         message -warning "A previous installation of Oh My Zsh was found. Removing it..."
         rm -rf "$HOME/.oh-my-zsh"
         message -success "Previous installation removed."
     fi
+
     message -subtitle "Downloading and installing Oh My Zsh..."
-    sleep 0.5
     yes | sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" >/dev/null 2>&1
     check_execution $? "Error installing Oh My Zsh" "Oh My Zsh installed successfully."
+    
     message -subtitle "Installing Zsh plugins..."
-    sleep 0.5
     for plugin in "${plugins[@]}"; do
         local plugin_name=$(basename "$plugin" .git)
         local plugin_path="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/$plugin_name"
@@ -332,8 +349,8 @@ function install_oh_my_zsh() {
         git clone "$plugin" "$plugin_path" >/dev/null 2>&1
         check_execution $? "Error installing $plugin_name" "$plugin_name installed correctly."
     done
+
     message -subtitle "Downloading zsh theme..."
-    sleep 0.5
     git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k" >/dev/null 2>&1
     check_execution $? "Error installing" "installed correctly."
 }
@@ -341,7 +358,7 @@ function install_oh_my_zsh() {
 function install_display_manager() {
     local DM="lightdm" # lightdm | gdm3 | sddm | lxdm | slim
     message -subtitle "Preparing to set display manager: $DM"
-    case "$DISTRO" in
+    case "$DOT_DISTRO" in
         debian|ubuntu|kali|linuxmint|parrot)
             if ! dpkg -s "$DM" &>/dev/null; then
                 sudo DEBIAN_FRONTEND=noninteractive apt install -y "$DM"
@@ -358,8 +375,8 @@ function install_display_manager() {
             fi
         ;;
         *)
-            message -cancel "Unsupported distribution: $DISTRO"
-            ctrl_c
+            message -cancel "Unsupported distribution: $DOT_DISTRO"
+            exiting_script
         ;;
     esac
 
@@ -385,45 +402,59 @@ function install_display_manager() {
 
 function setter_configs() {
     message -title "Installing Configuration"
-    copy_configs "$DIR/config" "$HOME/.config" "Setting up .config directory..."
+    copy_configs "$DOT_DIR/config" "$HOME/.config" "Setting up .config directory..."
+    
     message -title "Installing Local Files"
-    copy_configs "$DIR/local" "$HOME/.local" "Setting up personal files in local..."
-    message -title "Installing Wallpapers"
-    copy_configs "$DIR/wallpapers/$P_RESOLUTION" "$HOME/.local/wallpapers" "Copying wallpapers to $USER's profile..."
+    copy_configs "$DOT_DIR/local" "$HOME/.local" "Setting up personal files in local..."
+    
     # # ICONS
     # copy_configs "$DIR_RESOURCES/icons" "/usr/share/icons" "Copying icons to the system"
+    
     # # THEMES
     # copy_configs "$DIR_RESOURCES/themes" "/usr/share/themes" "Copying themes into the system"
+    
     # # GRUB
     # copy_configs "$DIR_RESOURCES/grub" "/boot/grub/themes" "Copying grub themes to the system"
 }
 
+function setter_wallpapers() {
+    local base_dir="$HOME/.local/wallpapers"
+    local res_dir="${base_dir}/${DOT_RESOLUTION}"
+
+    if [[ ! -d "$res_dir" ]]; then
+        message -error "Directory $res_dir does not exist."
+        exiting_script
+    fi
+
+    mv "${res_dir}/"* "${base_dir}/"
+    rmdir "$res_dir"
+    message -success "Moved wallpapers from $res_dir to $base_dir and removed $res_dir."
+}
+
 function setter_homefiles() {
     message -title "Installing Home Files"
-    sleep 0.5
+
     message -subtitle "Copying Home Files..."
-    sleep 0.5
-    shopt -s dotglob
-    for file in .profile; do
-        if [[ -f "$DIR/home/$file" ]]; then
-            cp -rf --preserve=mode,ownership "$DIR/home/$file" "$HOME/"
-            message -success "Copied $file to $HOME."
+    shopt -s dotglob nullglob
+    for file in "$DOT_DIR/home/"*; do
+        if [[ -e "$file" ]]; then
+            cp -rf --preserve=mode,ownership "$file" "$HOME/"
+            check_execution $? "Failed to copy $(basename "$file")" "Copied $(basename "$file") to $HOME"
         else
-            message -error "$file does not exist in $DIR/home. Skipping."
+            message -warning "No files to copy from $DOT_DIR/home."
         fi
     done
-    shopt -u dotglob
+    shopt -u dotglob nullglob
+
     message -success "Home files installation completed."
-    sleep 0.5
 }
 
 function setter_shell(){
     message -title "Setting default shell"
-    sleep 0.5
-    case "$P_SHELL" in
+    case "$DOT_SHELL" in
         bash)
             message -subtitle "Changing default shell to bash..."
-            sudo chsh -s "$(which bash)" "$USER"
+            sudo chsh -s "$(which bash)" "$DOT_USER"
             sudo chsh -s "$(which bash)" "root"
             message -success "bash is now the default shell."
             echo -e "shell bash" > ~/.config/kitty/shell.conf
@@ -433,7 +464,7 @@ function setter_shell(){
         ;;
         zsh)
             message -subtitle "Changing default shell to zsh..."
-            sudo chsh -s "$(which zsh)" "$USER"
+            sudo chsh -s "$(which zsh)" "$DOT_USER"
             sudo chsh -s "$(which zsh)" "root"
             message -success "Zsh is now the default shell."
             install_oh_my_zsh
@@ -463,7 +494,6 @@ function setter_permissions() {
         "$HOME/.local/ascii/fetchinfo"
     )
     message -title "Setting execution permissions to specified file types"
-    sleep 0.5
     for dir in "${DIRECTORIES[@]}"; do
         if [[ -d "$dir" ]]; then
             message -subtitle "Processing directory: $dir"
@@ -486,7 +516,6 @@ function setter_permissions() {
         sleep 0.5
     done
     message -success "Execution permissions have been set for all specified files."
-    sleep 0.5
 }
 
 function setter_services() {
@@ -558,7 +587,6 @@ function setter_symbolic_links() {
     sleep 0.5
 }
 
-
 #  ███╗   ███╗ █████╗ ██╗███╗   ██╗
 #  ████╗ ████║██╔══██╗██║████╗  ██║
 #  ██╔████╔██║███████║██║██╔██╗ ██║
@@ -573,34 +601,37 @@ fi
 
 while getopts ":s:r:i:" opt; do
     case ${opt} in
-        s) P_SHELL="$OPTARG"
-            [[ "$P_SHELL" =~ ^(bash|zsh)$ ]] || usage
+        s) DOT_SHELL="$OPTARG"
+            [[ "$DOT_SHELL" =~ ^(bash|zsh)$ ]] || usage
         ;;
-        r) P_RESOLUTION="$OPTARG"
-            [[ "$P_RESOLUTION" =~ ^(1920x1080|1366x768)$ ]] || usage
+        r) DOT_RESOLUTION="$OPTARG"
+            [[ "$DOT_RESOLUTION" =~ ^(1920x1080|1366x768)$ ]] || usage
         ;;
-        i) P_INSTALLATION="$OPTARG"
-            [[ "$P_INSTALLATION" =~ ^(native|virtual)$ ]] || usage
+        i) DOT_INSTALLATION="$OPTARG"
+            [[ "$DOT_INSTALLATION" =~ ^(native|virtual)$ ]] || usage
         ;;
         *) usage ;;
     esac
 done
 
-if [[ -z "$P_SHELL" || -z "$P_RESOLUTION" || -z "$P_INSTALLATION" ]]; then
+if [[ -z "$DOT_SHELL" || -z "$DOT_RESOLUTION" || -z "$DOT_INSTALLATION" ]]; then
     usage
 fi
 
 sudo -v
 updating_packages
+
 install_packages
 install_fonts
 install_pywal
 # install_display_manager
-xdg-user-dirs-update
+
 setter_configs
+setter_wallpapers
 setter_homefiles
 setter_shell
 setter_permissions
 # setter_services
-setter_symbolic_links
+# setter_symbolic_links
+
 reboot_system
