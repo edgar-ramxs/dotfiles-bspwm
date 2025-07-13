@@ -52,16 +52,6 @@ function message() {
     fi
 }
 
-function usage() {
-    message -title "Usage: $0 -s [option] -r [option] -i [option]"
-    message -warning "Parameter         Target      Options                 Description"
-    message -success "Shell             -s          [bash|zsh]              Set default shell"
-    message -success "Resolution        -r          [1920x1080|1366x768]    Set default screen resolution for wallpapers"
-    message -success "Installation      -i          [virtual|native]        Set the default installation level"
-    echo ""
-    exit 0
-}
-
 trap exiting_script INT
 function exiting_script() {
     message -cancel "Exiting...\n"
@@ -167,6 +157,16 @@ function copy_configs() {
         cp -arf "$DIR_SOURCE"/* "$DIR_DEST"/
         check_execution $? "Failed to copy configs to $DIR_DEST" "Configurations copied to $DIR_DEST"
     fi
+}
+
+function usage() {
+    message -title "Usage: $0 -s [option] -r [option] -i [option]"
+    message -warning "Parameter         Target      Options                 Description"
+    message -success "Shell             -s          [bash|zsh]              Set default shell"
+    message -success "Resolution        -r          [1920x1080|1366x768]    Set default screen resolution for wallpapers"
+    message -success "Installation      -i          [virtual|native]        Set the default installation level"
+    echo ""
+    exit 0
 }
 
 #  ██╗███╗   ██╗███████╗████████╗ █████╗ ██╗     ██╗     ███████╗██████╗ ███████╗

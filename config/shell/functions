@@ -8,24 +8,33 @@
 #  ╚═╝╚═╝      ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝
 
 function message() {
-    local signal color
     local RESETC="\033[0m\e[0m"
-    declare -A COLORS=(
-        [-title]="\033[0;37m\033[1m [$]"
-        [-subtitle]="\033[0;35m\033[1m [*]"
-        [-approval]="\033[38;5;51m\033[1m [?]"
-        [-cancel]="\033[0;34m\033[1m [!]"
-        [-success]="\033[0;32m\033[1m [+]"
-        [-warning]="\033[0;33m\033[1m [&]"
-        [-error]="\033[0;31m\033[1m [-]"
+    local BOLD="\033[1m"
+    declare -A MESSAGE_MAP=(
+        [-title]="\033[0;37m${BOLD} [$]"
+        [-subtitle]="\033[0;35m${BOLD} [*]"
+        [-approval]="\033[38;5;51m${BOLD} [?]"
+        [-cancel]="\033[0;34m${BOLD} [!]"
+        [-success]="\033[0;32m${BOLD} [+]"
+        [-warning]="\033[0;33m${BOLD} [&]"
+        [-error]="\033[0;31m${BOLD} [-]"
     )
-    local type="$1"
+
+    local key="$1"
     shift
-    local value="${COLORS[$type]}"
-    if [[ -n "$value" ]]; then
-        echo -e "${value} $*${RESETC}"
+    local color_msg="${MESSAGE_MAP[$key]}"
+
+    if [[ -n "$color_msg" ]]; then
+        local prefix="\n"
+        [[ "$key" == "-success" || "$key" == "-warning" || "$key" == "-error" ]] && prefix="\t"
+        echo -e "${prefix}${color_msg} $*${RESETC}"
+        case "$key" in
+            -title) sleep 0.5 ;;
+            -subtitle) sleep 0.3 ;;
+            -cancel) sleep 0.5 ;;
+        esac
     else
-        echo -e "$*${RESETC}"
+        echo -e "${RESETC}$key $*${RESETC}"
     fi
 }
 
@@ -63,7 +72,7 @@ function mkt() {
 }
 
 function cdu() {
-    local count="${1:-1}"  # valor por defecto = 1
+    local count="${1:-1}"
     local path
     if ! [[ "$count" =~ ^[0-9]+$ ]]; then
         message -error "Usage: cdu <positive-integer>"
@@ -355,8 +364,18 @@ function initialize_git_repo() {
     message -success "Repositorio '$repo_name' inicializado correctamente."
 }
 
+function copy-in-clipboard() {
+    if command -v wl-copy >/dev/null 2>&1 && [ "$XDG_SESSION_TYPE" = "wayland" ]; then
+        wl-copy "$@"
+    elif command -v xclip >/dev/null 2>&1 && [ "$XDG_SESSION_TYPE" = "x11" ]; then
+        xclip -selection clipboard "$@"
+    else
+        echo "No clipboard tool found (requires wl-copy or xclip)." >&2
+        return 1
+    fi
+}
 
-function function tell-me-a-joke() {
+function tell-me-a-joke() {
     local response category type joke setup delivery
     response=$(curl -sSL https://v2.jokeapi.dev/joke/Any) || {
         message -error "Failed to fetch joke."
@@ -385,7 +404,7 @@ function function tell-me-a-joke() {
     esac
 }
 
-function function pray-for-me() {
+function pray-for-me() {
     local response book chapter verse text translation_name
     response=$(curl -s https://bible-api.com/data/web/random) || {
         message -error "Failed to fetch verse."

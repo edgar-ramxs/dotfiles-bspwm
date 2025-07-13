@@ -7,99 +7,115 @@
 #  ██║     ███████╗██║  ██║   ██║   ██║     ██║  ██║██║  ██╗    ██║██║ ╚████║███████║   ██║   ██║  ██║███████╗███████╗███████╗██║  ██║
 #  ╚═╝     ╚══════╝╚═╝  ╚═╝   ╚═╝   ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝    ╚═╝╚═╝  ╚═══╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝╚═╝  ╚═╝
 
+# ========== MESSAGE DISPLAY ==========
 function message() {
-    local signal color
     local RESETC="\033[0m\e[0m"
-    case "$1" in
-        "-title")       color="\033[0;37m\033[1m";      signal="[$]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
-        "-subtitle")    color="\033[0;35m\033[1m";      signal="[*]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
-        "-approval")    color="\033[38;5;51m\033[1m";   signal="[?]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
-        "-cancel")      color="\033[0;34m\033[1m";      signal="[!]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
-        "-success")     color="\033[0;32m\033[1m";      signal="[+]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
-        "-warning")     color="\033[0;33m\033[1m";      signal="[&]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
-        "-error")       color="\033[0;31m\033[1m";      signal="[-]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
-        *)              color="$RESETC";                signal=""; shift; echo -e "${color}${signal} $*${RESETC}";;
+    local BOLD="\033[1m"
+    declare -A MESSAGE_MAP=(
+        [-title]="\033[0;37m${BOLD} [$]"
+        [-subtitle]="\033[0;35m${BOLD} [*]"
+        [-approval]="\033[38;5;51m${BOLD} [?]"
+        [-cancel]="\033[0;34m${BOLD} [!]"
+        [-success]="\033[0;32m${BOLD} [+]"
+        [-warning]="\033[0;33m${BOLD} [&]"
+        [-error]="\033[0;31m${BOLD} [-]"
+    )
+
+    local key="$1"
+    shift
+    local color_msg="${MESSAGE_MAP[$key]}"
+    local prefix="\n"
+    [[ "$key" == "-success" || "$key" == "-warning" || "$key" == "-error" ]] && prefix="\t"
+    echo -e "${prefix}${color_msg} $*${RESETC}"
+    case "$key" in
+        -title) sleep 0.5 ;;
+        -subtitle) sleep 0.3 ;;
+        -cancel) sleep 0.5 ;;
     esac
 }
 
-function usage() {
-    message -title "Usage: $0 [-d] [-v] [-b]"
-    message -warning "Target    Description"
-    message -success "-b        Install Brave Browser"
-    message -success "-d        Download and install Discord"
-    message -success "-v        Download and install Visual Studio Code"
-    echo ""
-    exit 1
-}
-
-trap ctrl_c INT
-function ctrl_c() {
+trap exiting_script INT
+function exiting_script() {
     message -cancel "Exiting...\n"
     exit 1
 }
 
-function check_execution() {
-    if [ $1 != 0 ] && [ $1 != 130 ]; then
-        message -error "Error: $2"
+# ========== DETECT DISTRO AND INSTALL FLATPAK ==========
+function install_flatpak() {
+    message -title "Detecting your distribution..."
+
+    if [[ -f /etc/os-release ]]; then
+        . /etc/os-release
+        distro_id="${ID,,}"
+        distro_like="${ID_LIKE,,}"
     else
-        message -success "Successful: $3"
+        message -error "Cannot detect distribution."
+        exiting_script
     fi
-    sleep 0.5
-}
 
-function ensure_flatpak() {
-    message -title "Installing Flatpak and GNOME Flatpak Plugin..."
-    if ! command -v flatpak &>/dev/null; then
-        message -subtitle "Flatpak is not installed. Installing Flatpak..."
-        sudo apt update -y >/dev/null 2>&1
-        sudo apt install -y flatpak gnome-software-plugin-flatpak >/dev/null 2>&1
-        check_execution $? "Failed to install Flatpak and GNOME plugin." "Flatpak and GNOME plugin installed successfully."
+    message -subtitle "Detected: $NAME"
+
+    case "$distro_id" in
+        arch | manjaro )
+            sudo pacman -Sy --noconfirm flatpak ;;
+        debian | ubuntu | linuxmint | kali )
+            sudo apt update && sudo apt install -y flatpak ;;
+        fedora )
+            sudo dnf install -y flatpak ;;
+        opensuse* )
+            sudo zypper install -y flatpak ;;
+        *)
+            if [[ "$distro_like" == *"debian"* ]]; then
+                sudo apt update && sudo apt install -y flatpak
+            elif [[ "$distro_like" == *"rhel"* || "$distro_like" == *"fedora"* ]]; then
+                sudo dnf install -y flatpak
+            else
+                message -error "Unsupported distribution: $distro_id"
+                exiting_script
+            fi ;;
+    esac
+
+    message -success "Flatpak installed successfully."
+
+    # Add Flathub if not present
+    if ! flatpak remote-list | grep -q flathub; then
+        message -subtitle "Adding Flathub repository..."
+        sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+        message -success "Flathub repository added."
     else
-        message -subtitle "Flatpak is already installed."
+        message -warning "Flathub is already configured."
     fi
-    sleep 1
 }
 
-function add_flathub_repo() {
-    message -title "Adding Flathub repository..."
-    sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-    check_execution $? "Failed to add Flathub repository." "Flathub repository added successfully."
-    sleep 1
-}
+# ========== INSTALL FLATPAK APPS ==========
+function install_flatpak_apps() {
+    message -title "Installing Flatpak applications..."
 
-function install_flatpak_package() {
-    local package=$1
-    message -subtitle "Installing: $package..."
-    flatpak install -y flathub "$package" >/dev/null 2>&1
-    check_execution $? "Failed to install $package." "$package installed successfully."
-    sleep 1
-}
-
-function main() {
-    ensure_flatpak
-    add_flathub_repo
-    declare -a FLATPAK_PACKAGES=(
+    local APPS=(
+        "com.github.tchx84.Flatseal"
         "com.bitwarden.desktop"
-        "md.obsidian.Obsidian"
-        "org.libreoffice.LibreOffice"
-        "com.obsproject.Studio"
-        "org.kde.kdenlive"
-        "com.discordapp.Discord"
-        "com.brave.Browser"
-        "org.DolphinEmu.dolphin-emu"
-        "org.libretro.RetroArch"
-        "org.gnome.Boxes"
+        "com.spotify.Client"
+        "org.gnome.Loupe"
+        "org.gnome.Calculator"
+        "org.gnome.Calendar"
+        "org.gnome.Weather"
+        "io.github.celluloid_player.Celluloid"
+        "org.gnome.Extensions"
     )
-    message -title "Installing Flatpak packages"
-    for package in "${FLATPAK_PACKAGES[@]}"; do
-        install_flatpak_package "$package"
+
+    for app in "${APPS[@]}"; do
+        message -subtitle "Installing: $app"
+        if flatpak install -y flathub "$app" >/dev/null 2>&1; then
+            message -success "$app installed."
+        else
+            message -error "Failed to install $app."
+        fi
     done
-    
-    message -success "All Flatpak packages have been installed successfully!"
-    exit 1
+
+    message -approval "All Flatpak applications processed."
 }
 
-set -e
+# ========== MAIN EXECUTION ==========
 sudo -v
-
-main
+install_flatpak
+install_flatpak_apps
