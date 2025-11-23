@@ -1,80 +1,92 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 import re
 import sys
-import socket 
+import socket
 import argparse
 import subprocess
 
-RESETC = "\033[0m"
-RED_COLOR = "\033[0;31m\033[1m"
-PURPLE_COLOR = "\033[0;35m\033[1m"
+# 🎨 Colores terminal
+RESET = "\033[0m"
+RED = "\033[0;31m\033[1m"
+PURPLE = "\033[0;35m\033[1m"
 
-def is_valid_ipv4_address(address: str) -> bool: 
-    try: 
-        socket.inet_pton(socket.AF_INET, address) 
+# 📦 Validadores IP
+def is_valid_ipv4(address: str) -> bool:
+    try:
+        socket.inet_pton(socket.AF_INET, address)
     except AttributeError:
-        try: 
-            socket.inet_aton(address) 
-        except socket.error: 
-            return False 
-        return address.count('.') == 3 
+        try:
+            socket.inet_aton(address)
+        except socket.error:
+            return False
+        return address.count('.') == 3
     except socket.error:
-        return False 
-    return True 
-
-def is_valid_ipv6_address(address: str) -> bool: 
-    try: 
-        socket.inet_pton(socket.AF_INET6, address) 
-    except socket.error:
-        return False 
+        return False
     return True
 
-def get_ttl(ip_address: str):
+def is_valid_ipv6(address: str) -> bool:
     try:
-        result = subprocess.run(['ping', '-c', '1', ip_address], capture_output=True, text=True, timeout=5)
-        output = result.stdout
-        ttl_match = re.search(r"ttl=(\d+)", output, re.IGNORECASE)
-        if ttl_match:
-            ttl_value = int(ttl_match.group(1))
-            return ttl_value
-        else:
-            return None
+        socket.inet_pton(socket.AF_INET6, address)
+    except socket.error:
+        return False
+    return True
+
+# 📡 Obtener TTL haciendo ping
+def get_ttl(ip: str, timeout: int = 5, use_ipv6: bool = False) -> int | None:
+    ping_cmd = ["ping6" if use_ipv6 else "ping", "-c", "1", "-W", str(timeout), ip]
+
+    try:
+        result = subprocess.run(
+            ping_cmd,
+            capture_output=True, text=True, timeout=timeout + 1
+        )
+        match = re.search(r"ttl=(\d+)", result.stdout, re.IGNORECASE)
+        return int(match.group(1)) if match else None
     except subprocess.TimeoutExpired:
-        print(f"{RED_COLOR}[!] Timeout al ejecutar ping a {ip_address}. {RESETC}")
-        return None
+        print(f"{RED}[!] Timeout al hacer ping a {ip}.{RESET}")
     except Exception as e:
-        print(f"{RED_COLOR}[!] Error al ejecutar ping a {ip_address}: {e} {RESETC}")
-        return None
+        print(f"{RED}[!] Error ejecutando ping a {ip}: {e}{RESET}")
+    return None
 
-def get_os(ttl):
-    if ttl >= 0 and ttl <= 64:
+# 🧠 Inferir sistema operativo desde TTL
+def get_os(ttl: int | None) -> str:
+    if ttl is None:
+        return "Unknown"
+    if ttl <= 64:
         return "Linux"
-    elif ttl >= 65 and ttl <= 128:
+    elif ttl <= 128:
         return "Windows"
-    else:
-        return "Not Found"
+    return "Unknown"
 
+# 📌 Imprimir resultados
+def print_result(ip: str, ttl: int | None, os_name: str, port: int | None):
+    print(f"{PURPLE}[+] IP:       {ip}{RESET}")
+    print(f"{PURPLE}[+] TTL:      {ttl if ttl is not None else 'N/A'}{RESET}")
+    print(f"{PURPLE}[+] OS:       {os_name}{RESET}")
+    if port is not None:
+        print(f"{PURPLE}[+] Port:     {port}{RESET}")
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Which System?')
-    parser.add_argument('-ip', '--ip_address', type=str, help='Enter an ip address like 10.10.10.1 here', required=True)
+# 🧭 Main
+def main():
+    parser = argparse.ArgumentParser(description="Detecta el sistema operativo remoto por TTL (ping)")
+
+    parser.add_argument("-ip", "--ip_address", required=True, help="Dirección IP (IPv4 o IPv6)")
+    parser.add_argument("-p", "--port", type=int, help="Puerto opcional (no usado, solo informativo)")
+    parser.add_argument("-t", "--timeout", type=int, default=5, help="Timeout para el ping (default: 5)")
+    parser.add_argument("--ipv6", action="store_true", help="Usar ping6 (para direcciones IPv6)")
+
     args = parser.parse_args()
-    IP = args.ip_address
+    ip = args.ip_address
 
-    if is_valid_ipv4_address(IP) or is_valid_ipv6_address(IP):
-        ttl = get_ttl(IP)
-        os_name = get_os(ttl)
-        if os_name != "Not Found":
-            print(f"{PURPLE_COLOR}[+] OS:\t\t{os_name}{RESETC}")
-            print(f"{PURPLE_COLOR}[+] IP:\t\t{IP}{RESETC}")
-            print(f"{PURPLE_COLOR}[+] TTL:\t{ttl}{RESETC}")
-        else:
-            print(f"{PURPLE_COLOR}[+] OS:\t\tUnidentified{RESETC}")
-            print(f"{PURPLE_COLOR}[+] IP:\t\t{IP}{RESETC}")
-            print(f"{PURPLE_COLOR}[+] TTL:\t{ttl}{RESETC}")
-        sys.exit(0)
-    else:
-        print(f"{RED_COLOR}[!] Ip {IP} address is invalid {RESETC}")
+    if not (is_valid_ipv4(ip) or is_valid_ipv6(ip)):
+        print(f"{RED}[!] Dirección IP inválida: {ip}{RESET}")
         sys.exit(1)
 
+    ttl = get_ttl(ip, timeout=args.timeout, use_ipv6=args.ipv6)
+    os_name = get_os(ttl)
+    print_result(ip, ttl, os_name, args.port)
+    sys.exit(0)
+
+if __name__ == "__main__":
+    main()

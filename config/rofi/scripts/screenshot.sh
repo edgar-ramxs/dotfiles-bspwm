@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 
-icono=$(~/.config/bspwm/scripts/bspwm-distro.sh)
-theme="$HOME/.config/rofi/views/applets.rasi"
-mesg="DIR: `xdg-user-dir PICTURES`/Screenshots"
-prompt='Screenshot'
-list_col='5'
-list_row='1'
+# Settings
+distro_icon=$(~/.config/bspwm/scripts/distro.sh)
+theme="~/.config/rofi/themes/applets.rasi"
+dir="`xdg-user-dir PICTURES`/Screenshots"
+mesg="DIR: $dir"
+prompt="Screenshot"
+num_cols="5"
+num_rows="1"
 
 # Options
 option_1=" " # Capture Desktop
@@ -16,13 +18,9 @@ option_5="󰔜 " # Capture in 10s
 
 # Rofi CMD
 rofi_cmd() {
-	rofi -theme-str "listview {columns: $list_col; lines: $list_row;}" \
-		-theme-str "textbox-prompt-colon { str: \" $icono\"; }" \
-		-dmenu \
-		-p "$prompt" \
-		-mesg "$mesg" \
-		-markup-rows \
-		-theme ${theme}
+	rofi -theme-str "listview {columns: $num_cols; lines: $num_rows;}" \
+		-theme-str "textbox-prompt-colon { str: \" $distro_icon\"; }" \
+		-dmenu -p "$prompt" -mesg "$mesg" -markup-rows -theme ${theme}
 }
 
 # Pass variables to rofi dmenu
@@ -127,50 +125,3 @@ case ${chosen} in
 		run_cmd --opt5
         ;;
 esac
-
-
-
-
-
-# style="$($HOME/.config/rofi/applets/applets/style.sh)"
-
-# dir="$HOME/.config/rofi/applets/applets/configs/$style"
-# rofi_command="rofi -theme $dir/screenshot.rasi"
-
-# # Error msg
-# msg() {
-# 	rofi -theme "$HOME/.config/rofi/applets/styles/message.rasi" -e "Please install 'scrot' first."
-# }
-
-# # Options
-# screen=""
-# area=""
-# window=""
-
-# # Variable passed to rofi
-# options="$screen\n$area\n$window"
-
-# chosen="$(echo -e "$options" | $rofi_command -p 'scrot' -dmenu -selected-row 1)"
-# case $chosen in
-#     $screen)
-# 		if [[ -f /usr/bin/scrot ]]; then
-# 			sleep 1; scrot 'Screenshot_%Y-%m-%d-%S_$wx$h.png' -e 'mv $f $$(xdg-user-dir PICTURES) ; viewnior $$(xdg-user-dir PICTURES)/$f'
-# 		else
-# 			msg
-# 		fi
-#         ;;
-#     $area)
-# 		if [[ -f /usr/bin/scrot ]]; then
-# 			scrot -s 'Screenshot_%Y-%m-%d-%S_$wx$h.png' -e 'mv $f $$(xdg-user-dir PICTURES) ; viewnior $$(xdg-user-dir PICTURES)/$f'
-# 		else
-# 			msg
-# 		fi
-#         ;;
-#     $window)
-# 		if [[ -f /usr/bin/scrot ]]; then
-# 			sleep 1; scrot -u 'Screenshot_%Y-%m-%d-%S_$wx$h.png' -e 'mv $f $$(xdg-user-dir PICTURES) ; viewnior $$(xdg-user-dir PICTURES)/$f'
-# 		else
-# 			msg
-# 		fi
-#         ;;
-# esac

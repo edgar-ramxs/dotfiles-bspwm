@@ -1,0 +1,79 @@
+@import "~/.cache/wal/colors-rofi-dark.rasi"
+
+* {
+    show-icons:                     false;
+    font:                           "FiraCode Nerd Font 12";
+}
+
+window {
+    width:                          50%;
+    anchor:                         center;
+    location:                       center;
+    fullscreen:                     false;
+    x-offset:                       0px;
+    y-offset:                       0px;
+    border-radius:                  10px;
+}
+
+inputbar {
+    spacing:                        10px;
+    padding:                        10px;
+    background-color:               transparent;
+    children:                       [ "textbox-prompt-colon", "entry"];
+}
+
+textbox-prompt-colon {
+    enabled:                        true;
+    padding:                        10px 0px;
+    expand:                         false;
+    str:                            " ";
+    background-color:               inherit;
+    text-color:                     inherit;
+}
+
+entry {
+    enabled:                        true;
+    vertical-align:                 0.5;
+    placeholder:                    "Search keybinds...";
+    padding:                        0px 0px;
+    text-color:                     inherit;
+    background-color:               inherit;
+    placeholder-color:              inherit;
+}
+
+message {
+    border:                         2px 0 0;
+}
+
+textbox {
+    padding:                        8px 24px;
+}
+
+listview {
+    lines:                          10;
+    columns:                        1;
+    border:                         1px 0 0;
+    fixed-height:                   false;
+}
+
+element {
+    enabled:                        true;
+    padding:                        5px 10px;
+    spacing:                        16px;
+    border:                         0px solid;
+    border-radius:                  10px;
+    margin:                         0px;
+    background-color:               transparent;
+    cursor:                         pointer;
+}
+
+element-icon {
+    size:                           1em;
+    vertical-align:                 0.5;
+}
+
+element-text {
+    text-color:                     inherit;
+    vertical-align:                 0.5;
+    background-color:               transparent;
+}

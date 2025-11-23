@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-theme="$HOME/.config/rofi/views/wifi.rasi"
+theme="$HOME/.config/rofi/themes/wifi.rasi"
 wifi_list=$(nmcli --fields "SECURITY,SSID" device wifi list | sed 1d | sed 's/  */ /g' | sed -E "s/WPA*.?\S/ /g" | sed "s/^--/ /g" | sed "s/  //g" | sed "/--/d")
 
 connected=$(nmcli -fields WIFI g)

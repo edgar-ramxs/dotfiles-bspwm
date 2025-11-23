@@ -1,122 +1,119 @@
 #!/usr/bin/env bash
 
+# 🎨 Mensajes coloreados
 function message() {
-    local signal color
-    local RESETC="\033[0m\e[0m"
-    case "$1" in
-        "-title")       color="\033[0;37m\033[1m";      signal="[$]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
-        "-subtitle")    color="\033[0;35m\033[1m";      signal="[*]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
-        "-approval")    color="\033[38;5;51m\033[1m";   signal="[?]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
-        "-cancel")      color="\033[0;34m\033[1m";      signal="[!]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
-        "-success")     color="\033[0;32m\033[1m";      signal="[+]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
-        "-warning")     color="\033[0;33m\033[1m";      signal="[&]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
-        "-error")       color="\033[0;31m\033[1m";      signal="[-]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
-        *)              color="$RESETC";                signal=""; shift; echo -e "${color}${signal} $*${RESETC}";;
-    esac
+    local RESET="\033[0m\e[0m"
+    declare -A styles=(
+        ["-title"]="\033[0;37m\033[1m [$]"
+        ["-subtitle"]="\033[0;35m\033[1m [*]"
+        ["-approval"]="\033[38;5;51m\033[1m [?]"
+        ["-cancel"]="\033[0;34m\033[1m [!]"
+        ["-success"]="\033[0;32m\033[1m [+]"
+        ["-warning"]="\033[0;33m\033[1m [&]"
+        ["-error"]="\033[0;31m\033[1m [-]"
+    )
+    local tag="$1"; shift
+    local style="${styles[$tag]}"
+    echo -e "${style} $*${RESET}"
 }
 
+# 📖 Uso
 function usage() {
-    message -title "Usage: $0 [option]"
+    message -title "Usage: $0 [options]"
+    echo ""
+    for key in "${!VARIABLE_FLAGS[@]}"; do
+        printf "  -%s %-12s Set %s\n" "$key" "<value>" "${VARIABLE_FLAGS[$key]}"
+    done
     echo ""
     exit 1
 }
 
-trap ctrl_c INT
-function ctrl_c() {
-    message -cancel "Exiting...\n"
-    exit 1
-}
+# ⛔ Ctrl+C
+trap 'message -cancel "Exiting..."; exit 1' INT
 
+# 🔁 Resultado de ejecución
 function check_execution() {
-    if [ $1 != 0 ] && [ $1 != 130 ]; then
-        message -error "Error: $2"
+    local code="$1" error="$2" success="$3"
+    if [[ "$code" != 0 && "$code" != 130 ]]; then
+        message -error "$error"
     else
-        message -success "Successful: $3"
+        message -success "$success"
     fi
     sleep 0.5
 }
 
+# 🧠 Agrega o actualiza variable en archivo
 function add_or_update_variable() {
     local VAR_NAME="$1"
     local VAR_VALUE="$2"
-
     if grep -q "^${VAR_NAME}=" "$ENV_FILE"; then
         sudo sed -i "s|^${VAR_NAME}=.*|${VAR_NAME}=\"${VAR_VALUE}\"|" "$ENV_FILE"
-        message -success "La variable '$VAR_NAME' fue actualizada con el nuevo valor '$VAR_VALUE'."
+        message -success "Actualizado: $VAR_NAME=\"$VAR_VALUE\""
     else
         echo "${VAR_NAME}=\"${VAR_VALUE}\"" | sudo tee -a "$ENV_FILE" > /dev/null
-        message -success "Variable '$VAR_NAME' añadida con el valor '$VAR_VALUE'."
+        message -success "Añadido: $VAR_NAME=\"$VAR_VALUE\""
     fi
 }
 
-# Archivo de entorno (puedes cambiarlo para pruebas)
+# 📁 Archivo de entorno
 ENV_FILE="/etc/environment"
 
-# Inicializa variables para cada parámetro
-EDITOR=""
-BROWSER=""
-CUSTOM_PATH=""
-WEATHER_KEY=""
+# 🔧 Definición de variables por bandera
+declare -A VARIABLE_FLAGS=(
+    [p]="PATH"
+    [e]="EDITOR"
+    [b]="BROWSER"
+    [w]="WEATHER_KEY"
+    # ➕ Puedes agregar más variables aquí, por ejemplo:
+    # [s]="SHELL"
+    # [u]="USERNAME"
+)
 
-# Verifica que grep y sudo existan en el sistema
-if ! command -v grep &> /dev/null || ! command -v sudo &> /dev/null; then
-    message -error "Error: grep y/o sudo no están instalados o no se encuentran en el PATH."
-    exit 1
-fi
-
-# Procesa los argumentos con getopts y valida que no estén vacíos ni contengan otra opción
-while getopts "p:e:b:w:" opt; do
-    case ${opt} in
-        p)
-            if [[ -z "$OPTARG" || "$OPTARG" == -* ]]; then
-                message -error "La opción -p requiere un valor válido."
-                exit 1
-            fi
-            CUSTOM_PATH="${OPTARG}"
-        ;;
-        e)
-            if [[ -z "$OPTARG" || "$OPTARG" == -* ]]; then
-                message -error "La opción -e requiere un valor válido."
-                exit 1
-            fi
-            EDITOR="${OPTARG}"
-        ;;
-        b)
-            if [[ -z "$OPTARG" || "$OPTARG" == -* ]]; then
-                message -error "La opción -b requiere un valor válido."
-                exit 1
-            fi
-            BROWSER="${OPTARG}"
-        ;;
-        w)
-            if [[ -z "$OPTARG" || "$OPTARG" == -* ]]; then
-                message -error "La opción -w requiere un valor válido."
-                exit 1
-            fi
-            WEATHER_KEY="${OPTARG}"
-        ;;
-        \?)
-            message -error "Opción inválida: -$OPTARG"
-            exit 1
-        ;;
-        :)
-            message -error "La opción -$OPTARG requiere un valor."
-            exit 1
-        ;;
-    esac
+# 📦 Validación de comandos necesarios
+for cmd in grep sudo; do
+    if ! command -v "$cmd" &> /dev/null; then
+        message -error "Comando no encontrado: $cmd"
+        exit 1
+    fi
 done
 
-# Pide la contraseña solo una vez al inicio
-sudo -v
+# 🧪 Verifica si se usó alguna opción válida
+USED_OPTION=false
 
-# Agrega o actualiza las variables si se han proporcionado valores válidos
-[ -n "$CUSTOM_PATH" ] && add_or_update_variable "PATH" "$CUSTOM_PATH"
-[ -n "$EDITOR" ] && add_or_update_variable "EDITOR" "$EDITOR"
-[ -n "$BROWSER" ] && add_or_update_variable "BROWSER" "$BROWSER"
-[ -n "$WEATHER_KEY" ] && add_or_update_variable "WEATHER_KEY" "$WEATHER_KEY"
+# 🛠️ Procesar argumentos
+declare -A USER_VALUES
 
-# Si no se proporcionaron opciones, muestra el uso
-if [ "$OPTIND" -eq 1 ]; then
-    message -title "Uso: $0 -p \"custom_path\" -e \"editor\" -b \"browser\" -w \"weather-key\""
-    exit 1
+while getopts ":${!VARIABLE_FLAGS[*]}" opt; do
+    if [[ -n "${VARIABLE_FLAGS[$opt]}" ]]; then
+        if [[ -z "$OPTARG" || "$OPTARG" == -* ]]; then
+            message -error "La opción -$opt requiere un valor válido."
+            exit 1
+        fi
+        USER_VALUES["${VARIABLE_FLAGS[$opt]}"]="$OPTARG"
+        USED_OPTION=true
+    else
+        message -error "Opción inválida: -$OPTARG"
+        usage
+    fi
+done
+
+# 🛡️ Pedir sudo una vez
+[[ "$USED_OPTION" = true ]] && sudo -v
+
+# 💾 Guardar las variables al archivo
+for var in "${!USER_VALUES[@]}"; do
+    add_or_update_variable "$var" "${USER_VALUES[$var]}"
+done
+
+# ❓ Si no se usó ninguna opción, mostrar ayuda
+if [[ "$USED_OPTION" = false ]]; then
+    usage
 fi
+
+
+# QT_QPA_PLATFORMTHEME=qt6ct
+# EDITOR=nano
+# BROWSER=firefox
+# TERMINAL=alacritty
+#PATH="/usr/share/siberizm/scripts"
+#WLR_NO_HARDWARE_CURSORS=1

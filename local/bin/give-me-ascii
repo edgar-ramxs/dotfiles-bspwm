@@ -1,139 +1,268 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
 
-# DIR_COLORSCRIPTS="$HOME/.local/ascii/asciiarts"
-DIR_COLORSCRIPTS="$(pwd)/../ascii/asciiarts"
-list_colorscripts="$(ls "${DIR_COLORSCRIPTS}" | cut -d ' ' -f 1 | nl)"
-length_colorscripts="$(ls "${DIR_COLORSCRIPTS}" | wc -l)"
+BASE_DIR="$(realpath "$(pwd)/../ascii")"
+RESETC="\033[0m\e[0m"
+VALID_TYPES=("animations" "asciiarts" "colorscripts" "fetchinfo")
 
 function message() {
     local signal color
-    local RESETC="\033[0m\e[0m"
     case "$1" in
-        "-title")       color="\033[0;37m\033[1m";      signal="[$]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
-        "-subtitle")    color="\033[0;35m\033[1m";      signal="[*]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
-        "-approval")    color="\033[38;5;51m\033[1m";   signal="[?]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
-        "-cancel")      color="\033[0;34m\033[1m";      signal="[!]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
-        "-success")     color="\033[0;32m\033[1m";      signal="[+]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
-        "-warning")     color="\033[0;33m\033[1m";      signal="[&]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
-        "-error")       color="\033[0;31m\033[1m";      signal="[-]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
-        *)              color="$RESETC";                signal=""; shift; echo -e "${color}${signal} $*${RESETC}";;
+        "-title")   color="\033[0;37m\033[1m"; signal="[$]"; shift ;;
+        "-subtitle")color="\033[0;35m\033[1m"; signal="[*]"; shift ;;
+        "-success") color="\033[0;32m\033[1m"; signal="[+]"; shift ;;
+        "-error")   color="\033[0;31m\033[1m"; signal="[-]"; shift ;;
+        *)          color="$RESETC"; signal="";;
     esac
+    echo -e "${color}${signal} $*${RESETC}"
 }
 
 function usage() {
-    message -title "Description: A collection of terminal color scripts." 
-    message -subtitle "Usage: colorscript [OPTION] [SCRIPT NAME/INDEX]"
-    message -warning "-h, --help    help    Print this help."
-    message -warning "-l, --list    list    List all installed color scripts."
-    message -warning "-e, --exec    exec    Run a specified color script by SCRIPT NAME or INDEX."
-    message -warning "-r, --random  random  Run a random color script."
+    message -title "ASCII Art Runner"
+    echo "Usage:"
+    echo "  $0 --type <type> --list"
+    echo "  $0 --type <type> --exec <name|index>"
+    echo "  $0 --type <type> --random"
     echo ""
+    echo "Options:"
+    echo "  -t, --type     ASCII type: animations, asciiarts, colorscripts, fetchinfo"
+    echo "  -l, --list     List scripts in the selected type"
+    echo "  -e, --exec     Run a script by name or index"
+    echo "  -r, --random   Run a random script"
+    echo "  -h, --help     Show this help"
     exit 1
 }
 
-trap ctrl_c INT
-function ctrl_c() {
-    message -cancel "Exiting...\n"
-    exit 1
-}
+# Parse args
+TYPE=""
+ACTION=""
+TARGET=""
 
-function check_execution() {
-    if [ $1 != 0 ] && [ $1 != 130 ]; then
-        message -error "Error: $2"
-    else
-        message -success "Successful: $3"
-    fi
-    sleep 0.5
-}
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -t|--type) TYPE="$2"; shift 2 ;;
+        -l|--list) ACTION="list"; shift ;;
+        -e|--exec) ACTION="exec"; TARGET="$2"; shift 2 ;;
+        -r|--random) ACTION="random"; shift ;;
+        -h|--help) usage ;;
+        *) message -error "Unknown argument: $1"; usage ;;
+    esac
+done
+
+# Validate type
+if [[ -z "$TYPE" ]]; then
+    message -error "Missing --type"
+    usage
+fi
+
+if [[ ! " ${VALID_TYPES[*]} " =~ " $TYPE " ]]; then
+    message -error "Invalid type: $TYPE"
+    message "Available types: ${VALID_TYPES[*]}"
+    exit 1
+fi
+
+DIR="${BASE_DIR}/${TYPE}"
+
+if [[ ! -d "$DIR" ]]; then
+    message -error "Directory not found: $DIR"
+    exit 1
+fi
+
+# Collect scripts
+mapfile -t SCRIPTS < <(ls "$DIR")
+COUNT=${#SCRIPTS[@]}
 
 function _list() {
-    echo "There are "$(ls "${DIR_COLORSCRIPTS}" | wc -l)" installed color scripts:"
-    echo "${list_colorscripts}"
+    message -subtitle "Available scripts in type '$TYPE':"
+    for i in "${!SCRIPTS[@]}"; do
+        printf "%2d. %s\n" $((i + 1)) "${SCRIPTS[$i]}"
+    done
+}
+
+function _exec() {
+    local arg="$1"
+    local script=""
+    if [[ "$arg" =~ ^[0-9]+$ ]]; then
+        local index=$((arg - 1))
+        if [[ $index -ge 0 && $index -lt $COUNT ]]; then
+            script="${SCRIPTS[$index]}"
+        else
+            message -error "Invalid index: $arg"
+            exit 1
+        fi
+    else
+        if [[ " ${SCRIPTS[*]} " =~ " $arg " ]]; then
+            script="$arg"
+        else
+            message -error "Script not found: $arg"
+            exit 1
+        fi
+    fi
+    message -success "Running: $script"
+    exec "${DIR}/${script}"
 }
 
 function _random() {
-    declare -i random_index=$RANDOM%$length_colorscripts
-    [[ $random_index -eq 0 ]] && random_index=1
-
-    random_colorscript="$(echo  "${list_colorscripts}" | sed -n ${random_index}p \
-        | tr -d ' ' | tr '\t' ' ' | cut -d ' ' -f 2)"
-    echo "${random_colorscript}"
-    exec "${DIR_COLORSCRIPTS}/${random_colorscript}"
+    local index=$((RANDOM % COUNT))
+    local script="${SCRIPTS[$index]}"
+    message -success "Running random: $script"
+    exec "${DIR}/${script}"
 }
 
-function ifhascolorscipt() {
-    [[ -e "${DIR_COLORSCRIPTS}/$1" ]] && echo "Has this color script."
-}
-
-function _run_by_name() {
-    if [[ "$1" == "random" ]]; then
-        _random
-    elif [[ -n "$(ifhascolorscipt "$1")" ]]; then
-        exec "${DIR_COLORSCRIPTS}/$1"
-    else
-        echo "Input error, Don't have color script named $1."
-        exit 1
-    fi
-}
-
-function _run_by_index() {
-    if [[ "$1" -gt 0 && "$1" -lt "${length_colorscripts}" ]]; then
-
-        colorscript="$(echo  "${list_colorscripts}" | sed -n ${1}p \
-            | tr -d ' ' | tr '\t' ' ' | cut -d ' ' -f 2)"
-        exec "${DIR_COLORSCRIPTS}/${colorscript}"
-    else
-        echo "Input error, Don't have color script indexed $1."
-        exit 1
-    fi
-}
-
-function _run_colorscript() {
-    if [[ "$1" =~ ^[0-9]+$ ]]; then
-        _run_by_index "$1"
-    else
-        _run_by_name "$1"
-    fi
-}
-
-#  ███╗   ███╗ █████╗ ██╗███╗   ██╗
-#  ████╗ ████║██╔══██╗██║████╗  ██║
-#  ██╔████╔██║███████║██║██╔██╗ ██║
-#  ██║╚██╔╝██║██╔══██║██║██║╚██╗██║
-#  ██║ ╚═╝ ██║██║  ██║██║██║ ╚████║
-#  ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝
-
-case "$#" in
-    0)
+# Run selected action
+case "$ACTION" in
+    list) _list ;;
+    exec) _exec "$TARGET" ;;
+    random) _random ;;
+    *)
+        message -error "Missing action (--list, --exec, --random)"
         usage
         ;;
-    1)
-        case "$1" in
-            -h | --help | help)
-                usage
-                ;;
-            -l | --list | list)
-                _list
-                ;;
-            -r | --random | random)
-                _random
-                ;;
-            *)
-                echo "Input error."
-                exit 1
-                ;;
-        esac
-        ;;
-    2)
-        if [[ "$1" == "-e" || "$1" == "--exec" || "$1" == "exec" ]]; then
-            _run_colorscript "$2"
-        else
-            echo "Input error."
-            exit 1
-        fi
-        ;;
-    *)
-        echo "Input error, too many arguments."
-        exit 1
-        ;;
 esac
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    # DIR_COLORSCRIPTS="$(realpath "$(pwd)/../ascii/fetchinfo")"
+    # list_colorscripts="$(ls "${DIR_COLORSCRIPTS}" | cut -d ' ' -f 1 | nl)"
+    # length_colorscripts="$(ls "${DIR_COLORSCRIPTS}" | wc -l)"
+
+    # function message() {
+    #     local signal color
+    #     local RESETC="\033[0m\e[0m"
+    #     case "$1" in
+    #         "-title")       color="\033[0;37m\033[1m";      signal="[$]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
+    #         "-subtitle")    color="\033[0;35m\033[1m";      signal="[*]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
+    #         "-approval")    color="\033[38;5;51m\033[1m";   signal="[?]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
+    #         "-cancel")      color="\033[0;34m\033[1m";      signal="[!]"; shift; echo -e "\n${color}${signal} $*${RESETC}";;
+    #         "-success")     color="\033[0;32m\033[1m";      signal="[+]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
+    #         "-warning")     color="\033[0;33m\033[1m";      signal="[&]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
+    #         "-error")       color="\033[0;31m\033[1m";      signal="[-]"; shift; echo -e "\t${color}${signal} $*${RESETC}";;
+    #         *)              color="$RESETC";                signal=""; shift; echo -e "${color}${signal} $*${RESETC}";;
+    #     esac    
+    # }
+
+    # function usage() {
+    #     message -title "Description: A collection of terminal color scripts." 
+    #     message -subtitle "Usage: colorscript [OPTION] [SCRIPT NAME/INDEX]"
+    #     message -warning "-h, --help    help    Print this help."
+    #     message -warning "-l, --list    list    List all installed color scripts."
+    #     message -warning "-e, --exec    exec    Run a specified color script by SCRIPT NAME or INDEX."
+    #     message -warning "-r, --random  random  Run a random color script."
+    #     echo ""
+    #     exit 1
+    # }
+
+    # trap ctrl_c INT
+    # function ctrl_c() {
+    #     message -cancel "Exiting...\n"
+    #     exit 1
+    # }
+
+    # function check_execution() {
+    #     if [ $1 != 0 ] && [ $1 != 130 ]; then
+    #         message -error "Error: $2"
+    #     else
+    #         message -success "Successful: $3"
+    #     fi
+    #     sleep 0.5
+    # }
+
+    # function _list() {
+    #     echo "There are "$(ls "${DIR_COLORSCRIPTS}" | wc -l)" installed color scripts:"
+    #     echo "${list_colorscripts}"
+    # }
+
+    # function _random() {
+    #     declare -i random_index=$RANDOM%$length_colorscripts
+    #     [[ $random_index -eq 0 ]] && random_index=1
+
+    #     random_colorscript="$(echo  "${list_colorscripts}" | sed -n ${random_index}p \
+    #         | tr -d ' ' | tr '\t' ' ' | cut -d ' ' -f 2)"
+    #     echo "${random_colorscript}"
+    #     exec "${DIR_COLORSCRIPTS}/${random_colorscript}"
+    # }
+
+    # function ifhascolorscipt() {
+    #     [[ -e "${DIR_COLORSCRIPTS}/$1" ]] && echo "Has this color script."
+    # }
+
+    # function _run_by_name() {
+    #     if [[ "$1" == "random" ]]; then
+    #         _random
+    #     elif [[ -n "$(ifhascolorscipt "$1")" ]]; then
+    #         exec "${DIR_COLORSCRIPTS}/$1"
+    #     else
+    #         echo "Input error, Don't have color script named $1."
+    #         exit 1
+    #     fi
+    # }
+
+    # function _run_by_index() {
+    #     if [[ "$1" -gt 0 && "$1" -lt "${length_colorscripts}" ]]; then
+
+    #         colorscript="$(echo  "${list_colorscripts}" | sed -n ${1}p \
+    #             | tr -d ' ' | tr '\t' ' ' | cut -d ' ' -f 2)"
+    #         exec "${DIR_COLORSCRIPTS}/${colorscript}"
+    #     else
+    #         echo "Input error, Don't have color script indexed $1."
+    #         exit 1
+    #     fi
+    # }
+
+    # function _run_colorscript() {
+    #     if [[ "$1" =~ ^[0-9]+$ ]]; then
+    #         _run_by_index "$1"
+    #     else
+    #         _run_by_name "$1"
+    #     fi
+    # }
+
+    # case "$#" in
+    #     0)
+    #         usage
+    #         ;;
+    #     1)
+    #         case "$1" in
+    #             -h | --help | help)
+    #                 usage
+    #                 ;;
+    #             -l | --list | list)
+    #                 _list
+    #                 ;;
+    #             -r | --random | random)
+    #                 _random
+    #                 ;;
+    #             *)
+    #                 echo "Input error."
+    #                 exit 1
+    #                 ;;
+    #         esac
+    #         ;;
+    #     2)
+    #         if [[ "$1" == "-e" || "$1" == "--exec" || "$1" == "exec" ]]; then
+    #             _run_colorscript "$2"
+    #         else
+    #             echo "Input error."
+    #             exit 1
+    #         fi
+    #         ;;
+    #     *)
+    #         echo "Input error, too many arguments."
+    #         exit 1
+    #         ;;
+    # esac

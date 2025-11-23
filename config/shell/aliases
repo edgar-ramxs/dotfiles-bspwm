@@ -7,6 +7,10 @@
 #  ██╗██║  ██║███████╗██║██║  ██║███████║███████╗███████║
 #  ╚═╝╚═╝  ╚═╝╚══════╝╚═╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝
 
+## fetching
+# alias fetch="neofetch"
+# alias fetch="fastfetch"
+
 alias ls="lsd --group-dirs=first"
 alias la="lsd -a --group-dirs=first"
 alias ll="lsd -lh --group-dirs=first"
@@ -25,30 +29,55 @@ alias reload-zsh="source ~/.zshrc"
 alias reload-bash="source ~/.bashrc"
 alias reload-fonts="fc-cache -v -f"
 
+## permissions
 alias per-mx="chmod a+x"
 alias per-000="chmod 000"
 alias per-644="chmod 644"
 alias per-755="chmod 755"
 
-# python venv
+## python venv
 alias stop-venv="deactivate"
 alias start-venv="source $(get-venv-name)/bin/activate"
 
+## system commands
 alias free="free -h"
 alias smki="sudo make clean install"
 alias myip="curl -s ifconfig.me/all.json | jq"
+alias grup="sudo grub-mkconfig -o /boot/grub/grub.cfg"
+
+## system commands debian
 alias updating="sudo apt update -y && sudo apt upgrade -y"
 alias cleaning="sudo apt -y autoremove; sudo apt clean"
-alias grub-update="sudo grub-mkconfig -o /boot/grub/grub.cfg"
+alias searching="sudo apt search"
 alias fix-dpkg="sudo dpkg --configure -a; sudo apt --fix-broken install -y; sudo apt install -f; sudo apt update --fix-missing"
 
-# DB services [status|start|stop]
+## system commands arch-linux
+# alias dl="sudo pacman -S"
+# alias src="sudo pacman -Ss"
+# alias rv="sudo pacman -R"
+# alias up="sudo pacman -Syu"
+# alias upr="sudo pacman -Syy"
+# alias dly="yay -S"
+# alias srcy="yay -Ss"
+# alias upy="yay -Syu"
+
+## flatpak
+alias ftki="flatpak install"
+alias ftks="flatpak search"
+alias ftkr="flatpak remove"
+alias ftku="flatpak update"
+
+## nodejs
+# alias nrs="npm run start"
+# alias np="pnpm"
+
+## db services [status|start|stop]
 alias ser-mys="sudo service mysql"
 alias ser-mgd="sudo service mongod"
 alias ser-pos="sudo service postgresql"
 alias ser-rds="sudo service redis-server"
 
-# System Services
+## system services
 alias sys-sto="sudo systemctl stop"
 alias sys-sta="sudo systemctl start"
 alias sys-stu="sudo systemctl status"
@@ -56,7 +85,7 @@ alias sys-ena="sudo systemctl enable"
 alias sys-dis="sudo systemctl disable"
 alias sys-res="sudo systemctl restart"
 
-# Edit configs files
+## edit configs files
 alias rcfg-zshrc="$EDITOR $HOME/.zshrc"
 alias rcfg-bashrc="$EDITOR $HOME/.bashrc"
 alias rcfg-aliases="$EDITOR $HOME/.aliases"
@@ -67,6 +96,6 @@ alias rcfg-bspwm="$EDITOR $HOME/.config/bspwm/bspwmrc"
 alias rcfg-kitty="$EDITOR $HOME/.config/kitty/kitty.conf"
 alias rcfg-polybar="$EDITOR $HOME/.config/polybar/config.ini"
 
-# Create local servers
+## create local servers
 alias php-server="php -S 0.0.0.0:8000"
 alias py-server="python -m http.server 8000"

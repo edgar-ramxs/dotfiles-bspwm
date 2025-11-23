@@ -16,9 +16,8 @@ fi
 export HISTSIZE=10000
 export SAVEHIST=$HISTSIZE
 export HISTFILE="$HOME/.cache/zsh_history"
-export ZSH="$HOME/.oh-my-zsh"
-ZSH_THEME="powerlevel10k/powerlevel10k"
 
+ZSH_THEME="powerlevel10k/powerlevel10k"
 plugins=(
   git
   sudo

@@ -7,102 +7,139 @@
 #  ██╗██║     ╚██████╔╝██║ ╚████║╚██████╗   ██║   ██║╚██████╔╝██║ ╚████║███████║
 #  ╚═╝╚═╝      ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝   ╚═╝   ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝
 
-function hydra() {
-    clear &&
-    echo \
-    "    ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢤⡀⠀⠰⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⣠⣤⣀⣀⣀⣀⡀⠀⢀⣠⠀⠀⠀⠀⠀⠠⠐⠒⣒⣲⣶⣦⣽⣦⣀⢷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠛⠛⢿⣿⣶⣽⣿⣿⣯⣥⣀⡀⠀⠀⠀⣠⣶⣿⣿⣿⠿⠟⠿⢿⣿⣿⣿⣶⣄⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠈⠻⠛⠉⠙⠻⣿⣿⣶⣍⠀⠊⢱⣿⣿⣿⡇⠀⠀⠀⠀⠈⣿⣿⣶⣽⣆⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⣿⣿⣯⡑⠀⢸⣿⣿⣿⣿⡄⠀⠀⠀⢀⠙⠛⠛⠿⣿⣿⣦⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⣿⣿⣿⢷⠀⠘⣏⠻⣿⣿⣿⣦⣤⣀⣈⣲⣤⣀⣀⡀⠛⠃⠀⠀⠀⠀⠀
-⠀⠀⠀⢀⠀⠀⠀⠀⠀⠀⠀⠀⣾⣿⣿⣿⠀⠀⠀⠈⠔⠚⣻⣿⣿⣿⣿⣿⣿⣿⣿⣯⣝⣧⣤⣄⣀⠀⠀⠀
-⠀⠀⠀⢠⣇⣴⣮⣥⣤⡀⠀⢸⣿⣿⡏⠏⠀⠀⠀⣠⣾⣿⣿⡿⠟⢿⣿⣿⣆⠈⢿⣿⠿⠿⠿⠿⣿⠀⠀⠀
-⠀⠀⣠⢿⣿⡿⠿⣿⣿⣷⣅⢸⣿⣿⡇⠀⠀⠀⠔⣹⣿⣿⡏⠀⠀⠈⣿⣿⣿⡀⠀⠠⠄⣀⠀⡆⠀⠀⠀⠀
-⠀⢀⣯⣾⡿⠆⠀⢸⣿⣿⣧⠉⣿⣿⣷⡀⠀⠀⢠⣿⣿⣿⣧⡀⠀⢀⣿⣿⣿⠀⠠⣲⣿⣿⣿⣿⣦⡀⠀⠀
-⠀⣿⡟⠁⠀⠀⠀⣾⣿⣿⠻⠀⠘⢿⣿⣿⣦⡀⠀⢏⠻⣿⣿⣿⣆⣼⣿⣿⣿⢀⣺⣿⣿⠁⠈⣿⣷⣷⡀⠀
-⠀⠀⠀⠀⠀⠀⢸⣿⣿⣇⠁⠀⠀⠀⠙⢿⣿⣿⣷⣮⣄⣹⣿⣿⣿⣿⣿⣿⡿⠀⡿⣿⣿⣄⠀⠀⠈⠹⡿⠀
-⠀⠀⠀⠀⠀⠀⠀⢿⣿⣿⣦⣄⣀⠀⠀⠀⠘⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠃⠀⠘⢹⣿⣿⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠈⠻⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣃⣀⣠⣴⣿⣿⠏⠀⠀⠀⠀⠀⠀
-    ⠀⠀⠀⠀⠀⠀⠀⠀⠲⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣻⠅⠀⠀⠀⠀⠀⠀⠀⠀"
-    tput civis
-    read -n 1
-    tput cnorm
-}
-
 function message() {
-    local signal color
     local RESETC="\033[0m\e[0m"
-    case "$1" in
-        "-title")       color="\033[0;37m\033[1m";      signal="[$]"; shift; echo -e "${color}${signal} $*${RESETC}";;
-        "-subtitle")    color="\033[0;35m\033[1m";      signal="[*]"; shift; echo -e "${color}${signal} $*${RESETC}";;
-        "-approval")    color="\033[38;5;51m\033[1m";   signal="[?]"; shift; echo -e "${color}${signal} $*${RESETC}";;
-        "-cancel")      color="\033[0;34m\033[1m";      signal="[!]"; shift; echo -e "${color}${signal} $*${RESETC}";;
-        "-success")     color="\033[0;32m\033[1m";      signal="[+]"; shift; echo -e "${color}${signal} $*${RESETC}";;
-        "-warning")     color="\033[0;33m\033[1m";      signal="[&]"; shift; echo -e "${color}${signal} $*${RESETC}";;
-        "-error")       color="\033[0;31m\033[1m";      signal="[-]"; shift; echo -e "${color}${signal} $*${RESETC}";;
-        *)              color="$RESETC";                signal=""; shift; echo -e "${color}${signal} $*${RESETC}";;
-    esac
-}
+    local BOLD="\033[1m"
+    declare -A MESSAGE_MAP=(
+        [-title]="\033[0;37m${BOLD} [$]"
+        [-subtitle]="\033[0;35m${BOLD} [*]"
+        [-approval]="\033[38;5;51m${BOLD} [?]"
+        [-cancel]="\033[0;34m${BOLD} [!]"
+        [-success]="\033[0;32m${BOLD} [+]"
+        [-warning]="\033[0;33m${BOLD} [&]"
+        [-error]="\033[0;31m${BOLD} [-]"
+    )
 
-function man() {
-    local normal='\e[0m'
-    local bold_red='\e[1;31m'
-    local highlight='\e[1;44;33m'
-    local bold_green='\e[1;32m'
-    
-    env \
-    LESS_TERMCAP_mb="$bold_red" \
-    LESS_TERMCAP_md="$bold_red" \
-    LESS_TERMCAP_me="$normal" \
-    LESS_TERMCAP_se="$normal" \
-    LESS_TERMCAP_so="$highlight" \
-    LESS_TERMCAP_ue="$normal" \
-    LESS_TERMCAP_us="$bold_green" \
-    man "$@"
+    local key="$1"
+    shift
+    local color_msg="${MESSAGE_MAP[$key]}"
+
+    if [[ -n "$color_msg" ]]; then
+        local prefix="\n"
+        [[ "$key" == "-success" || "$key" == "-warning" || "$key" == "-error" ]] && prefix="\t"
+        echo -e "${prefix}${color_msg} $*${RESETC}"
+        case "$key" in
+            -title) sleep 0.5 ;;
+            -subtitle) sleep 0.3 ;;
+            -cancel) sleep 0.5 ;;
+        esac
+    else
+        echo -e "${RESETC}$key $*${RESETC}"
+    fi
 }
 
 function extract-files() {
-    if [ -f "$1" ]; then
-        case "$1" in
-            *.tar.bz2) tar xvjf "$1" ;;
-            *.tar.gz) tar xvzf "$1" ;;
-            *.bz2) bunzip2 "$1" ;;
-            *.rar) unrar x "$1" ;;
-            *.gz) gunzip "$1" ;;
-            *.tar) tar xvf "$1" ;;
-            *.tbz2) tar xvjf "$1" ;;
-            *.tgz) tar xvzf "$1" ;;
-            *.zip) unzip "$1" ;;
-            *.Z) uncompress "$1" ;;
-            *.7z) 7z x "$1" ;;
-            *) echo "Don't know how to extract '$1'..." ;;
-        esac
-    else
-        echo "'$1' is not a valid file!"
-    fi
-}
-
-function mkt(){
-	mkdir {nmap,content,exploits,scripts}
-}
-
-function cdl () { cd "$@" && ls; }
-
-function cmkdir() {
-    if [ -z "$1" ]; then
-        message -warning "Usage: cmk <directory-name>"
+    local file="$1"
+    if [[ ! -f "$file" ]]; then
+        message -error "'$file' is not a valid file!"
         return 1
     fi
-    mkdir "$1"
-    cd "$1"
+    case "$file" in
+        *.tar.bz2)  tar xvjf "$file" ;;
+        *.tar.gz)   tar xvzf "$file" ;;
+        *.tbz2)     tar xvjf "$file" ;;
+        *.tgz)      tar xvzf "$file" ;;
+        *.tar)      tar xvf "$file" ;;
+        *.bz2)      bunzip2 "$file" ;;
+        *.gz)       gunzip "$file" ;;
+        *.zip)      unzip "$file" ;;
+        *.rar)      unrar x "$file" ;;
+        *.Z)        uncompress "$file" ;;
+        *.7z)       7z x "$file" ;;
+        *)          message -warning "Don't know how to extract '$file'..." ;;
+    esac
+}
+
+function mkt() {
+    local dirs=(scanner content exploits scripts)
+    for dir in "${dirs[@]}"; do
+        if [[ -d "$dir" ]]; then
+            message -warning "Directory '$dir' already exists, skipping..."
+        else
+            mkdir -p "$dir" && message -success "Created directory '$dir'"
+        fi
+    done
+}
+
+function cdu() {
+    local count="${1:-1}"
+    local path
+    if ! [[ "$count" =~ ^[0-9]+$ ]]; then
+        message -error "Usage: cdu <positive-integer>"
+        return 1
+    fi
     
+    path=$(printf '../%.0s' $(seq 1 "$count"))
+    cd "$path" || {
+        message -error "No se pudo cambiar al directorio: $path"
+        return 1
+    }
+}
+
+function cdl() {
+    if [[ -z "$1" ]]; then
+        message -error "No directory specified."
+        return 1
+    fi
+    if cd "$@"; then
+        ls --color=auto -lah
+    else
+        message -error "Failed to change directory to '$*'"
+        return 1
+    fi
+}
+
+function cdir() {
+    local dir="$1"
+    if [[ -z "$dir" ]]; then
+        message -warning "Usage: cdir <directory-name>"
+        return 1
+    fi
+
+    if [[ -d "$dir" ]]; then
+        message -warning "Directory '$dir' already exists. Switching to it..."
+    else
+        mkdir -p "$dir" && message -success "Created directory '$dir'"
+    fi
+
+    cd "$dir" || {
+        message -error "Failed to enter directory '$dir'"
+        return 1
+    }
 }
 
 function rmk() {
-    scrub -p dod $1
-    shred -zun 10 -v $1
+    local file="$1"
+    if [[ -z "$file" ]]; then
+        message -warning "Usage: rmk <file>"
+        return 1
+    fi
+
+    if [[ ! -e "$file" ]]; then
+        message -error "File '$file' does not exist."
+        return 1
+    fi
+
+    if [[ ! -f "$file" ]]; then
+        message -error "'$file' is not a regular file."
+        return 1
+    fi
+
+    message -subtitle "Securely erasing '$file'..."
+    scrub -p dod "$file" && message -success "scrub completed." || message -error "scrub failed."
+    shred -zun 10 -v "$file" && message -success "shred completed." || message -error "shred failed."
 }
+
 
 function extract-ports() {
 	ports="$(cat $1 | grep -oP '\d{1,5}/open' | awk '{print $1}' FS='/' | xargs | tr ' ' ',')"
@@ -116,19 +153,31 @@ function extract-ports() {
 }
 
 function open-file() {
-    local file=$1
-    if [ -z "$EDITOR" ]; then
-        message -warning "La variable EDITOR no está definida."
-    else
-        case "$EDITOR" in
-            code|vim|nano)
-                $EDITOR "$file"
-            ;;
-            *)
-                message -error "Editor no soportado: $EDITOR."
-            ;;
-        esac
+    local file="$1"
+    if [[ -z "$file" ]]; then
+        message -warning "Uso: open-file <archivo>"
+        return 1
     fi
+
+    if [[ -z "$EDITOR" ]]; then
+        message -warning "La variable \$EDITOR no está definida."
+        return 1
+    fi
+
+    case "$EDITOR" in
+        code|vim|nvim|nano|micro|helix|hx)
+            if command -v "$EDITOR" &>/dev/null; then
+                "$EDITOR" "$file"
+            else
+                message -error "El editor '$EDITOR' no está instalado."
+                return 1
+            fi
+            ;;
+        *)
+            message -error "Editor no soportado: '$EDITOR'."
+            return 1
+            ;;
+    esac
 }
 
 function create-venv() {
@@ -166,156 +215,216 @@ function settarget(){
     fi
 }
 
-function fzf-lovely(){
-    if [ "$1" = "h" ]; then
-        fzf -m --reverse --preview-window down:20 --preview '[[ $(file --mime {}) =~ binary ]] &&
- 	                echo {} is a binary file ||
-	                 (bat --style=numbers --color=always {} ||
-	                  highlight -O ansi -l {} ||
-	                  coderay {} ||
-	                  rougify {} ||
-        cat {}) 2> /dev/null | head -500'
-        
-    else
-        fzf -m --preview '[[ $(file --mime {}) =~ binary ]] &&
-	                         echo {} is a binary file ||
-	                         (bat --style=numbers --color=always {} ||
-	                          highlight -O ansi -l {} ||
-	                         coderay {} ||
-	                          rougify {} ||
-        cat {}) 2> /dev/null | head -500'
+function fzf-lovely() {
+    local layout=""
+    if [[ "$1" == "h" ]]; then
+        layout="--reverse --preview-window=down:20"
     fi
-}
 
-function cu {
-    local count=$1
-    if [ -z "${count}" ]; then
-        count=1
-    fi
-    local path=""
-    for i in $(seq 1 ${count}); do
-        path="${path}../"
-    done
-    cd $path
+    fzf -m $layout --preview '
+        [[ $(file --mime {}) =~ binary ]] &&
+            echo "{} is a binary file" ||
+            (bat --style=numbers --color=always {} ||
+             highlight -O ansi -l {} ||
+             coderay {} ||
+             rougify {} ||
+             cat {}) 2>/dev/null | head -500
+    '
 }
 
 function compile-pls() {
-    if [[ -z "$1" ]]; then
+    local file="$1"
+    if [[ -z "$file" ]]; then
         message -cancel "Error: Debes proporcionar un archivo."
         return 1
-    fi
-    
-    if [[ ! -f "$1" ]]; then
-        message -cancel "Error: El archivo '$1' no existe."
+    elif [[ ! -f "$file" ]]; then
+        message -cancel "Error: El archivo '$file' no existe."
         return 1
     fi
-    
-    local filename=$(basename "$1")
+
+    local filename=$(basename -- "$file")
     local extension="${filename##*.}"
-    local name_without_ext="${filename%.*}"
-    
+    local name="${filename%.*}"
     command_exists() {
-        command -v "$1" >/dev/null 2>&1
+        command -v "$1" &>/dev/null
     }
-    
+
     case "$extension" in
-        "kt")
+        kt)
             if command_exists kotlinc && command_exists java; then
-                kotlinc "$filename" -include-runtime -d "${name_without_ext}.jar" && java -jar "${name_without_ext}.jar"
+                kotlinc "$file" -include-runtime -d "${name}.jar" && java -jar "${name}.jar"
             else
-                message -cancel "Error: Kotlin o Java no están instalados."
+                message -cancel "Error: Kotlin y/o Java no están instalados."
                 return 1
             fi
-        ;;
-        "java")
+            ;;
+        java)
             if command_exists javac && command_exists java; then
-                javac "$filename" && java "$name_without_ext"
+                javac "$file" && java "$name"
             else
                 message -cancel "Error: Java no está instalado."
                 return 1
             fi
-        ;;
-        "cpp")
+            ;;
+        cpp)
             if command_exists g++; then
-                g++ "$filename" -o "$name_without_ext" && "./$name_without_ext"
+                g++ "$file" -o "$name" && "./$name"
             else
                 message -cancel "Error: g++ no está instalado."
                 return 1
             fi
-        ;;
-        "c")
+            ;;
+        c)
             if command_exists gcc; then
-                gcc "$filename" -o "$name_without_ext" && "./$name_without_ext"
+                gcc "$file" -o "$name" && "./$name"
             else
                 message -cancel "Error: gcc no está instalado."
                 return 1
             fi
-        ;;
-        "pas")
+            ;;
+        pas)
             if command_exists fpc; then
-                fpc "$filename" && "./$name_without_ext"
+                fpc "$file" && "./$name"
             else
                 message -cancel "Error: Free Pascal Compiler (fpc) no está instalado."
                 return 1
             fi
-        ;;
+            ;;
         *)
             message -cancel "Error: Extensión de archivo no admitida: .$extension"
             return 1
-        ;;
+            ;;
     esac
 }
-
 
 function initialize_git_repo() {
     local repo_name=""
     local readme_message="Proyecto inicializado"
     local remote_url=""
     local branch="main"
-    local dir="$(pwd)"
+    local original_dir
+    original_dir="$(pwd)"
 
+    # Parsear opciones
     while getopts "n:m:r:b:" opt; do
         case "$opt" in
-            n) repo_name="$OPTARG" ;;       # Nombre del repositorio (obligatorio)
-            m) readme_message="$OPTARG" ;;  # Mensaje para el README.md (opcional)
-            r) remote_url="$OPTARG" ;;      # URL del repositorio remoto (opcional)
-            b) branch="$OPTARG" ;;          # Rama a la que se hará push (opcional)
-            \?) echo "Uso: initialize_git_repo -n <repo_name> [-m <readme_message>] [-r <remote_url>] [-b <branch>]"
-            return 1 ;;
+            n) repo_name="$OPTARG" ;;
+            m) readme_message="$OPTARG" ;;
+            r) remote_url="$OPTARG" ;;
+            b) branch="$OPTARG" ;;
+            \?) message -error "Uso: initialize_git_repo -n <repo_name> [-m <readme_message>] [-r <remote_url>] [-b <branch>]"
+                return 1 ;;
         esac
     done
-    
+
     if [[ -z "$repo_name" ]]; then
-        echo "Error: Debes proporcionar un nombre para el repositorio con -n."
+        message -error "Error: Debes proporcionar un nombre para el repositorio con -n."
         return 1
     fi
 
-    mkdir -p "$repo_name" && cd "$repo_name" || return 1
-    
-    git init >/dev/null 2>&1
-    echo -e ".vscode/" > .gitignore
-    echo "# $repo_name" > README.md
-    echo "$readme_message" >> README.md
-
-    git add .
-    git commit -m "Initial commit" >/dev/null 2>&1
-    
-    if [[ -n "$remote_url" ]]; then
-        git remote add origin "$remote_url"
-        git branch -M "$branch"
-        git push -u origin "$branch"
+    # Crear y entrar al directorio
+    if ! mkdir -p "$repo_name"; then
+        message -error "Error al crear el directorio '$repo_name'."
+        return 1
     fi
-    
-    cd $dir
-    echo "Repositorio '$repo_name' inicializado correctamente."
+
+    cd "$repo_name" || { message -error "No se pudo acceder al directorio '$repo_name'."; return 1; }
+
+    # Inicializar git
+    if ! git init &>/dev/null; then
+        message -error "Error al inicializar el repositorio git."
+        cd "$original_dir"
+        return 1
+    fi
+
+    # Crear .gitignore y README.md
+    echo -e ".vscode/" > .gitignore
+    {
+        echo "# $repo_name"
+        echo "$readme_message"
+    } > README.md
+
+    git add . 
+    git commit -m "Initial commit" &>/dev/null
+
+    # Configurar remoto y push
+    if [[ -n "$remote_url" ]]; then
+        if ! git remote add origin "$remote_url"; then
+            message -warning "No se pudo agregar el remoto '$remote_url'."
+        else
+            git branch -M "$branch"
+            if ! git push -u origin "$branch"; then
+                message -warning "No se pudo hacer push al remoto."
+            fi
+        fi
+    fi
+
+    cd "$original_dir" || return 1
+
+    message -success "Repositorio '$repo_name' inicializado correctamente."
+}
+
+function copy-in-clipboard() {
+    if command -v wl-copy >/dev/null 2>&1 && [ "$XDG_SESSION_TYPE" = "wayland" ]; then
+        wl-copy "$@"
+    elif command -v xclip >/dev/null 2>&1 && [ "$XDG_SESSION_TYPE" = "x11" ]; then
+        xclip -selection clipboard "$@"
+    else
+        echo "No clipboard tool found (requires wl-copy or xclip)." >&2
+        return 1
+    fi
 }
 
 function tell-me-a-joke() {
-	curl -sSL https://v2.jokeapi.dev/joke/Any | jq -r '.category, .type, .joke, .setup, .delivery'
+    local response category type joke setup delivery
+    response=$(curl -sSL https://v2.jokeapi.dev/joke/Any) || {
+        message -error "Failed to fetch joke."
+        return 1
+    }
+
+    category=$(jq -r '.category' <<< "$response")
+    type=$(jq -r '.type' <<< "$response")
+    message -approval "[Joke - $category]"
+
+    case "$type" in
+        single)
+            joke=$(jq -r '.joke' <<< "$response")
+            echo "$joke"
+            ;;
+        twopart)
+            setup=$(jq -r '.setup' <<< "$response")
+            delivery=$(jq -r '.delivery' <<< "$response")
+            echo "$setup"
+            echo "$delivery"
+            ;;
+        *)
+            message -error "Unexpected joke format."
+            return 1
+            ;;
+    esac
 }
 
 function pray-for-me() {
-    curl -s https://bible-api.deno.dev/api/books/newTestament | jq
+    local response book chapter verse text translation_name
+    response=$(curl -s https://bible-api.com/data/web/random) || {
+        message -error "Failed to fetch verse."
+        return 1
+    }
+
+    translation_name=$(jq -r '.translation.name' <<< "$response")
+    book=$(jq -r '.random_verse.book' <<< "$response")
+    chapter=$(jq -r '.random_verse.chapter' <<< "$response")
+    verse=$(jq -r '.random_verse.verse' <<< "$response")
+    text=$(jq -r '.random_verse.text' <<< "$response")
+
+    if [[ -z "$text" || "$text" == "null" ]]; then
+        message -error "No verse found in response."
+        return 1
+    fi
+
+    message -approval "[Verse from $translation_name]"
+    echo "\"$text\""
+    echo "— $book $chapter:$verse"
 }
 
 function cheat() {
@@ -330,11 +439,86 @@ function wttr() {
     curl -s "wttr.in/$ubicacion?$opciones&lang=$idioma"
 }
 
-function crypto-rate() {
-	curl -s "https://rate.sx/?qF&n=10"
-}
-
 function calc () {
     local operation=$1
     echo "$operation" | bc -ql
+}
+
+function crypto-rate() {
+    # Colores ANSI
+    RED='\033[0;31m'
+    GREEN='\033[0;32m'
+    CYAN='\033[0;36m'
+    BOLD='\033[1m'
+    RESET='\033[0m'
+
+    # Códigos LATAM
+    declare -A latam_currencies=(
+        ["CLP"]="Chile"
+        ["COP"]="Colombia"
+        ["BRL"]="Brasil"
+        ["ARS"]="Argentina"
+        ["MXN"]="México"
+        ["PEN"]="Perú"
+    )
+
+    # Globales
+    declare -A global_currencies=(
+        ["GBP"]="Reino Unido"
+        ["AUD"]="Australia"
+        ["JPY"]="Japón"
+        ["ZAR"]="Sudáfrica"
+        ["CHF"]="Suiza"
+        ["INR"]="India"
+        ["CNY"]="China"
+        ["EUR"]="Unión Europea"
+        ["CAD"]="Canadá"
+        ["NZD"]="Nueva Zelanda"
+    )
+
+    echo -e "\n${CYAN}${BOLD}Tasas de cambio (1 USD = moneda local):${RESET}"
+    rates_response=$(curl -s "https://api.coingecko.com/api/v3/exchange_rates")
+    btc_usd=$(jq -r '.rates.usd.value' <<< "$rates_response")
+    print_rate() {
+        local code="$1"
+        local country="$2"
+        val=$(jq -r --arg c "${code,,}" '.rates[$c].value' <<< "$rates_response")
+        unit=$(jq -r --arg c "${code,,}" '.rates[$c].unit' <<< "$rates_response")
+        if [[ "$val" != "null" && "$unit" != "null" ]]; then
+            usd_in_local=$(awk "BEGIN {printf \"%.4f\", $btc_usd / $val}")
+            printf "    %-16s %-6s %10s %s\n" "$country" "($code)" "$usd_in_local" "$unit"
+        fi
+    }
+
+    for code in "${!latam_currencies[@]}"; do
+        print_rate "$code" "${latam_currencies[$code]}"
+    done
+
+    echo -e "\n${CYAN}${BOLD}Tasas de cambio globales:${RESET}"
+    for code in "${!global_currencies[@]}"; do
+        print_rate "$code" "${global_currencies[$code]}"
+    done
+
+    echo -e "\n${CYAN}${BOLD}Top 10 Criptomonedas (USD + variación):${RESET}"
+    crypto_response=$(curl -s "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false&price_change_percentage=1h,24h,7d")
+    echo "$crypto_response" | jq -r '
+      .[] | "\(.market_cap_rank)\t\(.symbol | ascii_upcase)\t\(.current_price)\t\(.price_change_percentage_1h_in_currency)\t\(.price_change_percentage_24h_in_currency)\t\(.price_change_percentage_7d_in_currency)"
+    ' | while IFS=$'\t' read -r rank symbol price ch1h ch24h ch7d; do
+        format_pct() {
+            local pct="$1"
+            if [[ "$pct" == "null" ]]; then
+                echo "-"
+            elif (( $(echo "$pct >= 0" | bc -l) )); then
+                printf "${GREEN}▲ %.2f%%${RESET}" "$pct"
+            else
+                printf "${RED}▼ %.2f%%${RESET}" "${pct#-}"
+            fi
+        }
+
+        printf "%2s. %-5s $%-10s  1h: %s | 24h: %s | 7d: %s\n" \
+            "$rank" "$symbol" "$price" \
+            "$(format_pct "$ch1h")" \
+            "$(format_pct "$ch24h")" \
+            "$(format_pct "$ch7d")"
+    done
 }

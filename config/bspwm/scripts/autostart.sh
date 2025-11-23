@@ -7,34 +7,31 @@
 #  ██║  ██║╚██████╔╝   ██║   ╚██████╔╝███████║   ██║   ██║  ██║██║  ██║   ██║   
 #  ╚═╝  ╚═╝ ╚═════╝    ╚═╝    ╚═════╝ ╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   
 
-## Set the keyboard layout to Latin American Spanish
+## Reset screen resolution first
+~/.config/bspwm/scripts/monitors.sh &
+
+## Set the keyboard layout to Spanish (Latin American)
 setxkbmap -layout latam &
 
-## Resetting screen dimensions
-xrandr --output Virtual1 --mode 1920x1080 --rate 60.00 &
-sleep 0.5
+## Start compositor (for transparency and shadows)
+picom --config $HOME/.config/picom/picom.conf &
 
-## Reset wallpaper
+## Restore wallpaper
 nitrogen --restore &
 sleep 0.5
 
-## Run window composer
-picom --config $HOME/.config/picom/picom.conf &
-sleep 0.5
+## Load pywal color palette (may affect polybar colors)
+~/.config/bspwm/scripts/pywal.sh &
 
-## Reset Pywal color palette
-$HOME/.config/bspwm/scripts/bspwm-pywal.sh &
-sleep 0.5
+## Start panel (after colors are loaded)
+~/.config/bspwm/scripts/polybar.sh &
 
-## Execute taskbars
-$HOME/.config/bspwm/scripts/bspwm-polybar.sh &
-sleep 0.5
+## Start keybindings manager
+pgrep -x sxhkd > /dev/null || sxhkd &
 
-# Enable toolkits and applications
-/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &
-xsetroot -cursor_name left_ptr &
-xfce4-power-manager &
+## Enable background services
 nm-applet &
 blueman-applet &
-dunst -conf $HOME/.config/dunst/dunstrc &
-sleep 0.5
+xfce4-power-manager &
+/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &
+xsetroot -cursor_name left_ptr &

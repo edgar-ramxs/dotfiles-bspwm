@@ -1,24 +1,24 @@
 #!/usr/bin/env bash
 
+# Settings
+num_cols="3"
+num_rows="1"
 host=`hostname`
+prompt="Networks"
+mesg="Connections: Networks Module"
 uptime="`uptime -p | sed -e 's/up //g'`"
-icono=$(~/.config/bspwm/scripts/bspwm-distro.sh)
 theme="$HOME/.config/rofi/views/powermenu.rasi"
-list_col='3'
-list_row='1'
+distro_icon=$(~/.config/bspwm/scripts/distro.sh)
 
+# Targets
 ip_vpn=$(~/.config/rofi/htb/vpn.sh)
 ip_target=$(~/.config/rofi/htb/target.sh)
 ip_network=$(~/.config/rofi/htb/network.sh)
 
 rofi_cmd() {
-	rofi -theme-str 'window {width: 800px;}' \
-		-theme-str "listview {columns: $list_col; lines: $list_row;}" \
-		-theme-str "textbox-prompt-colon { str: \" $icono\"; }" \
-		-dmenu \
-		-p "Networks" \
-		-mesg " Connections: Ethical hacking module " \
-		-theme "${theme}"
+	rofi -theme-str "listview {columns: $num_cols; lines: $num_rows;}" \
+		-theme-str "textbox-prompt-colon { str: \" $distro_icon\"; }" \
+		-dmenu -p "$prompt" -mesg "$mesg" -theme "$theme"
 }
 
 run_cmd() {

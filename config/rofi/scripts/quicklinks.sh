@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 
-icono=$(~/.config/bspwm/scripts/bspwm-distro.sh)
-theme="$HOME/.config/rofi/views/applets.rasi"
-browser='Firefox'
+# Settings
+distro_icon=$(~/.config/bspwm/scripts/distro.sh)
+theme="~/.config/rofi/views/applets.rasi"
 prompt='Quick Links'
+browser='Firefox'
 mesg="Using $browser as web browser"
-list_col='6'
-list_row='1'
+num_cols="6"
+num_rows="1"
 
 # Options
 option_1=" "
@@ -16,10 +17,9 @@ option_4=" "
 option_5=" "
 option_6=" "
 
-
 rofi_cmd() {
-	rofi -theme-str "listview {columns: $list_col; lines: $list_row;}" \
-		-theme-str "textbox-prompt-colon { str: \" $icono\"; }" \
+	rofi -theme-str "listview {columns: $num_cols; lines: $num_rows;}" \
+		-theme-str "textbox-prompt-colon { str: \" $distro_icon\"; }" \
 		-dmenu \
 		-p "$prompt" \
 		-mesg "$mesg" \
